@@ -1,14 +1,10 @@
 package ru.betel.data.reopsitory.song.get.firebase
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import ru.betel.domain.model.Song
 import ru.betel.domain.repository.song.get.firebase.GetSongsFromFirebase
@@ -16,6 +12,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase {
+    private val TAG = "GetSongFromFirebaseImpl"
     private val databaseRef = database.getReference("Song")
     override suspend fun getAllSongs(): List<Song> = suspendCancellableCoroutine { continuation ->
         val allSongList = mutableListOf<Song>()
@@ -23,6 +20,7 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
             override fun onDataChange(p0: DataSnapshot) {
                 if (allSongList.size > 0) allSongList.clear()
                 for (item: DataSnapshot in p0.children) {
+
                     val song: HashMap<Any, Any> = item.value as HashMap<Any, Any>
                     val isGlorifyingSong = song.getValue("glorifyingSong") as Boolean
                     val isWorshipSong = song.getValue("worshipSong") as Boolean

@@ -47,7 +47,8 @@ fun TemplateScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading.value)
 
     if (templates.value.isEmpty()) {
-        LaunchedEffect(key1 = null) { viewModel.refresh(2000L) }
+        LaunchedEffect(key1 = null) { viewModel.refresh(2000L)
+        }
     }
 
     SwipeRefresh(

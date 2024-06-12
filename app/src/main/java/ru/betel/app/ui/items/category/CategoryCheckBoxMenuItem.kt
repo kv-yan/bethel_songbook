@@ -69,7 +69,6 @@ fun CategoryCheckBoxMenuItem(
             text = category.title,
             style = TextStyle(
                 fontSize = 13.sp,
-                lineHeight = 14.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
                 color = if (isCheckedItem.value) Color.Black else textFieldPlaceholder,

@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,6 +43,7 @@ import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.loading_anim.LoadingPopUp
 import ru.betel.app.ui.widgets.pop_up.NoInternetConnectionDialog
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
@@ -57,13 +57,14 @@ fun LogInBottomSheet(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingsViewModel: SettingViewModel,
+    editViewModel: EditViewModel,
     onAppRestart: () -> Unit,
 ) {
     val loginText = remember { mutableStateOf("") }
     val passwordText = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val networkState = remember { mutableStateOf(!settingsViewModel.networkState.value) }
-    val logInStatus by settingsViewModel.checkUserLoginStatus
+    val logInStatus = FirebaseAuth.getInstance().currentUser
 
     val isLogInBottomSheetState = remember {
         mutableStateOf(true)
@@ -111,6 +112,7 @@ fun LogInBottomSheet(
                         songViewModel = songViewModel,
                         templateViewModel = templateViewModel,
                         settingViewModel = settingsViewModel,
+                        editViewModel = editViewModel,
                         onSettingsBtnClick = {
                             scope.launch {
                                 isLogInBottomSheetState.value = false
@@ -123,9 +125,7 @@ fun LogInBottomSheet(
                                 isLogInBottomSheetState.value = true
                                 bottomSheetState.show()
                             }
-                        }
-
-                    )
+                        })
                     NoInternetConnectionDialog(networkState)
                 }
             }

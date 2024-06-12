@@ -19,6 +19,7 @@ import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.TemplateType
+import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
@@ -35,6 +36,7 @@ class TemplateViewModel(
     getGlorifyingSongsUseCase: GetGlorifyingSongsUseCase,
     getWorshipSongsUseCase: GetWorshipSongsUseCase,
     getGiftSongsUseCase: GetGiftSongsUseCase,
+    private val getFavoriteSongsUseCase: GetFavoriteSongsUseCase,
     private val getTemplatesFromLocalUseCase: GetTemplatesFromLocalUseCase,
     private val saveTemplateToLocalUseCase: SaveTemplateToLocalUseCase,
 ) : ViewModel() {
@@ -106,6 +108,14 @@ class TemplateViewModel(
         }
     }
 
+    private val _tempFavoriteAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
+        viewModelScope.launch {
+            getFavoriteSongsUseCase.execute().collect {
+                value = it.toImmutableAddSongList()
+            }
+        }
+    }
+
     private val _tempWorshipAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
         viewModelScope.launch {
             getAllSongsUseCase.execute().collect {
@@ -148,6 +158,7 @@ class TemplateViewModel(
     }
 
     val tempGlorifyingAllAddSongs = _tempGlorifyingAllAddSongs
+    val tempFavoriteAllAddSongs = _tempFavoriteAllAddSongs
     val tempWorshipAllAddSongs = _tempWorshipAllAddSongs
     val tempGiftAllAddSongs = _tempGiftAllAddSongs
     val glorifyingAddSong = _tempGlorifyingAddSongs

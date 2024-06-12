@@ -8,11 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.betel.app.ui.screens.category.CategoryScreen
+import ru.betel.app.ui.screens.edit.song.EditSongScreen
 import ru.betel.app.ui.screens.favorite.FavoriteScreen
 import ru.betel.app.ui.screens.home.HomeScreen
 import ru.betel.app.ui.screens.new_song.NewSongScreen
@@ -20,6 +22,8 @@ import ru.betel.app.ui.screens.new_template.NewTemplateScreen
 import ru.betel.app.ui.screens.single_song.SingleSongScreen
 import ru.betel.app.ui.screens.single_template.SingleTemplateScreen
 import ru.betel.app.ui.screens.template.TemplateScreen
+import ru.betel.app.ui.screens.templates_song.TemplatesSongScreen
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
@@ -35,15 +39,17 @@ fun MainContent(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
+    editViewModel: EditViewModel
 ) {
-    val isFrom= remember {
-    mutableStateOf(true)
-}
+    val isFrom = remember {
+        mutableStateOf(true)
+    }
+    val coroutineScope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
 
         NavHost(
             navController = navController,
-            startDestination = Screens.TEMPLATE_SCREEN.route,
+            startDestination = Screens.HOME_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {
@@ -51,6 +57,7 @@ fun MainContent(
                     navController = navController,
                     actionBarState = actionBarState,
                     settingViewModel = settingViewModel,
+                    editViewModel = editViewModel,
                     viewModel = songViewModel
                 )
             }
@@ -66,6 +73,7 @@ fun MainContent(
                     navController = navController,
                     actionBarState = actionBarState,
                     settingViewModel = settingViewModel,
+                    songViewModel = songViewModel
                 )
             }
             composable(Screens.CATEGORY_SCREEN.route) {
@@ -109,8 +117,37 @@ fun MainContent(
                     navController = navController,
                     actionBarState = actionBarState,
                     viewModel = songViewModel,
-                    templateViewModel= templateViewModel,
+                    templateViewModel = templateViewModel,
                     settingViewModel = settingViewModel,
+                )
+            }
+            composable(Screens.TEMPLATES_SONGS_SCREEN.route) {
+                TemplatesSongScreen(
+                    navController = navController,
+                    actionBarState = actionBarState,
+                    templateViewModel = templateViewModel,
+                    settingViewModel = settingViewModel,
+                    songViewModel = songViewModel,
+                    scope = coroutineScope
+                )
+            }
+
+            composable(Screens.EDIT_SONG_SCREEN.route) {
+                EditSongScreen(
+                    navController = navController,
+                    actionBarState = actionBarState,
+                    settingViewModel = settingViewModel,
+                    editViewModel = editViewModel
+                )
+            }
+
+            composable(Screens.NEW_TEMPLATE_SCREEN.route) {
+                NewTemplateScreen(
+                    navController = navController,
+                    actionBarState = actionBarState,
+                    songViewModel = songViewModel,
+                    templateViewModel = templateViewModel,
+                    settingViewModel = settingViewModel
                 )
             }
 

@@ -1,90 +1,78 @@
-package ru.betel.app.ui.screens.single_song
+package ru.betel.app.ui.screens.templates_song
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
-import ru.betel.app.ui.theme.textFieldPlaceholder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import ru.betel.app.ui.items.template_songs.TemplatesSongItem
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
+import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.ActionBarState
 
 private const val TAG = "HomeScreen"
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SingleSongScreen(
-    isSongFromTemplate: MutableState<Boolean>,
+fun TemplatesSongScreen(
     navController: NavController,
     actionBarState: MutableState<ActionBarState>,
-    viewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
+    songViewModel: SongViewModel,
     settingViewModel: SettingViewModel,
+    scope: CoroutineScope
 ) {
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
-    val scrollState = rememberScrollState()
-    val song by viewModel.selectedSong.collectAsState()
+    val template by templateViewModel.singleTemplate.collectAsState()
+    val clickedSong by songViewModel.selectedSong.collectAsState()
 
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .verticalScroll(scrollState),
-    ) {
-        Row(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)) {
-            Text(
-                text = song.title, style = TextStyle(
-                    fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(700),
-                    color = actionBarColor,
-                ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth(0.8f)
-            )
+    val currentSongIndex = remember {
+        mutableStateOf(0)
+    }
+    val currentTemplateSongsList = mutableListOf<Song>().apply {
+        addAll(template.glorifyingSong)
+        addAll(template.worshipSong)
+        addAll(template.giftSong)
+    }
 
-            Text(
-                text = "130 / ${song.tonality}",
-                style = TextStyle(
-                    fontSize = settingViewModel.songbookTextSize.smallItemDefaultTextSize,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(700),
-                    color = textFieldPlaceholder,
-                ),
-                modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End,
-            )
+    val pagerState = rememberPagerState(pageCount = { currentTemplateSongsList.size })
 
+    LaunchedEffect(key1 = currentTemplateSongsList) {
+        currentTemplateSongsList.forEachIndexed { index, song ->
+            if (song.title == clickedSong.title && song.words == clickedSong.words) {
+                currentSongIndex.value = index
+                scope.launch {
+                    Log.e(
+                        TAG,
+                        "TemplatesSongScreen: currentSongIndex.value :: ${currentSongIndex.value}",
+                    )
+                    pagerState.scrollToPage(currentSongIndex.value, 0f)
+                }
+                return@LaunchedEffect
+            }
         }
+    }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = song.words, style = TextStyle(
-                fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
-                fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                fontWeight = FontWeight(400),
-                color = Color.Black.copy(alpha = 0.7f)
-            ), modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 50.dp)
-        )
+    HorizontalPager(
+        state = pagerState, modifier = Modifier.fillMaxSize()
+    ) { page ->
+        // Content for each page
+        Log.e(TAG, "TemplatesSongScreen: index : $page")
+        TemplatesSongItem(song = currentTemplateSongsList[page], settingViewModel.songbookTextSize)
     }
 
     BackHandler {
@@ -153,3 +141,5 @@ actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
     }
 
     */
+
+

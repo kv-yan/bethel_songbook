@@ -30,11 +30,11 @@ import kotlinx.coroutines.launch
 import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.AddNewSongToTemplate
-import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.WeekdayDropDownMenu
+import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
@@ -52,6 +52,7 @@ fun NewTemplateScreen(
     settingViewModel: SettingViewModel,
 ) {
     val selectedCategory = remember { mutableStateOf("Փառաբանություն") }
+    println("value :: ${selectedCategory.value}")
     val categorySongsList = when (selectedCategory.value) {
         "Փառաբանություն" -> {
             templateViewModel.glorifyingAddSong.observeAsState(initial = mutableListOf())
@@ -84,7 +85,8 @@ fun NewTemplateScreen(
         templateViewModel.tempGiftAllAddSongs.observeAsState(
             mutableListOf()
         )
-
+    val bottomSheetFavoriteSong: State<MutableList<AddSong>> =
+        templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf())
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         "Փառաբանություն" -> bottomSheetAllSongsForGlorifyingCategory
 
@@ -134,7 +136,8 @@ fun NewTemplateScreen(
                             }, shape = RoundedCornerShape(8.dp), color = fieldBg
                         ) {
                             WeekdayDropDownMenu(
-                                selectedDay = templateViewModel.tempWeekday, modifier = Modifier.fillMaxWidth()
+                                selectedDay = templateViewModel.tempWeekday,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
@@ -153,7 +156,8 @@ fun NewTemplateScreen(
                         ) {
                             selectedCategory.value = "Փառաբանություն"
                             selectedCategoryForAddNewSong = templateViewModel.tempGlorifyingSongs
-                            selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGlorifyingCategory
+                            selectedCategoryBottomSheetAllSongs =
+                                bottomSheetAllSongsForGlorifyingCategory
                             scope.launch { bottomSheetState.show() }
                         }
                     }
@@ -186,8 +190,8 @@ fun NewTemplateScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     SaveButton {
-                        val checkFieldsState  = templateViewModel.checkFields()
-                        if (checkFieldsState.isSuccess){
+                        val checkFieldsState = templateViewModel.checkFields()
+                        if (checkFieldsState.isSuccess) {
                             templateViewModel.saveSongTemplateToLocalStorage()
                         }
                         navController.popBackStack()
@@ -204,18 +208,19 @@ fun NewTemplateScreen(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(
-                    text = songViewModel.searchAppBarText,
+                SearchTopAppBar(text = songViewModel.searchAppBarText,
                     onTextChange = {},
                     onCloseClicked = { /*TODO*/ },
                     textSize = settingViewModel.songbookTextSize
                 )
                 selectedCategoryForAddNewSong.value?.let {
+
                     CategoryTabs(
                         categorySongs = categorySongsList.value,
                         categoryTitle = selectedCategory,
                         allSongs = selectedCategoryBottomSheetAllSongs,
                         searchAppBarText = songViewModel.searchAppBarText,
+                        favoriteSongs = bottomSheetFavoriteSong,
                         categoryListForAdd = it
                     ) {
                         scope.launch {

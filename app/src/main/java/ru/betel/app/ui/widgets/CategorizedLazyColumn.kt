@@ -43,12 +43,19 @@ fun SongCategoryHeader(header: String) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CategorizedLazyColumn(categories: List<SongCategory>,textSize: SongbookTextSize, onItemClick: (Song) -> Unit) {
+fun CategorizedLazyColumn(
+    categories: List<SongCategory>,
+    textSize: SongbookTextSize,
+    onEditClick: (Song) -> Unit,
+    onShareClick: (Song) -> Unit,
+    onDeleteClick: (Song) -> Unit,
+    onItemClick: (Song) -> Unit
+) {
     LazyColumn {
         categories.forEach { item ->
             stickyHeader {
                 Surface(
-                    color = Color.White.copy(alpha = 0.97f), elevation = 3.dp,
+                    color = Color.White.copy(alpha = 0.95f), elevation = 3.dp,
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
                     SongCategoryHeader(header = item.charName)
@@ -56,7 +63,11 @@ fun CategorizedLazyColumn(categories: List<SongCategory>,textSize: SongbookTextS
             }
 
             items(item.items) {
-                SongItemWithWords(item = it, textSize = textSize, ){
+                SongItemWithWords(item = it,
+                    textSize = textSize,
+                    onEditClick = { onEditClick(it) },
+                    onShareClick = { onShareClick(it) },
+                    onDeleteClick = { onDeleteClick(it) }) {
                     onItemClick(it)
                 }
             }

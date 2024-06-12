@@ -9,16 +9,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import org.koin.androidx.compose.get
 import ru.betel.app.ui.bottom_sheet.LogInBottomSheet
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
-import ru.betel.domain.model.ui.SearchAppBarState
 import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
@@ -30,13 +26,15 @@ class MainActivity : ComponentActivity() {
             val songViewModel: SongViewModel = get()
             val templateViewModel: TemplateViewModel = get()
             val settingsViewModel: SettingViewModel = get()
+            val editViewModel: EditViewModel = get()
 
             val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
             LogInBottomSheet(
                 bottomSheetState = bottomSheetState,
                 songViewModel = songViewModel,
                 templateViewModel = templateViewModel,
-                settingsViewModel = settingsViewModel
+                settingsViewModel = settingsViewModel,
+                editViewModel = editViewModel
             ) {
                 restartApplication(this)
             }

@@ -15,12 +15,19 @@ import ru.betel.domain.model.ui.SongbookTextSize
 fun SongsList(
     songs: List<Song>,
     songbookTextSize: SongbookTextSize,
+    onEditClick: (Song) -> Unit,
+    onShareClick: (Song) -> Unit,
+    onDeleteClick: (Song) -> Unit,
     onSongSelected: (Song) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(songs) { song ->
-                SongItemWithWords(song, songbookTextSize) { onSongSelected(song) }
+                SongItemWithWords(song,
+                    songbookTextSize,
+                    onEditClick = { onEditClick(song) },
+                    onShareClick = { onEditClick(song) },
+                    onDeleteClick = { onDeleteClick(song) }) { onSongSelected(song) }
             }
         }
     }

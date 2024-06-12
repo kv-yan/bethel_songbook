@@ -12,6 +12,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,12 +26,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.dropdown_menu.AddNewItemDropdownMenu
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.Screens
 
 
 @Composable
@@ -37,6 +42,7 @@ fun SingleSongActionBar(
     navController: NavController,
     settingViewModel: SettingViewModel,
     songViewModel: SongViewModel,
+    editViewModel: EditViewModel,
     onSettingsBtnClick: () -> Unit,
     onShareBtnClick: () -> Unit,
 ) {
@@ -129,6 +135,23 @@ fun SingleSongActionBar(
                     )
                 }
 
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    Spacer(modifier = Modifier.width(20.dp))
+                    IconButton(
+                        onClick = {
+                            editViewModel.currentSong.value = currentSong
+                            navController.navigate(Screens.EDIT_SONG_SCREEN.route)
+                        }, modifier = Modifier.size(20.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit song",
+                            tint = Color.White,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.width(18.dp))
                 IconButton(onClick = { onSettingsBtnClick() }, modifier = Modifier.size(27.dp)) {
                     Icon(
@@ -151,9 +174,6 @@ fun SingleSongActionBar(
         }
     }
 }
-
-
-data class Song(val title: String, val artist: String, val duration: Int)
 
 fun isSongInFavorites(song: Song, favoriteSongs: List<Song>): Boolean {
     return favoriteSongs.any { it.title == song.title && it.words == song.words }

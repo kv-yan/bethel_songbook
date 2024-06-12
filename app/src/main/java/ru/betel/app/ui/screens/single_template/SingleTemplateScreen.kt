@@ -83,7 +83,8 @@ fun SingleTemplateScreen(
                 categoryTitle = "Փառաբանություն",
                 categorySongs = template.glorifyingSong
             ) {
-                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
                 songViewModel.selectedSong.value = it
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -92,7 +93,8 @@ fun SingleTemplateScreen(
                 fontSize = settingViewModel.songbookTextSize,
                 categorySongs = template.worshipSong
             ) {
-                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
                 songViewModel.selectedSong.value = it
 
             }
@@ -102,7 +104,8 @@ fun SingleTemplateScreen(
                 fontSize = settingViewModel.songbookTextSize,
                 categorySongs = template.giftSong
             ) {
-                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
                 songViewModel.selectedSong.value = it
             }
         }

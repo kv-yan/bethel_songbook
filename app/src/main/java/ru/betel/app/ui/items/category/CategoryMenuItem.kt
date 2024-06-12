@@ -41,7 +41,7 @@ fun CategoryMenuItem(
             text = category.title,
             style = androidx.compose.ui.text.TextStyle(
                 fontSize = 13.sp,
-                lineHeight = 14.sp,
+
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
                 color = if (category.isSelected) textFieldPlaceholder else Color.Black,

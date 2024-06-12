@@ -45,7 +45,6 @@ fun ActionBarAddNewItemDropdownItem(item: AddItem, onAddItemClick: () -> Unit) {
             text = item.title,
             style = TextStyle(
                 fontSize = 12.sp,
-                lineHeight = 12.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                 fontWeight = FontWeight(400),
                 color = Color.Black,

@@ -29,6 +29,8 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
+import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
+import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
@@ -67,6 +69,14 @@ val domainModule = module {
 
     single<GetGiftSongsUseCase> {
         GetGiftSongsUseCase(getGiftSongs = get<GetGiftSongs>())
+    }
+
+    single<SaveSongInFirebaseUseCase> {
+        SaveSongInFirebaseUseCase()
+    }
+
+    single<UpdateSongInFirebaseUseCase> {
+        UpdateSongInFirebaseUseCase()
     }
 
     single<GetFromSongbookSongsUseCase> {

@@ -16,6 +16,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.betel.app.ui.widgets.CategorizedLazyColumn
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.Song
@@ -24,6 +25,7 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import java.text.Collator
 import java.util.Locale
+import kotlin.system.exitProcess
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -33,6 +35,7 @@ fun HomeScreen(
     actionBarState: MutableState<ActionBarState>,
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
+    editViewModel: EditViewModel
 ) {
     actionBarState.value = ActionBarState.HOME_SCREEN
 
@@ -94,16 +97,17 @@ fun HomeScreen(
             val songsList = songs.map {
                 SongCategory(items = it.value, charName = it.key.toString())
             }
-            CategorizedLazyColumn(songsList,settingViewModel.songbookTextSize) { song ->
+            CategorizedLazyColumn(songsList, settingViewModel.songbookTextSize, onEditClick = {
+                editViewModel.currentSong.value = it
+                navController.navigate(Screens.EDIT_SONG_SCREEN.route)
+            }, onShareClick = {
+                viewModel.shareSong(it)
+            }, onDeleteClick = {
+
+            }) { song ->
                 viewModel.selectedSong.value = song
                 navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
             }
-            /*
-                        SongsList(songs = sortedSongs, settingViewModel.songbookTextSize) { song ->
-                            viewModel.singleSong.value = song
-                            navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
-                        }
-            */
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
             // showing nothing found page
@@ -119,5 +123,6 @@ fun HomeScreen(
     BackHandler {
         Toast.makeText(navController.context, "Click one more time please", Toast.LENGTH_SHORT)
             .show()
+        exitProcess(0)
     }
 }

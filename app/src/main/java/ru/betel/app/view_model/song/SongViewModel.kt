@@ -14,6 +14,7 @@ import ru.betel.data.extensions.toDeleteFavoriteEntity
 import ru.betel.data.extensions.toInsertFavoriteEntity
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.SongsCategory
+import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.favorite.DeleteFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
@@ -36,6 +37,7 @@ class SongViewModel(
     private val getFavoriteSongsUseCase: GetFavoriteSongsUseCase,
     private val insertFavoriteSongsUseCase: InsertFavoriteSongsUseCase,
     private val deleteFavoriteSongsUseCase: DeleteFavoriteSongsUseCase,
+    private val saveSongInFirebaseUseCase: SaveSongInFirebaseUseCase
 ) : ViewModel() {
 
     val searchAppBarText = mutableStateOf("")
@@ -136,6 +138,7 @@ class SongViewModel(
 
     fun saveSongToFirebase(song: Song) {
         song.id = "Song"
+        saveSongInFirebaseUseCase.execute(song)
     }
 
     fun shareSong(song: Song) {

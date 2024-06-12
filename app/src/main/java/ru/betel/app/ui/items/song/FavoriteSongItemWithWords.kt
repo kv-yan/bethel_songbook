@@ -83,7 +83,6 @@ fun FavoriteSongItemWithWords(
                 Text(
                     text = item.title, style = TextStyle(
                         fontSize = textSize.normalItemDefaultTextSize,
-                        lineHeight = 20.sp,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(500),
                         color = Color(0xFF111111),

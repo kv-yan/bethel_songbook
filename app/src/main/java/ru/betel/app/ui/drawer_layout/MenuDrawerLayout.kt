@@ -20,6 +20,7 @@ import ru.betel.app.ui.action_bar.NewTemplateActionBar
 import ru.betel.app.ui.action_bar.SingleSongActionBar
 import ru.betel.app.ui.action_bar.SingleTemplateActionBar
 import ru.betel.app.ui.action_bar.TemplateActionBar
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
@@ -34,6 +35,7 @@ fun MenuDrawerLayout(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
+    editViewModel: EditViewModel,
     navController: NavHostController,
     searchAppBarState: MutableState<SearchAppBarState>,
     textSize: SongbookTextSize,
@@ -67,7 +69,8 @@ fun MenuDrawerLayout(
             ActionBarState.TEMPLATE_SCREEN -> {
                 TemplateActionBar(navController = navController,
                     searchAppBarState = searchAppBarState,
-                    textSize = textSize, templateViewModel = templateViewModel,
+                    textSize = textSize,
+                    templateViewModel = templateViewModel,
                     settingViewModel = settingViewModel,
                     onSettingsBtnClick = {
                         onSettingsBtnClick()
@@ -117,6 +120,7 @@ fun MenuDrawerLayout(
                 SingleSongActionBar(navController = navController,
                     settingViewModel = settingViewModel,
                     songViewModel = songViewModel,
+                    editViewModel = editViewModel,
                     onSettingsBtnClick = {
                         onSettingsBtnClick()
                     },
@@ -169,7 +173,8 @@ fun MenuDrawerLayout(
                 actionBarState = actionBarState,
                 songViewModel = songViewModel,
                 templateViewModel = templateViewModel,
-                settingViewModel = settingViewModel
+                settingViewModel = settingViewModel,
+                editViewModel = editViewModel
             )
             it
         })

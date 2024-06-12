@@ -35,6 +35,7 @@ fun CategoryTabs(
     categorySongs: MutableList<AddSong>,
     categoryTitle: MutableState<String>,
     allSongs: State<MutableList<AddSong>>,
+    favoriteSongs: State<MutableList<AddSong>>,
     searchAppBarText: MutableState<String>,
     categoryListForAdd: SnapshotStateList<Song>,
     handleBackPress: () -> Unit,
@@ -97,7 +98,7 @@ fun CategoryTabs(
     }
     val sortedFavoriteSong: State<List<AddSong>> = derivedStateOf {
         if (searchAppBarText.value.isNotBlank()) {
-            allSongs.value.filter { item ->
+            favoriteSongs.value.filter { item ->
                 item.song.title.lowercase()
                     .contains(searchAppBarText.value.lowercase(), ignoreCase = true)
             }.sortedBy { item ->
@@ -138,7 +139,6 @@ fun CategoryTabs(
         HorizontalPager(
             count = tabRowItems.size, state = pagerState, modifier = Modifier.fillMaxSize()
         ) {
-            println("pager state :: $it")
             when (it) {
                 0 -> {
                     TabScreenCategory(categorySongs = sortedCategorySong.value.toMutableList(),
@@ -181,8 +181,7 @@ fun CategoryTabs(
 
                 2 -> {
 
-                    TabScreenCategory(
-                        categorySongs = sortedAllSong.value.toMutableList(),
+                    TabScreenCategory(categorySongs = sortedAllSong.value.toMutableList(),
                         onItemClick = { item ->
                             if (!item.isAdded.value) {
                                 categoryListForAdd.add(item.song)

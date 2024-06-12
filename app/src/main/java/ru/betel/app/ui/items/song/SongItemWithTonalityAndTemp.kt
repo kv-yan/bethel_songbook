@@ -97,7 +97,6 @@ fun SongItemWithTonalityAndTemp(
             Text(
                 text = "$index.", style = TextStyle(
                     fontSize = fontSize.normalItemDefaultTextSize,
-                    lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
                     color = Color.Black
@@ -116,7 +115,6 @@ fun SongItemWithTonalityAndTemp(
                     overflow = TextOverflow.Ellipsis,
                     style = TextStyle(
                         fontSize = fontSize.normalItemDefaultTextSize,
-                        lineHeight = 20.sp,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                         fontWeight = FontWeight(400),
                         color = Color.Black

@@ -48,7 +48,6 @@ fun SongItemWithDeleteBtn(
             Text(
                 text = "$index.", style = TextStyle(
                     fontSize = 12.sp,
-                    lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
                     color = Color.Black
