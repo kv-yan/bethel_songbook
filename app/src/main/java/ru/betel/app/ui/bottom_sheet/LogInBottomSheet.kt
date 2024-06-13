@@ -166,7 +166,7 @@ fun LoginBottomSheetContent(
             modifier = Modifier.fillMaxWidth(),
             imeAction = ImeAction.Next,
             fieldText = loginText,
-            singleLine = true
+            singleLine = false
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -177,7 +177,7 @@ fun LoginBottomSheetContent(
             textType = KeyboardType.Password,
             imeAction = ImeAction.Done,
             fieldText = passwordText,
-            singleLine = true
+            singleLine = false
         )
         Spacer(modifier = Modifier.height(20.dp))
 

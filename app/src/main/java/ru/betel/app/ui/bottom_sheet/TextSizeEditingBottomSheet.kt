@@ -2,16 +2,13 @@ package ru.betel.app.ui.bottom_sheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,7 +21,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.betel.app.ui.items.theme.AppThemeItem
 import ru.betel.app.ui.widgets.TextBtnForChangeTextSize
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.domain.model.ui.ThemeMode
@@ -37,23 +33,28 @@ fun TextSizeEditingBottomSheetContent(
 
     Surface(shape = RoundedCornerShape(12.dp), color = Color.White) {
         Column {
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(text = "Փոխեք տառաչափը։", modifier = Modifier.padding(start = 36.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             TextSizeEditingBottomSheetBlock(onMinusBtnClick = { settingViewModel.decreaseTextSize() },
                 onPlusBtnClick = { settingViewModel.increaseTextSize() })
             Spacer(modifier = Modifier.height(24.dp))
-            LazyRow(
-                horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
-            ) {
-                items(modes) { mode ->
-                    AppThemeItem(mode) {
-                        mode.isSelected = true
-                        modes.forEach {
-                            it.isSelected = mode == it
+
+            // Add theme changing functionality
+            /*
+                        LazyRow(
+                            horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(modes) { mode ->
+                                AppThemeItem(mode) {
+                                    mode.isSelected = true
+                                    modes.forEach {
+                                        it.isSelected = mode == it
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(52.dp))
+            */
         }
     }
 }

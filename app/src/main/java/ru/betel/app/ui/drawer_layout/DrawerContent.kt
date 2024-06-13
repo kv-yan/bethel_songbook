@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -128,6 +129,15 @@ fun DrawerContent(
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.mardoto_medium))
                         )
+                        if (FirebaseAuth.getInstance().currentUser != null) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = "Դուք ադմին էք",
+                                fontSize = 11.sp,
+                                modifier = Modifier.padding(bottom = 4.dp),
+                                fontFamily = FontFamily(Font(R.font.mardoto_medium))
+                            )
+                        }
                     }
                 }
             }
