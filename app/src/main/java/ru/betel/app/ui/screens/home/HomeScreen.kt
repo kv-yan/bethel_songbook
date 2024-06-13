@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import ru.betel.app.DoubleBackToExitApp
 import ru.betel.app.ui.widgets.CategorizedLazyColumn
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
@@ -110,19 +111,8 @@ fun HomeScreen(
             }
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
-            // showing nothing found page
             NothingFoundScreen()
         }
     }
-
-
-
-
-
-
-    BackHandler {
-        Toast.makeText(navController.context, "Click one more time please", Toast.LENGTH_SHORT)
-            .show()
-        exitProcess(0)
-    }
+    DoubleBackToExitApp()
 }
