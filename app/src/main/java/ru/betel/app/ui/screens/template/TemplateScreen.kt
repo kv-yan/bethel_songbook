@@ -39,16 +39,14 @@ fun TemplateScreen(
     actionBarState.value = ActionBarState.TEMPLATE_SCREEN
     val templateSelectedCategory = viewModel.templateSelectedType
 
-    val templates = viewModel.templateState.collectAsState()
+    val templates by viewModel.templateState.collectAsState()
+    val localTemplate by viewModel.localTemplateState.observeAsState(mutableListOf())
 
-    val localTemplate = viewModel.localTemplateState.observeAsState(mutableListOf())
+    val isLoading by viewModel.isLoadingContainer.collectAsState()
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    val isLoading = viewModel.isLoadingContainer.collectAsState()
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading.value)
-
-    if (templates.value.isEmpty()) {
-        LaunchedEffect(key1 = null) { viewModel.refresh(2000L)
-        }
+    if (templates.isEmpty()) {
+        LaunchedEffect(key1 = null) { viewModel.refresh(2000L) }
     }
 
     SwipeRefresh(
@@ -57,44 +55,24 @@ fun TemplateScreen(
         refreshTriggerDistance = 40.dp,
     ) {
         Box(contentAlignment = Alignment.Center) {
-            if (templateSelectedCategory.value == TemplateType.ALL) {
-                LazyColumn(
-                    Modifier.fillMaxSize()
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    items(templates.value) {
-                        SongTemplateColumItem(it, settingViewModel.songbookTextSize) {
-                            viewModel.singleTemplate.value = it
-                            navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
-                        }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
+            val itemsList = if (templateSelectedCategory.value == TemplateType.ALL) templates else localTemplate
+
+            LazyColumn(
+                Modifier.fillMaxSize()
+            ) {
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                items(itemsList, key = { it.id }) { template ->
+                    SongTemplateColumItem(template, settingViewModel.songbookTextSize) {
+                        viewModel.singleTemplate.value = template
+                        navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
                     }
                 }
-            } else {
-                LazyColumn(
-                    Modifier.fillMaxSize()
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    items(localTemplate.value) {
-                        SongTemplateColumItem(it, settingViewModel.songbookTextSize) {
-                            viewModel.singleTemplate.value = it
-                            navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
-                        }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
             }
         }
-        BackHandler {
-            navController.popBackStack()
-        }
+    }
+
+    BackHandler {
+        navController.popBackStack()
     }
 }

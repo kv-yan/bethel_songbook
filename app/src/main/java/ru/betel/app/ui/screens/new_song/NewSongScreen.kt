@@ -58,9 +58,9 @@ fun NewSongScreen(
     val isWorship = remember { mutableStateOf(false) }
     val isGift = remember { mutableStateOf(false) }
     val isFromSongbook = remember { mutableStateOf(false) }
-    val selectedItemListOf =
-        remember { mutableListOf(isGlorifying, isWorship, isGift, isFromSongbook) }
-
+    val selectedItemListOf = remember {
+        mutableListOf(isGlorifying, isWorship, isGift, isFromSongbook)
+    }
 
     Column(
         Modifier

@@ -128,7 +128,6 @@ fun SongTemplateColumItem(
 fun SongTemplateColumItem(
     template: SongTemplate, textSize: SongbookTextSize, onCLick: () -> Unit,
 ) {
-//    var isShowingTemplateDetails by remember { mutableStateOf(false) }
     var isShowingTemplateDetails by rememberSaveable { mutableStateOf(false) }
 
 
@@ -173,20 +172,6 @@ fun SongTemplateColumItem(
                             color = textFieldPlaceholder,
                         ),
                     )
-/*
-                    IconButton(onClick = {
-                        isShowingTemplateDetails = !isShowingTemplateDetails
-                    }, modifier = Modifier.size(24.dp)) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            if (isShowingTemplateDetails) Icons.Filled.KeyboardArrowUp
-                            else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-*/
 
                     IconButton(onClick = {
                         isShowingTemplateDetails = !isShowingTemplateDetails
