@@ -27,26 +27,28 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                     val isGiftSong = song.getValue("giftSong") as Boolean
                     val isFromSongbookSong = song.getValue("fromSongbookSong") as Boolean
 
-                    if (isGlorifyingSong || isWorshipSong || isGiftSong || isFromSongbookSong) {
-                        val title = song.getValue("title") as String
-                        val tonality = song.getValue("tonality") as String
-                        val words = song.getValue("words") as String
-                        val id = item.key as String
+//                    if (isGlorifyingSong || isWorshipSong || isGiftSong || isFromSongbookSong) {
+                    val title = song.getValue("title") as String
+                    val tonality = song.getValue("tonality") as String
+                    val words = song.getValue("words") as String
+                    val id = item.key as String
 
-                        val songObj = Song(
-                            id = id,
-                            title = title,
-                            tonality = tonality,
-                            words = words,
-                            isGlorifyingSong = isGlorifyingSong,
-                            isWorshipSong = isWorshipSong,
-                            isGiftSong = isGiftSong,
-                            isFromSongbookSong = isFromSongbookSong
-                        )
+                    val songObj = Song(
+                        id = id,
+                        title = title,
+                        tonality = tonality,
+                        words = words,
+                        isGlorifyingSong = isGlorifyingSong,
+                        isWorshipSong = isWorshipSong,
+                        isGiftSong = isGiftSong,
+                        isFromSongbookSong = isFromSongbookSong
+                    )
 
-                        allSongList.add(songObj)
-                    }
+                    allSongList.add(songObj)
+//                    }
                 }
+
+                Log.e(TAG, "onDataChange: all songs :: $allSongList")
 
                 continuation.resume(allSongList)
             }

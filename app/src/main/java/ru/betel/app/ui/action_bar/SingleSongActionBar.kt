@@ -44,6 +44,7 @@ fun SingleSongActionBar(
     songViewModel: SongViewModel,
     editViewModel: EditViewModel,
     onSettingsBtnClick: () -> Unit,
+    onDeleteBtnClick: (Song) -> Unit,
     onShareBtnClick: () -> Unit,
 ) {
     val currentSong by songViewModel.selectedSong.collectAsState()
@@ -148,6 +149,19 @@ fun SingleSongActionBar(
                             contentDescription = "Edit song",
                             tint = Color.White,
                             modifier = Modifier.size(34.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(19.dp))
+                    IconButton(
+                        onClick = {
+                            onDeleteBtnClick(currentSong)
+                        }, modifier = Modifier.size(20.dp)
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_delete),
+                            contentDescription = "Edit song",
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }

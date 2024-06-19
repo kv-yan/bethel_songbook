@@ -24,6 +24,7 @@ import ru.betel.domain.useCase.song.category.GetFromSongbookSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
+import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 
 class SongViewModel(
@@ -37,7 +38,8 @@ class SongViewModel(
     private val getFavoriteSongsUseCase: GetFavoriteSongsUseCase,
     private val insertFavoriteSongsUseCase: InsertFavoriteSongsUseCase,
     private val deleteFavoriteSongsUseCase: DeleteFavoriteSongsUseCase,
-    private val saveSongInFirebaseUseCase: SaveSongInFirebaseUseCase
+    private val saveSongInFirebaseUseCase: SaveSongInFirebaseUseCase,
+    private val deleteSongFromFirebaseUseCase: DeleteSongFromFirebaseUseCase
 ) : ViewModel() {
 
     val searchAppBarText = mutableStateOf("")
@@ -185,6 +187,12 @@ class SongViewModel(
             }
             deletingItem?.first()?.toDeleteFavoriteEntity()
                 ?.let { deleteFavoriteSongsUseCase.execute(it) }
+        }
+    }
+
+    fun deleteSongFromFirebase(song: Song){
+        viewModelScope.launch {
+            deleteSongFromFirebaseUseCase.execute(song)
         }
     }
 }

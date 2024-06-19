@@ -22,6 +22,7 @@ import ru.betel.domain.useCase.song.category.GetFromSongbookSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
+import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
@@ -46,7 +47,8 @@ val appModule = module {
             getFavoriteSongsUseCase = get<GetFavoriteSongsUseCase>(),
             insertFavoriteSongsUseCase = get<InsertFavoriteSongsUseCase>(),
             deleteFavoriteSongsUseCase = get<DeleteFavoriteSongsUseCase>(),
-            saveSongInFirebaseUseCase = get<SaveSongInFirebaseUseCase>()
+            saveSongInFirebaseUseCase = get<SaveSongInFirebaseUseCase>(),
+            deleteSongFromFirebaseUseCase = get<DeleteSongFromFirebaseUseCase>()
         )
     }
 

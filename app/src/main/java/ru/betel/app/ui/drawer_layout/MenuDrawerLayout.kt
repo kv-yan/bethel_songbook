@@ -20,10 +20,12 @@ import ru.betel.app.ui.action_bar.NewTemplateActionBar
 import ru.betel.app.ui.action_bar.SingleSongActionBar
 import ru.betel.app.ui.action_bar.SingleTemplateActionBar
 import ru.betel.app.ui.action_bar.TemplateActionBar
+import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
+import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
@@ -46,7 +48,16 @@ fun MenuDrawerLayout(
     scaffoldState.drawerState
     val actionBarState = remember { mutableStateOf(ActionBarState.HOME_SCREEN) }
     val scope = rememberCoroutineScope()
+    val deleteDialogState = remember { mutableStateOf(false) }
+    val songState =
+        remember { mutableStateOf<Song>(Song("", "", "", "", false, false, false, false)) }
 
+
+    DeleteSongDialog(showDialog = deleteDialogState, song = songState, onConfirmationClick = {
+        songViewModel.deleteSongFromFirebase(it)
+    }) {
+        navController.popBackStack()
+    }
 
     Scaffold(topBar = {
         when (actionBarState.value) {
@@ -126,6 +137,10 @@ fun MenuDrawerLayout(
                     },
                     onShareBtnClick = {
                         songViewModel.shareSong(songViewModel.selectedSong.value)
+                    },
+                    onDeleteBtnClick = {
+                        songState.value = it
+                        deleteDialogState.value = true
                     })
             }
 

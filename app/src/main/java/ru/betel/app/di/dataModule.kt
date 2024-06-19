@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import ru.betel.data.reopsitory.auth.FirebaseAuthRepoImpl
 import ru.betel.data.reopsitory.favorite.FavoriteSongsRepoImpl
 import ru.betel.data.reopsitory.network.NetworkUtilsImpl
+import ru.betel.data.reopsitory.song.delete.DeleteSongFromFirebaseImpl
 import ru.betel.data.reopsitory.song.get.all.GetAllSongsImpl
 import ru.betel.data.reopsitory.song.get.category.GetFromSongbookSongsImpl
 import ru.betel.data.reopsitory.song.get.category.GetGiftSongsImpl
@@ -37,6 +38,7 @@ import ru.betel.domain.repository.template.get.GetTemplatesFromLocal
 import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
 import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
+import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 
 
@@ -117,6 +119,10 @@ val dataModule = module {
 
     single<FavoriteSongsRepo> {
         FavoriteSongsRepoImpl(favSongDao = get<FavoriteSongsDao>())
+    }
+
+    single<DeleteSongFromFirebase> {
+        DeleteSongFromFirebaseImpl(database = get<FirebaseDatabase>())
     }
 
 }

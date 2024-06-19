@@ -1,14 +1,14 @@
 package ru.betel.app.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -17,6 +17,7 @@ import ru.betel.app.DoubleBackToExitApp
 import ru.betel.app.ui.widgets.CategorizedLazyColumn
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
+import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
@@ -26,7 +27,6 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import java.text.Collator
 import java.util.Locale
-import kotlin.system.exitProcess
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -60,6 +60,9 @@ fun HomeScreen(
     }
 
     val isLoading = viewModel.isLoadingContainer
+    val isDeletingSong = remember { mutableStateOf(false) }
+    val deletingSong =
+        remember { mutableStateOf(Song("0", "0", "0", "0", false, false, false, false)) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading.value)
 
 
@@ -104,7 +107,8 @@ fun HomeScreen(
             }, onShareClick = {
                 viewModel.shareSong(it)
             }, onDeleteClick = {
-
+                isDeletingSong.value = true
+                deletingSong.value = it
             }) { song ->
                 viewModel.selectedSong.value = song
                 navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
@@ -113,6 +117,12 @@ fun HomeScreen(
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
             NothingFoundScreen()
         }
+
     }
+    DeleteSongDialog(showDialog = isDeletingSong, song = deletingSong, onUpdateSongs = {
+        viewModel.loadSong()
+    }, onConfirmationClick = {
+        viewModel.deleteSongFromFirebase(it)
+    })
     DoubleBackToExitApp()
 }

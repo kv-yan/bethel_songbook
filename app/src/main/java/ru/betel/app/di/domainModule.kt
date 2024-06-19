@@ -5,6 +5,7 @@ import ru.betel.domain.repository.auth.FirebaseAuthRepo
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.network.NetworkUtils
 import ru.betel.domain.repository.share.ShareRepo
+import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
 import ru.betel.domain.repository.song.get.all.GetAllSongs
 import ru.betel.domain.repository.song.get.category.GetFromSongbookSongs
 import ru.betel.domain.repository.song.get.category.GetGiftSongs
@@ -28,6 +29,7 @@ import ru.betel.domain.useCase.song.category.GetFromSongbookSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
+import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
@@ -117,5 +119,9 @@ val domainModule = module {
 
     single<DeleteFavoriteSongsUseCase> {
         DeleteFavoriteSongsUseCase(favoriteSongsRepo = get<FavoriteSongsRepo>())
+    }
+
+    single<DeleteSongFromFirebaseUseCase> {
+        DeleteSongFromFirebaseUseCase(deleteSongFromFirebase = get<DeleteSongFromFirebase>())
     }
 }
