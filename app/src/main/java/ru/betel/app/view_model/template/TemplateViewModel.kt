@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -48,16 +47,9 @@ class TemplateViewModel(
         }
     }
 
-
-    val templateState = getAllTemplatesUseCase.execute()
-
-
-    private val _isLoadingContainer = MutableStateFlow(false)
-    val isLoadingContainer = _isLoadingContainer.asStateFlow()
-
+    var templateState = getAllTemplatesUseCase.execute()
 
     val templateSelectedType = mutableStateOf(TemplateType.ALL)
-
 
     val singleTemplate = MutableStateFlow(
         SongTemplate(
@@ -71,7 +63,6 @@ class TemplateViewModel(
             giftSong = emptyList()
         )
     )
-
 
     private val _tempCreateDate =
         mutableStateOf(SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time))
@@ -207,14 +198,6 @@ class TemplateViewModel(
         } else Result.failure(IllegalAccessError())
     }
 
-    fun cleanAllFields() {
-        _tempPerformerName.value = ""
-        _tempWeekday.value = ""
-
-        _tempGlorifyingSongs
-        _tempWorship
-        _tempGift
-    }
 
     fun onTemplateTypeSelected(type: TemplateType) {
         templateSelectedType.value = type
@@ -222,15 +205,6 @@ class TemplateViewModel(
 
 
     fun loadTemplate() {
-        templateState.value = getAllTemplatesUseCase.execute().value
-        refresh(3000)
-    }
-
-    fun refresh(mil: Long) {
-        viewModelScope.launch {
-            _isLoadingContainer.value = true
-            delay(mil)
-            _isLoadingContainer.value = false
-        }
+        templateState = getAllTemplatesUseCase.execute()
     }
 }

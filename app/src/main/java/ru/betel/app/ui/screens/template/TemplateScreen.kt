@@ -39,15 +39,13 @@ fun TemplateScreen(
     actionBarState.value = ActionBarState.TEMPLATE_SCREEN
     val templateSelectedCategory = viewModel.templateSelectedType
 
-    val templates by viewModel.templateState.collectAsState()
+    val templates by viewModel.templateState.collectAsState(mutableListOf())
     val localTemplate by viewModel.localTemplateState.observeAsState(mutableListOf())
 
-    val isLoading by viewModel.isLoadingContainer.collectAsState()
+    val isLoading = templates.isEmpty()
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
-    if (templates.isEmpty()) {
-        LaunchedEffect(key1 = null) { viewModel.refresh(2000L) }
-    }
+
 
     SwipeRefresh(
         state = swipeRefreshState,

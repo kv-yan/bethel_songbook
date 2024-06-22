@@ -48,8 +48,6 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
 //                    }
                 }
 
-                Log.e(TAG, "onDataChange: all songs :: $allSongList")
-
                 continuation.resume(allSongList)
             }
 
