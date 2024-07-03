@@ -70,10 +70,6 @@ fun LogInBottomSheet(
         mutableStateOf(true)
     }
 
-    Toast.makeText(
-        LocalContext.current, "${FirebaseAuth.getInstance().currentUser?.email}", Toast.LENGTH_SHORT
-    ).show()
-
     Surface {
         Column(
             modifier = Modifier.fillMaxSize()

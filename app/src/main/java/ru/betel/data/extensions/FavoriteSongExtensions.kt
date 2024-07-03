@@ -15,7 +15,8 @@ fun List<FavoriteSongsEntity>.toSong(): List<Song> {
                 isGlorifyingSong = it.isGlorifyingSong,
                 isWorshipSong = it.isWorshipSong,
                 isGiftSong = it.isGiftSong,
-                isFromSongbookSong = it.isFromSongbookSong
+                isFromSongbookSong = it.isFromSongbookSong,
+                temp = it.temp
             )
         )
     }
@@ -32,7 +33,8 @@ fun Song.toDeleteFavoriteEntity(): FavoriteSongsEntity {
         isGlorifyingSong = this.isGlorifyingSong,
         isWorshipSong = this.isWorshipSong,
         isGiftSong = this.isGiftSong,
-        isFromSongbookSong = this.isFromSongbookSong
+        isFromSongbookSong = this.isFromSongbookSong,
+        temp = this.temp
     )
 }
 
@@ -45,6 +47,7 @@ fun Song.toInsertFavoriteEntity(): FavoriteSongsEntity {
         isGlorifyingSong = this.isGlorifyingSong,
         isWorshipSong = this.isWorshipSong,
         isGiftSong = this.isGiftSong,
-        isFromSongbookSong = this.isFromSongbookSong
+        isFromSongbookSong = this.isFromSongbookSong,
+        temp = this.temp
     )
 }

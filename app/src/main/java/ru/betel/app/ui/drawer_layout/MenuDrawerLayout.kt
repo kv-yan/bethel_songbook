@@ -50,7 +50,7 @@ fun MenuDrawerLayout(
     val scope = rememberCoroutineScope()
     val deleteDialogState = remember { mutableStateOf(false) }
     val songState =
-        remember { mutableStateOf<Song>(Song("", "", "", "", false, false, false, false)) }
+        remember { mutableStateOf<Song>(Song("", "", "", "","", false, false, false, false)) }
 
 
     DeleteSongDialog(showDialog = deleteDialogState, song = songState, onConfirmationClick = {

@@ -53,6 +53,7 @@ fun AddNewSongToTemplate(
                 isWorshipSong = false,
                 isGiftSong = false,
                 isFromSongbookSong = false,
+                temp = "Error"
             )
         )
     }

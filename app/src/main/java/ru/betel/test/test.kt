@@ -104,6 +104,7 @@ fun AddNewTemplateCategoryItem() {
                 isWorshipSong = false,
                 isGiftSong = false,
                 isFromSongbookSong = false,
+                temp = "Error"
             )
         )
     }

@@ -3,6 +3,7 @@ package ru.betel.app.ui.widgets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -157,18 +158,18 @@ fun MyTextFields(
                     color = Color.Black
                 ),
                 decorationBox = { innerTextField ->
-                    Row(
-                        modifier,
-                        verticalAlignment = align, // Align to the top
-                    ) {
+                    Row(modifier, verticalAlignment = align) {
                         if (leadingIcon != null) leadingIcon()
+
                         Box(Modifier.weight(1f)) {
-                            if (text.isEmpty()) Text(
-                                placeholder,
-                                style = LocalTextStyle.current.copy(
-                                    fontSize = fontSize, color = textFieldPlaceholder
-                                ),
-                            )
+                            if (text.isEmpty()){
+                                Text(
+                                    placeholder,
+                                    style = LocalTextStyle.current.copy(
+                                        fontSize = fontSize, color = textFieldPlaceholder
+                                    ),
+                                )
+                            }
                             innerTextField()
                         }
                         if (trailingIcon != null) trailingIcon()
@@ -244,4 +245,76 @@ fun MyTextFieldsForEditScreen(
     }
 }
 
+@Composable
+fun MyTextFields(
+    isForSearch:Boolean,
+    placeholder: String,
+    modifier: Modifier = Modifier,
+    fieldText: MutableState<String>,
+    imeAction: ImeAction = ImeAction.Default,
+    textType: KeyboardType = KeyboardType.Text,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    fontSize: TextUnit = 14.sp,
+    singleLine: Boolean = true,
+    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
+    align: Alignment.Vertical = Alignment.CenterVertically
+) {
+
+    var text by rememberSaveable { mutableStateOf(fieldText.value) }
+
+    Surface(
+        shape = shape, color = fieldBg
+    ) {
+        Column(
+            Modifier.padding(vertical = 9.dp)
+        ) {
+            BasicTextField(
+                value = text,
+                onValueChange = {
+                    text = it
+                    fieldText.value = it
+                },
+                singleLine = singleLine,
+                modifier = if (singleLine && fontSize < 14.sp) {
+                    modifier
+                        .height(20.dp)
+                        .padding(start = 10.dp)
+                } else {
+                    modifier.padding(start = 10.dp)
+                },
+                textStyle = TextStyle(
+                    fontSize = fontSize,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(500),
+                    textAlign = TextAlign.Start,
+                    color = Color.Black
+                ),
+                decorationBox = { innerTextField ->
+                    Row(modifier, verticalAlignment = align) {
+                        if (leadingIcon != null) leadingIcon()
+
+                        Box(Modifier.weight(1f)) {
+                            if (text.isEmpty()){
+                                Text(
+                                    placeholder,
+                                    style = LocalTextStyle.current.copy(
+                                        fontSize = fontSize, color = textFieldPlaceholder
+                                    ),
+                                )
+                            }
+                            innerTextField()
+                        }
+                        if (trailingIcon != null) trailingIcon()
+                    }
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = imeAction
+                ),
+                visualTransformation = if (textType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None
+            )
+
+        }
+    }
+}
 

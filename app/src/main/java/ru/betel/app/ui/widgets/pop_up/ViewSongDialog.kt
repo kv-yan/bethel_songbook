@@ -69,7 +69,7 @@ fun SeeSongDialog(song: Song, isShowDialog: MutableState<Boolean>) {
                             )
 
                             Text(
-                                text = "130 / ${song.tonality}",
+                                text = "${song.temp} / ${song.tonality}",
                                 style = TextStyle(
                                     fontSize = 13.sp,
                                     lineHeight = 14.sp,

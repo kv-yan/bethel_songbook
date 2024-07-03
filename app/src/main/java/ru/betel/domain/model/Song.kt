@@ -5,6 +5,7 @@ data class Song(
     var title: String,
     var tonality: String,
     var words: String,
+    var temp: String,
     var isGlorifyingSong: Boolean,
     var isWorshipSong: Boolean,
     var isGiftSong: Boolean,

@@ -132,7 +132,7 @@ fun SongItemWithTonalityAndTemp(
                 modifier = Modifier.fillMaxWidth(0.4f) // Adjust the width as needed
             ) {
                 Text(
-                    text = "130 | ${item.tonality}", style = TextStyle(
+                    text = "${item.temp} | ${item.tonality}", style = TextStyle(
                         fontSize = fontSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                         fontWeight = FontWeight(400),

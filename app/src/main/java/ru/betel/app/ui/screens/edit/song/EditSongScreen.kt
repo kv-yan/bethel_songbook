@@ -52,9 +52,10 @@ fun EditSongScreen(
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val categoryTextFieldValue = remember { mutableStateOf("") }
     val tonality = remember { mutableStateOf(currentSong.tonality) }
-    val tempTextFieldValue = remember { mutableStateOf("130") }
+    val tempTextFieldValue = remember { mutableStateOf(currentSong.temp) }
     val title = remember { mutableStateOf(currentSong.title) }
     val words = remember { mutableStateOf(currentSong.words) }
+
 
     val selectedCategory = remember { mutableStateOf("") }
     val isGlorifying = remember { mutableStateOf(currentSong.isGlorifyingSong) }

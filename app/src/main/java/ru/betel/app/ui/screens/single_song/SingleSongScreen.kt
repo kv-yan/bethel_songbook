@@ -63,7 +63,7 @@ fun SingleSongScreen(
             )
 
             Text(
-                text = "130 / ${song.tonality}",
+                text = "${song.temp} / ${song.tonality}",
                 style = TextStyle(
                     fontSize = settingViewModel.songbookTextSize.smallItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),

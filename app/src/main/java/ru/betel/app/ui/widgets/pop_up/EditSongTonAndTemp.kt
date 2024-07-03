@@ -44,7 +44,7 @@ fun EditSongTonAndTemp(
     }
     println()
     val temp = remember {
-        mutableStateOf(mutableSongState.value.id)
+        mutableStateOf(mutableSongState.value.temp)
     }
     val onDismiss = { isShowDialog.value = !isShowDialog.value }
     if (isShowDialog.value) {
@@ -150,6 +150,7 @@ fun Dialog() {
                 isWorshipSong = false,
                 isGiftSong = false,
                 isFromSongbookSong = false,
+                temp = "Error"
             )
         )
     }

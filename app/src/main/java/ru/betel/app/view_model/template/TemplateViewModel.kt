@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.betel.data.extensions.toImmutableAddSongList
 import ru.betel.data.extensions.toSongTemplate
@@ -47,7 +46,9 @@ class TemplateViewModel(
         }
     }
 
-    var templateState = getAllTemplatesUseCase.execute()
+    private var templateState = getAllTemplatesUseCase.execute()
+
+    val templateUiState = mutableStateOf<List<SongTemplate>>(emptyList())
 
     val templateSelectedType = mutableStateOf(TemplateType.ALL)
 
@@ -117,7 +118,7 @@ class TemplateViewModel(
 
     private val _tempGiftAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
         viewModelScope.launch {
-            getAllSongsUseCase.execute().collect {
+            getGiftSongsUseCase.execute().collect {
                 value = it.toImmutableAddSongList()
             }
         }
@@ -198,13 +199,16 @@ class TemplateViewModel(
         } else Result.failure(IllegalAccessError())
     }
 
-
     fun onTemplateTypeSelected(type: TemplateType) {
         templateSelectedType.value = type
     }
 
-
     fun loadTemplate() {
         templateState = getAllTemplatesUseCase.execute()
+        viewModelScope.launch {
+            getAllTemplatesUseCase.execute().collect { templates ->
+                templateUiState.value = templates
+            }
+        }
     }
 }

@@ -44,6 +44,7 @@ fun CategorySongs(
                 isWorshipSong = false,
                 isGiftSong = false,
                 isFromSongbookSong = false,
+                temp = "Error"
             )
         )
     }

@@ -1,6 +1,5 @@
 package ru.betel.data.reopsitory.song.get.firebase
 
-import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -31,6 +30,11 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                     val title = song.getValue("title") as String
                     val tonality = song.getValue("tonality") as String
                     val words = song.getValue("words") as String
+                    val temp = try {
+                        song.getValue("temp") as Long
+                    } catch (e :Exception ){
+                        song.getValue("temp") as String
+                    }
                     val id = item.key as String
 
                     val songObj = Song(
@@ -41,7 +45,8 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                         isGlorifyingSong = isGlorifyingSong,
                         isWorshipSong = isWorshipSong,
                         isGiftSong = isGiftSong,
-                        isFromSongbookSong = isFromSongbookSong
+                        isFromSongbookSong = isFromSongbookSong,
+                        temp = temp.toString().toInt().toString()
                     )
 
                     allSongList.add(songObj)

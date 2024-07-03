@@ -70,7 +70,7 @@ fun SongItemWithDeleteBtn(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "130 | ${item.tonality}", style = TextStyle(
+                Text(text = "${item.temp} | ${item.tonality}", style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),

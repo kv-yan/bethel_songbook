@@ -12,9 +12,7 @@ class NetworkUtilsImpl(private val context: Context) : NetworkUtils {
         val networkCapabilities = connectivityManager?.activeNetwork
         val isConnected = networkCapabilities?.let {
             val activeNetwork = connectivityManager.getNetworkCapabilities(it)
-            activeNetwork?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                ?: activeNetwork?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                ?: false
+            activeNetwork?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         } ?: false
 
         println("network state " + if (isConnected) "Connected" else "Disconnected")

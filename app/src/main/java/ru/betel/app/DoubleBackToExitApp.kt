@@ -16,10 +16,9 @@ fun DoubleBackToExitApp() {
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // Use LaunchedEffect to reset the flag after a delay
     LaunchedEffect(backPressedOnce) {
         if (backPressedOnce) {
-            delay(2000) // 2 seconds to reset the flag
+            delay(2000)
             backPressedOnce = false
         }
     }

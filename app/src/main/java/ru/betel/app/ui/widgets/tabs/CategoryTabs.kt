@@ -54,7 +54,8 @@ fun CategoryTabs(
                 isGlorifyingSong = true,
                 isWorshipSong = false,
                 isGiftSong = true,
-                isFromSongbookSong = false
+                isFromSongbookSong = false,
+                temp = "Error"
             )
         )
 

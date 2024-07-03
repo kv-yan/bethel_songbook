@@ -8,12 +8,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.repository.template.get.GetTemplatesFromFirebase
-import java.util.NoSuchElementException
 
 class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFromFirebase {
     private val databaseRef = database.getReference("SongsTemplate")
@@ -30,9 +28,12 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     val performerName = template["performerName"] as String
                     val weekday = template["weekday"] as String
                     val favorite = template["favorite"] as Boolean
-                    val glorifyingSong = getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
-                    val worshipSong = getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
-                    val giftSong = getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
+                    val glorifyingSong =
+                        getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
+                    val worshipSong =
+                        getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
+                    val giftSong =
+                        getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
                     templateList.add(
                         SongTemplate(
                             item.key.toString(),
@@ -64,20 +65,22 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
             val title = item["title"] as String
             val tonality = item["tonality"] as String
             val words = item["words"] as String
+            val temp = item["temp"] as Long
             val isGlorifyingSong = item["glorifyingSong"] as Boolean
             val isWorshipSong = item["worshipSong"] as Boolean
             val isGiftSong = item["giftSong"] as Boolean
             val isFromSongbookSong = item["fromSongbookSong"] as Boolean
             songList.add(
                 Song(
-                    databaseRef.key.orEmpty(),
-                    title,
-                    tonality,
-                    words,
-                    isGlorifyingSong,
-                    isWorshipSong,
-                    isGiftSong,
-                    isFromSongbookSong
+                    id = databaseRef.key.orEmpty(),
+                    title = title,
+                    tonality = tonality,
+                    words = words,
+                    temp = temp.toInt().toString(),
+                    isGlorifyingSong = isGlorifyingSong,
+                    isWorshipSong = isWorshipSong,
+                    isGiftSong = isGiftSong,
+                    isFromSongbookSong = isFromSongbookSong
                 )
             )
         }

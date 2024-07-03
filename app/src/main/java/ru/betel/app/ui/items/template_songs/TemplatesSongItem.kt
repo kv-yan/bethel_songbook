@@ -51,7 +51,7 @@ fun TemplatesSongItem(song: Song, textSize: SongbookTextSize) {
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "130 / ${song.tonality}",
+                text = "${song.temp} / ${song.tonality}",
                 style = TextStyle(
                     fontSize = textSize.normalItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),

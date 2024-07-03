@@ -28,18 +28,19 @@ import ru.betel.domain.model.ui.SongbookTextSize
 @Composable
 fun SongCategoryHeader(header: String) {
     Text(
-        text = header, style = TextStyle(
+        text = header,
+        style = TextStyle(
             fontSize = 16.sp,
             lineHeight = 20.sp,
             fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-            fontWeight = FontWeight(1000),
+            fontWeight = FontWeight.W700,
             color = Color.Gray,
-        ), modifier = Modifier
+        ),
+        modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, top = 12.dp, bottom = 12.dp)
     )
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,26 +53,29 @@ fun CategorizedLazyColumn(
     onItemClick: (Song) -> Unit
 ) {
     LazyColumn {
-        categories.forEach { item ->
+        categories.forEach { category ->
             stickyHeader {
                 Surface(
-                    color = Color.White.copy(alpha = 0.95f), elevation = 3.dp,
+                    color = Color.White.copy(alpha = 0.95f),
+                    elevation = 3.dp,
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    SongCategoryHeader(header = item.charName)
+                    SongCategoryHeader(header = category.charName)
                 }
             }
 
-            items(item.items) {
-                SongItemWithWords(item = it,
+            items(category.items, key = { it.id }) { song ->
+                SongItemWithWords(
+                    item = song,
                     textSize = textSize,
-                    onEditClick = { onEditClick(it) },
-                    onShareClick = { onShareClick(it) },
-                    onDeleteClick = { onDeleteClick(it) }) {
-                    onItemClick(it)
-                }
+                    onEditClick = onEditClick,
+                    onShareClick = onShareClick,
+                    onDeleteClick = onDeleteClick,
+                    onItemClick = {
+                        onItemClick(song)
+                    }
+                )
             }
         }
     }
 }
-

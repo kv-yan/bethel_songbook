@@ -1,6 +1,7 @@
 package ru.betel.app.view_model.song
 
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,6 @@ import ru.betel.data.extensions.toDeleteFavoriteEntity
 import ru.betel.data.extensions.toInsertFavoriteEntity
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.SongsCategory
-import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.favorite.DeleteFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
@@ -25,6 +25,7 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
+import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 
 class SongViewModel(
@@ -60,27 +61,6 @@ class SongViewModel(
     val selectedCategory = MutableStateFlow(SongsCategory.GLORIFYING)
     val isDropdownMenuVisible = mutableStateOf(false)
 
-    private val _tempIsGlorifyingSongs = mutableStateOf(false)
-    val tempIsGlorifyingSongs = _tempIsGlorifyingSongs
-
-    private val _tempIsWorship = mutableStateOf(false)
-    val tempIsWorship = _tempIsWorship
-
-    private val _tempIsGift = mutableStateOf(false)
-    val tempIsGift = _tempIsGift
-
-    private val _tempIsFromSongbook = mutableStateOf(false)
-    val tempIsFromSongbook = _tempIsFromSongbook
-
-    private val _tempWords = mutableStateOf("")
-    val tempWords = _tempWords
-
-    private val _tempTitle = mutableStateOf("")
-    val tempTitle = _tempTitle
-
-    private val _tempTonality = mutableStateOf("")
-    val tempTonality = _tempTonality
-
     val selectedSong = MutableStateFlow(
         Song(
             id = "Error",
@@ -91,6 +71,7 @@ class SongViewModel(
             isWorshipSong = false,
             isGiftSong = false,
             isFromSongbookSong = false,
+            temp = "Error"
         )
     )
 
@@ -138,27 +119,15 @@ class SongViewModel(
         isDropdownMenuVisible.value = false
     }
 
-    fun saveSongToFirebase(song: Song) {
+    fun saveSongToFirebase(song: Song): Boolean {
         song.id = "Song"
-        saveSongInFirebaseUseCase.execute(song)
+         return saveSongInFirebaseUseCase.execute(song)
     }
 
     fun shareSong(song: Song) {
         viewModelScope.launch {
             shareSongUseCase.execute(song)
         }
-    }
-
-    fun cleanAllFields() {
-        _tempIsGift.value = false
-        _tempIsGlorifyingSongs.value = false
-        _tempIsWorship.value = false
-        _tempIsFromSongbook.value = false
-
-        _tempTitle.value = ""
-        _tempWords.value = ""
-        _tempTonality.value = ""
-
     }
 
     override fun onCleared() {
@@ -190,7 +159,7 @@ class SongViewModel(
         }
     }
 
-    fun deleteSongFromFirebase(song: Song){
+    fun deleteSongFromFirebase(song: Song) {
         viewModelScope.launch {
             deleteSongFromFirebaseUseCase.execute(song)
         }

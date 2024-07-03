@@ -22,12 +22,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -38,6 +40,7 @@ import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
 import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.data.extensions.getWordsFirst2Lines
+import ru.betel.data.reopsitory.network.NetworkUtilsImpl
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.SongbookTextSize
 
@@ -51,22 +54,28 @@ fun SongItemWithWords(
     onDeleteClick: (Song) -> Unit,
     onItemClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val networkUtils = remember { NetworkUtilsImpl(context) }
     val isShowAdditionBtn = remember { mutableStateOf(false) }
     val backgroundColor =
-        remember { mutableStateOf(if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White) }
+        remember { derivedStateOf { if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White } }
     val horizontalScrollState = rememberScrollState()
+    val isConnected = remember { networkUtils.isConnectedNetwork() }
 
-    Column(modifier = Modifier
-        .pointerInput(Unit) {
-            detectTapGestures(onLongPress = {
-                isShowAdditionBtn.value = !isShowAdditionBtn.value
-                backgroundColor.value =
-                    if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White
-            }, onTap = {
-                onItemClick()
-            })
-        }
-        .background(color = backgroundColor.value)) {
+    Column(
+        modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        if (isConnected) {
+                            isShowAdditionBtn.value = !isShowAdditionBtn.value
+                        }
+                    },
+                    onTap = { onItemClick() }
+                )
+            }
+            .background(color = backgroundColor.value)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -74,14 +83,13 @@ fun SongItemWithWords(
                 .horizontalScroll(horizontalScrollState)
                 .widthIn(min = 0.dp, max = 500.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)
-            ) {
+            Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 Text(
-                    text = item.title, style = TextStyle(
+                    text = item.title,
+                    style = TextStyle(
                         fontSize = textSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
-                        fontWeight = FontWeight(500),
+                        fontWeight = FontWeight.W500,
                         color = Color(0xFF111111),
                     )
                 )
@@ -95,65 +103,63 @@ fun SongItemWithWords(
                 )
             }
 
-            AnimatedVisibility(
-                visible = isShowAdditionBtn.value, Modifier.horizontalScroll(
-                    rememberScrollState()
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.padding(end = 12.dp)
-                ) {
 
-                    if (FirebaseAuth.getInstance().currentUser != null) {
-                        IconButton(onClick = {
-                            onEditClick(item)
-                        }, modifier = Modifier.size(20.dp, 20.dp)) {
+            if (isConnected) {
+                AnimatedVisibility(
+                    visible = isShowAdditionBtn.value,
+                    modifier = Modifier.horizontalScroll(rememberScrollState())
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.padding(end = 12.dp)
+                    ) {
+                        if (FirebaseAuth.getInstance().currentUser != null) {
+                            IconButton(
+                                onClick = { onEditClick(item) },
+                                modifier = Modifier.size(20.dp, 20.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(15.dp, 20.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
+                        IconButton(
+                            onClick = { onShareClick(item) },
+                            modifier = Modifier.size(20.dp, 20.dp)
+                        ) {
                             Icon(
-                                imageVector = Icons.Default.Edit,
+                                painter = painterResource(id = R.drawable.ic_share),
                                 contentDescription = null,
                                 tint = Color.Black,
                                 modifier = Modifier.size(15.dp, 20.dp)
                             )
                         }
-
-                    }
-
-                    Spacer(modifier = Modifier.width(6.dp))
-                    IconButton(
-                        onClick = { onShareClick(item) }, modifier = Modifier.size(20.dp, 20.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_share),
-                            contentDescription = null,
-                            tint = Color.Black,
-                            modifier = Modifier.size(15.dp, 20.dp)
-                        )
-
-                    }
-                    Spacer(modifier = Modifier.width(6.dp))
-
-                    if (FirebaseAuth.getInstance().currentUser != null) {
-                        IconButton(
-                            onClick = { onDeleteClick(item) },
-                            modifier = Modifier.size(20.dp, 20.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = null,
-                                tint = Color.Black,
-                                modifier = Modifier.size(17.dp)
-                            )
-
+                        Spacer(modifier = Modifier.width(6.dp))
+                        if (FirebaseAuth.getInstance().currentUser != null) {
+                            IconButton(
+                                onClick = { onDeleteClick(item) },
+                                modifier = Modifier.size(20.dp, 20.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(17.dp)
+                                )
+                            }
                         }
-
                     }
                 }
             }
         }
         Divider(
-            color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp)
+            color = Color.LightGray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
-

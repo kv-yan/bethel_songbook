@@ -41,8 +41,10 @@ fun SearchTopAppBar(
         mutableStateOf(TrailingIconState.DELETE)
     }
 
-    MyTextFields(fieldText = text,
+    MyTextFields(
+        isForSearch = true,
         singleLine = true,
+        fieldText = text,
         fontSize = textSize.textFieldItemDefaultTextSize,
         placeholder = "Որոնում",
         leadingIcon = {

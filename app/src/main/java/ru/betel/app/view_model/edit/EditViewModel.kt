@@ -19,6 +19,7 @@ class EditViewModel(
             isWorshipSong = false,
             isGiftSong = false,
             isFromSongbookSong = false,
+            temp = "Error"
         )
 
     )
