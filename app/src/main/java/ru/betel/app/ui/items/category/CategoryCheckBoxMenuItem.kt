@@ -35,31 +35,31 @@ fun CategoryCheckBoxMenuItem(
     isCheckedItem: MutableState<Boolean>,
     category: SongsCategory,
     isCheckBox: Boolean = true,
-    onClick: (category: String,isSelected:Boolean) -> Unit,
+    onClick: (category: SongsCategory, isSelected: Boolean) -> Unit,
 ) {
     Row(
         Modifier
             .clickable {
-                onClick(category.title,isCheckedItem.value)
+                onClick(category, isCheckedItem.value)
             }
             .fillMaxWidth()
             .padding(6.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Spacer(modifier = Modifier.width(18.dp))
 
         if (isCheckBox) {
             Checkbox(
                 checked = isCheckedItem.value,
                 modifier = Modifier.size(1.dp),
-                onCheckedChange = { onClick(category.title,isCheckedItem.value) },
+                onCheckedChange = { onClick(category, isCheckedItem.value) },
                 colors = CheckboxDefaults.colors(checkedColor = actionBarColor)
             )
         } else {
             RadioButton(
                 selected = isCheckedItem.value,
                 modifier = Modifier.size(1.dp),
-                onClick = { onClick(category.title,isCheckedItem.value) },
+                onClick = { onClick(category, isCheckedItem.value) },
                 colors = RadioButtonDefaults.colors(selectedColor = actionBarColor)
             )
         }
@@ -72,9 +72,9 @@ fun CategoryCheckBoxMenuItem(
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
                 color = if (isCheckedItem.value) Color.Black else textFieldPlaceholder,
-            ),modifier = Modifier.padding(start = 8.dp)
+            ),
+            modifier = Modifier.padding(start = 8.dp)
         )
         Spacer(modifier = Modifier.width(18.dp))
     }
-
 }

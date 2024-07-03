@@ -155,6 +155,7 @@ fun CategoryDropDownMenuWithCheckBox(
     modifier: Modifier,
 ) {
     val expanded = remember { mutableStateOf(false) }
+    val selectedCategoriesSet = remember { mutableStateOf(mutableSetOf<String>()) }
 
     Surface(
         shape = RoundedCornerShape(8.dp),
@@ -186,6 +187,8 @@ fun CategoryDropDownMenuWithCheckBox(
                 contentDescription = null,
                 modifier = Modifier.size(width = 10.dp, height = 7.dp)
             )
+
+
             DropdownMenu(
                 modifier = Modifier.widthIn(120.dp),
                 expanded = expanded.value,
@@ -197,7 +200,8 @@ fun CategoryDropDownMenuWithCheckBox(
                         isCheckedItem = categoryStates[index]
                     ) { category, isChecked ->
                         categoryStates[index].value = !categoryStates[index].value
-                        updateSelectedCategory(selectedCategory, category, isChecked)
+                        updateSelectedCategory(selectedCategoriesSet, category, isChecked)
+                        selectedCategory.value = selectedCategoriesSet.value.joinToString(",")
                     }
                 }
             }
@@ -205,25 +209,21 @@ fun CategoryDropDownMenuWithCheckBox(
         }
     }
 }
-
-private fun updateSelectedCategory(
-    selectedCategory: MutableState<String>,
-    category: String,
-    isChecked: Boolean,
+fun updateSelectedCategory(
+    selectedCategoriesSet: MutableState<MutableSet<String>>,
+    category: SongsCategory,
+    isChecked: Boolean
 ) {
-
-    if (!isChecked) {
-        if (selectedCategory.value.isEmpty()) {
-            selectedCategory.value = category
-        } else {
-            selectedCategory.value += ", $category"
-        }
+    val categoryText = when (category) {
+        SongsCategory.GLORIFYING -> "Փառաբանություն"
+        SongsCategory.WORSHIP -> "Երկրպագություն"
+        SongsCategory.GIFT -> "Ընծա"
+        SongsCategory.FROM_SONGBOOK -> "Երգարանային"
+        SongsCategory.ALL ->""
+    }
+    if (isChecked) {
+        selectedCategoriesSet.value.remove(categoryText)
     } else {
-        val categoryToRemove = if (selectedCategory.value.contains(", $category")) {
-            ", $category,"
-        } else {
-            category
-        }
-        selectedCategory.value = selectedCategory.value.replaceFirst(categoryToRemove, "")
+        selectedCategoriesSet.value.add(categoryText)
     }
 }

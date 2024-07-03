@@ -116,18 +116,17 @@ private fun MainContent(
 
     ) {
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
-    val categoryTextFieldValue = remember { mutableStateOf("") }
     val songTonality = remember { mutableStateOf("") }
     val songTemp = remember { mutableStateOf("") }
     val songTitle = remember { mutableStateOf("") }
     val songWords = remember { mutableStateOf("") }
 
 
-    val selectedCategory = remember { mutableStateOf("") }
     val isGlorifying = remember { mutableStateOf(false) }
     val isWorship = remember { mutableStateOf(false) }
     val isGift = remember { mutableStateOf(false) }
     val isFromSongbook = remember { mutableStateOf(false) }
+    val selectedCategory = remember { mutableStateOf("") }
     val selectedItemListOf = remember {
         mutableListOf(isGlorifying, isWorship, isGift, isFromSongbook)
     }
@@ -214,11 +213,11 @@ private fun MainContent(
                 title = songTitle.value,
                 tonality = songTonality.value,/* temp =*/
                 words = songWords.value,
+                temp = songTemp.value,
                 isGlorifyingSong = isGlorifying.value,
                 isWorshipSong = isWorship.value,
                 isGiftSong = isGift.value,
-                isFromSongbookSong = isFromSongbook.value,
-                temp = songTemp.value
+                isFromSongbookSong = isFromSongbook.value
             )
             savingLogic(currentSong, isShowingSaveDialog, newSongFieldState, onCompleted = {
                 cleanFieldsValues(
