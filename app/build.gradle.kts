@@ -56,7 +56,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material:1.4.3")
+    implementation("androidx.compose.material:material:1.6.8")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha08")
     implementation("androidx.compose.ui:ui-graphics-android:1.5.0")
     implementation("com.google.android.engage:engage-core:1.3.0")
     implementation("androidx.constraintlayout:constraintlayout-compose-android:1.1.0-alpha13")
@@ -67,7 +68,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
 
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))

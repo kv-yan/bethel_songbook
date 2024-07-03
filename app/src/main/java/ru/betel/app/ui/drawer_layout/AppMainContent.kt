@@ -33,7 +33,7 @@ import ru.betel.domain.model.ui.Screens
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(
+fun AppMainContent(
     navController: NavHostController,
     actionBarState: MutableState<ActionBarState>,
     songViewModel: SongViewModel,
@@ -49,7 +49,7 @@ fun MainContent(
 
         NavHost(
             navController = navController,
-            startDestination = Screens.HOME_SCREEN.route,
+            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {
@@ -140,17 +140,6 @@ fun MainContent(
                     editViewModel = editViewModel
                 )
             }
-
-            composable(Screens.NEW_TEMPLATE_SCREEN.route) {
-                NewTemplateScreen(
-                    navController = navController,
-                    actionBarState = actionBarState,
-                    songViewModel = songViewModel,
-                    templateViewModel = templateViewModel,
-                    settingViewModel = settingViewModel
-                )
-            }
-
         }
     }
 }

@@ -28,6 +28,7 @@ import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
+import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 
 val appModule = module {
@@ -61,7 +62,8 @@ val appModule = module {
             getGiftSongsUseCase = get<GetGiftSongsUseCase>(),
             getTemplatesFromLocalUseCase = get<GetTemplatesFromLocalUseCase>(),
             saveTemplateToLocalUseCase = get<SaveTemplateToLocalUseCase>(),
-            getFavoriteSongsUseCase = get<GetFavoriteSongsUseCase>()
+            getFavoriteSongsUseCase = get<GetFavoriteSongsUseCase>(),
+            saveTemplateInFirebaseUseCase = get<SaveTemplateInFirebaseUseCase>()
         )
     }
 

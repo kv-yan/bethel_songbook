@@ -2,6 +2,7 @@ package ru.betel.app.view_model.template
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.betel.data.extensions.toImmutableAddSongList
 import ru.betel.data.extensions.toSongTemplate
+import ru.betel.domain.enum_state.NewTemplateFieldState
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.AddSong
@@ -24,9 +26,8 @@ import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
+import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 class TemplateViewModel(
     private val getAllTemplatesUseCase: GetTemplatesFromFirebaseUseCase,
@@ -37,6 +38,7 @@ class TemplateViewModel(
     private val getFavoriteSongsUseCase: GetFavoriteSongsUseCase,
     private val getTemplatesFromLocalUseCase: GetTemplatesFromLocalUseCase,
     private val saveTemplateToLocalUseCase: SaveTemplateToLocalUseCase,
+    private val saveTemplateInFirebaseUseCase: SaveTemplateInFirebaseUseCase
 ) : ViewModel() {
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
         viewModelScope.launch {
@@ -65,15 +67,14 @@ class TemplateViewModel(
         )
     )
 
-    private val _tempCreateDate =
-        mutableStateOf(SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().time))
-    val tempCreateDate = _tempCreateDate
-
     private val _tempPerformerName = mutableStateOf("")
     val tempPerformerName = _tempPerformerName
 
-    private val _tempWeekday = mutableStateOf("")
+    private val _tempWeekday = mutableStateOf("Շաբաթվա օր")
     val tempWeekday = _tempWeekday
+
+    private val _planningDay = mutableStateOf("Ամսաթիվ")
+    val planningDay = _planningDay
 
     private val _tempGlorifyingSongs = MutableLiveData<SnapshotStateList<Song>>().apply {
         value = mutableStateListOf<Song>()
@@ -89,8 +90,6 @@ class TemplateViewModel(
         value = mutableStateListOf<Song>()
     }
     val tempGiftSongs = _tempGift
-
-    /** ADD_SONGS for creating new template **/
 
     private val _tempGlorifyingAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
         viewModelScope.launch {
@@ -157,8 +156,9 @@ class TemplateViewModel(
     val worshipAddSong = _tempWorshipAddSongs
     val giftAddSong = _tempGiftAddSongs
 
-    fun saveSongToFirebase(songTemplate: SongTemplate) {
+    fun saveTemplateToFirebase(songTemplate: SongTemplate) {
         songTemplate.id = "SongTemplate"
+        saveTemplateInFirebaseUseCase.execute(songTemplate)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -169,7 +169,7 @@ class TemplateViewModel(
                     tempGlorifyingSongs.value?.toList()?.let { glorifyingSongs ->
                         SongTemplate(
                             id = "Error",
-                            createDate = tempCreateDate.value,
+                            createDate = planningDay.value,
                             performerName = tempPerformerName.value,
                             weekday = tempWeekday.value,
                             favorite = false,
@@ -185,18 +185,40 @@ class TemplateViewModel(
         }
     }
 
-    fun checkFields(): Result<Unit> {
+    fun checkFields(templateFieldState: MutableState<NewTemplateFieldState>): Result<Unit> {
         return if (tempPerformerName.value.isNotEmpty()) {
-            if (tempWeekday.value.isNotEmpty()) {
-                if (tempGlorifyingSongs.value?.isNotEmpty() == true) {
-                    if (tempWorshipSongs.value?.isNotEmpty() == true) {
-                        if (tempGiftSongs.value?.isNotEmpty() == true) {
-                            Result.success(Unit)
-                        } else Result.failure(IllegalAccessError())
-                    } else Result.failure(IllegalAccessError())
-                } else Result.failure(IllegalAccessError())
-            } else Result.failure(IllegalAccessError())
-        } else Result.failure(IllegalAccessError())
+            if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
+                if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
+                    if (tempGlorifyingSongs.value?.isNotEmpty() == true) {
+                        if (tempWorshipSongs.value?.isNotEmpty() == true) {
+                            if (tempGiftSongs.value?.isNotEmpty() == true) {
+                                templateFieldState.value = NewTemplateFieldState.DONE
+                                Result.success(Unit)
+                            } else {
+                                templateFieldState.value = NewTemplateFieldState.INVALID_GIFT
+                                Result.failure(IllegalAccessError())
+                            }
+                        } else {
+                            templateFieldState.value = NewTemplateFieldState.INVALID_WORSHIP
+                            Result.failure(IllegalAccessError())
+                        }
+                    } else {
+                        templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
+                        Result.failure(IllegalAccessError())
+                    }
+                } else {
+                    templateFieldState.value = NewTemplateFieldState.INVALID_DAY
+                    Result.failure(IllegalAccessError())
+                }
+            } else {
+                templateFieldState.value = NewTemplateFieldState.INVALID_WEEKDAY
+                Result.failure(IllegalAccessError())
+            }
+        } else {
+            templateFieldState.value = NewTemplateFieldState.INVALID_NAME
+            Result.failure(IllegalAccessError())
+        }
+
     }
 
     fun onTemplateTypeSelected(type: TemplateType) {

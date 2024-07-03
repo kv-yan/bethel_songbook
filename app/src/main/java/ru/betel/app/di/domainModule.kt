@@ -36,6 +36,7 @@ import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
+import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 
 val domainModule = module {
@@ -123,5 +124,9 @@ val domainModule = module {
 
     single<DeleteSongFromFirebaseUseCase> {
         DeleteSongFromFirebaseUseCase(deleteSongFromFirebase = get<DeleteSongFromFirebase>())
+    }
+
+    single<SaveTemplateInFirebaseUseCase> {
+        SaveTemplateInFirebaseUseCase()
     }
 }

@@ -2,6 +2,7 @@ package ru.betel.app.ui.items.song
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -57,13 +58,13 @@ fun SongItemWithWordsAndCheckBox(
 
 
     Column(modifier = Modifier
-        .pointerInput(Unit) {
+        /*.pointerInput(Unit) {
             detectTapGestures(onLongPress = {
                 onItemLongPress(item.song)
             }, onTap = {
                 onItemClick()
             })
-        }
+        }*/.clickable { onItemClick.invoke() }
         .background(color = backgroundColor.value)
         .fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {

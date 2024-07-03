@@ -183,7 +183,7 @@ fun MenuDrawerLayout(
         scaffoldState = scaffoldState,
         content = {
 
-            MainContent(
+            AppMainContent(
                 navController = navController,
                 actionBarState = actionBarState,
                 songViewModel = songViewModel,

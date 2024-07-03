@@ -65,7 +65,11 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
             val title = item["title"] as String
             val tonality = item["tonality"] as String
             val words = item["words"] as String
-            val temp = item["temp"] as Long
+            val temp = try {
+                item["temp"] as Long
+            } catch (e: Exception) {
+                item["temp"] as String
+            }
             val isGlorifyingSong = item["glorifyingSong"] as Boolean
             val isWorshipSong = item["worshipSong"] as Boolean
             val isGiftSong = item["giftSong"] as Boolean
@@ -76,7 +80,7 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     title = title,
                     tonality = tonality,
                     words = words,
-                    temp = temp.toInt().toString(),
+                    temp = temp.toString().toInt().toString(),
                     isGlorifyingSong = isGlorifyingSong,
                     isWorshipSong = isWorshipSong,
                     isGiftSong = isGiftSong,

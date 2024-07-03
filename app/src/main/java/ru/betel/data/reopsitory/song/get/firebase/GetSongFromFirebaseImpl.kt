@@ -42,11 +42,11 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                         title = title,
                         tonality = tonality,
                         words = words,
+                        temp = temp.toString().toInt().toString(),
                         isGlorifyingSong = isGlorifyingSong,
                         isWorshipSong = isWorshipSong,
                         isGiftSong = isGiftSong,
-                        isFromSongbookSong = isFromSongbookSong,
-                        temp = temp.toString().toInt().toString()
+                        isFromSongbookSong = isFromSongbookSong
                     )
 
                     allSongList.add(songObj)
