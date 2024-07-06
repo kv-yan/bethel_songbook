@@ -17,11 +17,11 @@ class UpdateSongInFirebaseUseCase {
             "title" to updatedSong.title,
             "tonality" to updatedSong.tonality,
             "words" to updatedSong.words,
+            "temp" to updatedSong.temp,
             "glorifyingSong" to updatedSong.isGlorifyingSong,
             "worshipSong" to updatedSong.isWorshipSong,
             "giftSong" to updatedSong.isGiftSong,
             "fromSongbookSong" to updatedSong.isFromSongbookSong,
-//            "temp" to updatedSong.temp,
         )
 
         Log.e(TAG, "execute: updatedSong.isGlorifyingSong ։ ${updatedSong.isGlorifyingSong}")
@@ -32,6 +32,5 @@ class UpdateSongInFirebaseUseCase {
         songRef.updateChildren(
             updatedValues
         ) { _, _ -> }
-
     }
 }

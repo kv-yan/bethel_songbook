@@ -26,7 +26,9 @@ import ru.betel.domain.model.SongCategory
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import java.text.Collator
+import java.text.Normalizer
 import java.util.Locale
+import java.util.regex.Pattern
 
 
 @Composable
@@ -46,6 +48,7 @@ fun HomeScreen(
     )
 }
 
+
 @SuppressLint("UnrememberedMutableState")
 @Composable
 private fun MainContent(
@@ -60,11 +63,29 @@ private fun MainContent(
     val allSongState: State<List<Song>> = viewModel.allSongState.collectAsState(initial = emptyList())
     val searchAppBarText = viewModel.searchAppBarText
 
+    fun normalizeText(text: String): String {
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
+            .replace("[\\p{M}]".toRegex(), "")
+            .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9\\s]+".toRegex(), "")
+            .lowercase(Locale.getDefault())
+    }
+
+    val regex = remember(searchAppBarText.value) {
+        if (searchAppBarText.value.isNotBlank()) {
+            val normalizedSearchText = normalizeText(searchAppBarText.value)
+            val regexPattern = normalizedSearchText.map { ".*$it" }.joinToString("") + ".*"
+            Pattern.compile(regexPattern)
+        } else {
+            null
+        }
+    }
+
     val filteredSongs: State<List<Song>> = derivedStateOf {
         val songs = allSongState.value
-        if (searchAppBarText.value.isNotBlank()) {
+        if (regex != null) {
             songs.filter { song ->
-                song.title.lowercase().contains(searchAppBarText.value.lowercase(), ignoreCase = true)
+                val normalizedTitle = normalizeText(song.title)
+                regex.matcher(normalizedTitle).matches()
             }
         } else {
             songs
@@ -139,5 +160,5 @@ private fun MainContent(
             viewModel.deleteSongFromFirebase(it)
         }
     )
-     DoubleBackToExitApp()
+    DoubleBackToExitApp()
 }

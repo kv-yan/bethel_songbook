@@ -60,17 +60,14 @@ fun SearchTopAppBar(
         },
         trailingIcon = {
             IconButton(onClick = {
-                println("trailingIconState : $trailingIconState")
                 when (trailingIconState) {
                     TrailingIconState.DELETE -> {
                         println()
                         trailingIconState = if (text.value.isNotEmpty()) {
-                            println("trailingIconState if block ")
                             text.value = ""
                             onTextChange("")
                             TrailingIconState.CLOSE
                         } else {
-                            println("trailingIconState else block ")
                             onCloseClicked()
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             TrailingIconState.DELETE

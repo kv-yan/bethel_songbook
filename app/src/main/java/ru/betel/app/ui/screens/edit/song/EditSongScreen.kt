@@ -52,7 +52,7 @@ fun EditSongScreen(
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val categoryTextFieldValue = remember { mutableStateOf("") }
     val tonality = remember { mutableStateOf(currentSong.tonality) }
-    val tempTextFieldValue = remember { mutableStateOf(currentSong.temp) }
+    val temp = remember { mutableStateOf(currentSong.temp) }
     val title = remember { mutableStateOf(currentSong.title) }
     val words = remember { mutableStateOf(currentSong.words) }
 
@@ -99,7 +99,7 @@ fun EditSongScreen(
                 MyTextFields(
                     placeholder = "Տեմպ",
                     imeAction = ImeAction.Next,
-                    fieldText = tempTextFieldValue,
+                    fieldText = temp,
                     modifier = Modifier.fillMaxWidth(),
                     textType = KeyboardType.Number
                 )
@@ -148,6 +148,7 @@ fun EditSongScreen(
                 title = title.value,
                 tonality = tonality.value,
                 words = words.value,
+                temp = temp.value,
                 isGlorifyingSong = isGlorifying.value,
                 isWorshipSong = isWorship.value,
                 isGiftSong = isGift.value,

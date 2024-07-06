@@ -26,7 +26,6 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                     val isGiftSong = song.getValue("giftSong") as Boolean
                     val isFromSongbookSong = song.getValue("fromSongbookSong") as Boolean
 
-//                    if (isGlorifyingSong || isWorshipSong || isGiftSong || isFromSongbookSong) {
                     val title = song.getValue("title") as String
                     val tonality = song.getValue("tonality") as String
                     val words = song.getValue("words") as String
@@ -50,7 +49,6 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                     )
 
                     allSongList.add(songObj)
-//                    }
                 }
 
                 continuation.resume(allSongList)

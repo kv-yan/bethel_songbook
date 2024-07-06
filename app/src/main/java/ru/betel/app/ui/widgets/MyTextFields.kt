@@ -3,7 +3,6 @@ package ru.betel.app.ui.widgets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -162,7 +161,7 @@ fun MyTextFields(
                         if (leadingIcon != null) leadingIcon()
 
                         Box(Modifier.weight(1f)) {
-                            if (text.isEmpty()){
+                            if (text.isEmpty()) {
                                 Text(
                                     placeholder,
                                     style = LocalTextStyle.current.copy(
@@ -247,7 +246,7 @@ fun MyTextFieldsForEditScreen(
 
 @Composable
 fun MyTextFields(
-    isForSearch:Boolean,
+    isForSearch: Boolean,
     placeholder: String,
     modifier: Modifier = Modifier,
     fieldText: MutableState<String>,
@@ -276,13 +275,9 @@ fun MyTextFields(
                     fieldText.value = it
                 },
                 singleLine = singleLine,
-                modifier = if (singleLine && fontSize < 14.sp) {
-                    modifier
-                        .height(20.dp)
-                        .padding(start = 10.dp)
-                } else {
-                    modifier.padding(start = 10.dp)
-                },
+                modifier = modifier
+                        . height (20.dp)
+                    .padding(start = 10.dp),
                 textStyle = TextStyle(
                     fontSize = fontSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
@@ -295,7 +290,7 @@ fun MyTextFields(
                         if (leadingIcon != null) leadingIcon()
 
                         Box(Modifier.weight(1f)) {
-                            if (text.isEmpty()){
+                            if (text.isEmpty()) {
                                 Text(
                                     placeholder,
                                     style = LocalTextStyle.current.copy(
