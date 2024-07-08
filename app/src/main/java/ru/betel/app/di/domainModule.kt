@@ -13,6 +13,7 @@ import ru.betel.domain.repository.song.get.category.GetGlorifyingSongs
 import ru.betel.domain.repository.song.get.category.GetWorshipSongs
 import ru.betel.domain.repository.song.get.local.GetSongsFromLocal
 import ru.betel.domain.repository.song.sync.SyncSongsFromFBToLocalStorage
+import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromLocal
 import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
@@ -24,12 +25,14 @@ import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
 import ru.betel.domain.useCase.share.ShareSongUseCase
+import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetFromSongbookSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
@@ -38,6 +41,7 @@ import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
+import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 
 val domainModule = module {
     single<GetAllSongsUseCase> {
@@ -128,5 +132,17 @@ val domainModule = module {
 
     single<SaveTemplateInFirebaseUseCase> {
         SaveTemplateInFirebaseUseCase()
+    }
+
+    single<UpdateTemplateInFirebaseUseCase> {
+        UpdateTemplateInFirebaseUseCase()
+    }
+
+    single<DeleteTemplateFromFirebaseUseCase> {
+        DeleteTemplateFromFirebaseUseCase(deleteTemplateFromFirebase = get<DeleteTemplateFromFirebase>())
+    }
+
+    single<ShareTemplateUseCase> {
+        ShareTemplateUseCase(shareSongTemplateOnPlatforms = get<ShareRepo>())
     }
 }

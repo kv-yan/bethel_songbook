@@ -16,6 +16,7 @@ import ru.betel.data.reopsitory.song.get.category.GetWorshipSongsImpl
 import ru.betel.data.reopsitory.song.get.firebase.GetSongFromFirebaseImpl
 import ru.betel.data.reopsitory.song.get.local.GetSongsFromLocalImpl
 import ru.betel.data.reopsitory.sync.song.SyncSongsFromFBToLocalStorageImpl
+import ru.betel.data.reopsitory.template.delete.DeleteTemplateFromFirebaseImpl
 import ru.betel.data.reopsitory.template.get.GetTemplatesFromFirebaseImpl
 import ru.betel.data.reopsitory.template.get.GetTemplatesFromLocalImpl
 import ru.betel.data.reopsitory.template.set.SaveTemplateToLocalImpl
@@ -39,6 +40,7 @@ import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
 import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
+import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 
 
@@ -123,6 +125,10 @@ val dataModule = module {
 
     single<DeleteSongFromFirebase> {
         DeleteSongFromFirebaseImpl(database = get<FirebaseDatabase>())
+    }
+
+    single<DeleteTemplateFromFirebase> {
+        DeleteTemplateFromFirebaseImpl(database = get<FirebaseDatabase>())
     }
 
 }

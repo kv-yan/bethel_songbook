@@ -1,7 +1,6 @@
 package ru.betel.app.ui.widgets.pop_up
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,13 +22,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.theme.songDividerColor
-import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.MyTextFieldsForEditScreen
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.domain.model.Song
@@ -70,6 +69,8 @@ fun EditSongTonAndTemp(
 
                             MyTextFieldsForEditScreen(
                                 placeholder = "Տոն",
+                                singleLine = true,
+                                imeAction = ImeAction.Next,
                                 fieldText = tonality,
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -110,8 +111,7 @@ fun EditSongTonAndTemp(
                         Row(modifier = Modifier.fillMaxWidth(0.9f)) {
                             SaveButton(modifier = Modifier.fillMaxWidth(0.5f), fontSize = 13.sp) {
                                 mutableSongState.value.tonality = tonality.value
-//                                mutableSongState.value.temp = temp
-
+                                mutableSongState.value.temp = temp.value
                                 isShowDialog.value = false
                             }
 
@@ -128,7 +128,6 @@ fun EditSongTonAndTemp(
 
                 }
             }
-
         })
     }
 }
@@ -146,11 +145,11 @@ fun Dialog() {
                 title = "Error",
                 tonality = "Error",
                 words = "Error",
+                temp = "Error",
                 isGlorifyingSong = false,
                 isWorshipSong = false,
                 isGiftSong = false,
-                isFromSongbookSong = false,
-                temp = "Error"
+                isFromSongbookSong = false
             )
         )
     }

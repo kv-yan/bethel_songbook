@@ -54,7 +54,7 @@ import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
-import ru.betel.domain.enum_state.NewTemplateFieldState
+import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.AddSong
@@ -315,7 +315,7 @@ private fun MainContent(
 
                     CategoryTabs(
                         categorySongs = categorySongsList.value,
-                        categoryTitle = selectedCategory,
+                        categoryTitle = selectedCategory.value,
                         allSongs = selectedCategoryBottomSheetAllSongs,
                         searchAppBarText = songViewModel.searchAppBarText,
                         favoriteSongs = bottomSheetFavoriteSong,

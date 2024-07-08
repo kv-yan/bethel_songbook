@@ -22,9 +22,10 @@ fun LazyColumnForCategorySongs(
     ) {
         itemsIndexed(songList) { index, item ->
             SongItemWithTonalityAndTemp(
-                item = item, fontSize = fontSize,
+                item = item,
+                fontSize = fontSize,
                 index = index + 1,
-                isLastItem = (songList.size == index),
+                isLastItem = (songList.size-1 == index),
             ) {
                 onItemClick(it)
             }

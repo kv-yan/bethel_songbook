@@ -29,11 +29,10 @@ import ru.betel.domain.model.Song
 @Composable
 fun SongItemWithDeleteBtn(
     item: Song, index: Int,
-   /* isLastItem: MutableState<Boolean>,*/
+    isLastItem: Boolean,
     onDeleteItemClick: (item: Song) -> Unit,
     onTonalityTempItemLongPres: (item: Song) -> Unit,
 ) {
-    val draggableState = rememberDraggableState {}
     Column(
         Modifier
             .fillMaxWidth()
@@ -93,8 +92,8 @@ fun SongItemWithDeleteBtn(
         Spacer(
             Modifier.height(8.dp)
         )
-//        if (!isLastItem.value) {
+        if (!isLastItem) {
             Divider(Modifier.fillMaxWidth(), 1.dp, color = songDividerColor)
-//        }
+        }
     }
 }

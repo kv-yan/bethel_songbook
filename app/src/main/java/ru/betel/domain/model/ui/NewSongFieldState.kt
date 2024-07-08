@@ -1,4 +1,4 @@
-package ru.betel.domain.enum_state
+package ru.betel.domain.model.ui
 
 import androidx.compose.ui.graphics.Color
 import ru.betel.app.ui.theme.actionBarColor

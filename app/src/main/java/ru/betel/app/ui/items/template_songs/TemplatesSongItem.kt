@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -23,12 +24,17 @@ import androidx.compose.ui.unit.dp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.textFieldPlaceholder
+import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
-fun TemplatesSongItem(song: Song, textSize: SongbookTextSize) {
+fun TemplatesSongItem(song: Song, textSize: SongbookTextSize, songViewModel: SongViewModel) {
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(song) {
+        songViewModel.selectedSong.value = song
+    }
     Column(
         Modifier
             .fillMaxSize()

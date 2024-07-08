@@ -36,7 +36,7 @@ import ru.betel.domain.model.Song
 @Composable
 fun AddNewSongToTemplate(
     categoryTitle: String,
-    categorySongs: SnapshotStateList<Song>,
+    categorySongs: SnapshotStateList<Song>?,
     onAddItemClick: () -> Unit,
 ) {
     val isShowEditTonalityTempDialog = remember {
@@ -73,14 +73,15 @@ fun AddNewSongToTemplate(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = categoryTitle, style = TextStyle(
+                    text = categoryTitle,
+                    style = TextStyle(
                         fontSize = 13.sp,
                         lineHeight = 14.sp,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(400),
                         color = Color(0xFF111111),
-                    ), modifier = Modifier
-                        .fillMaxWidth(0.9f)
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.9f)
                 )
                 IconButton(onClick = { onAddItemClick() }) {
                     Icon(
@@ -93,11 +94,13 @@ fun AddNewSongToTemplate(
             Surface(
                 color = Color.White,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.padding(start = 10.dp , end = 10.dp , bottom = if (categorySongs.isEmpty()) 0.dp else 12.dp)
+                modifier = Modifier.padding(start = 10.dp , end = 10.dp , bottom = if (categorySongs?.isEmpty() == true) 0.dp else 12.dp)
             ) {
-                LazyColumnForAddNewTemplate(songList = categorySongs) {
-                    selectedSong.value = it
-                    isShowEditTonalityTempDialog.value = true
+                if (categorySongs != null) {
+                    LazyColumnForAddNewTemplate(songList = categorySongs) {
+                        selectedSong.value = it
+                        isShowEditTonalityTempDialog.value = true
+                    }
                 }
             }
         }

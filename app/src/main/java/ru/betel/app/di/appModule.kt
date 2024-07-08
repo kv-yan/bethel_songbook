@@ -17,12 +17,14 @@ import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
 import ru.betel.domain.useCase.share.ShareSongUseCase
+import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetFromSongbookSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
@@ -30,6 +32,7 @@ import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
+import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 
 val appModule = module {
     single<SharedPreferences> {
@@ -63,7 +66,9 @@ val appModule = module {
             getTemplatesFromLocalUseCase = get<GetTemplatesFromLocalUseCase>(),
             saveTemplateToLocalUseCase = get<SaveTemplateToLocalUseCase>(),
             getFavoriteSongsUseCase = get<GetFavoriteSongsUseCase>(),
-            saveTemplateInFirebaseUseCase = get<SaveTemplateInFirebaseUseCase>()
+            saveTemplateInFirebaseUseCase = get<SaveTemplateInFirebaseUseCase>(),
+            deleteTemplateFromFirebaseUseCase = get<DeleteTemplateFromFirebaseUseCase>(),
+            shareTemplateUseCase = get<ShareTemplateUseCase>()
         )
     }
 
@@ -79,7 +84,8 @@ val appModule = module {
 
     viewModel {
         EditViewModel(
-            updateSongInFirebaseUseCase = get<UpdateSongInFirebaseUseCase>()
+            updateSongInFirebaseUseCase = get<UpdateSongInFirebaseUseCase>(),
+            updateTemplateInFirebaseUseCase = get<UpdateTemplateInFirebaseUseCase>()
         )
     }
 }

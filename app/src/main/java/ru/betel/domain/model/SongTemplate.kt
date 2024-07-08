@@ -1,11 +1,7 @@
 package ru.betel.domain.model
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.room.Entity
 
-
-data class SongTemplate constructor(
+data class SongTemplate(
     var id: String,
     var createDate: String,
     val performerName: String,

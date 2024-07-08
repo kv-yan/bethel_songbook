@@ -14,16 +14,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.betel.data.extensions.toImmutableAddSongList
 import ru.betel.data.extensions.toSongTemplate
-import ru.betel.domain.enum_state.NewTemplateFieldState
+import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.TemplateType
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
+import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
@@ -38,7 +40,9 @@ class TemplateViewModel(
     private val getFavoriteSongsUseCase: GetFavoriteSongsUseCase,
     private val getTemplatesFromLocalUseCase: GetTemplatesFromLocalUseCase,
     private val saveTemplateToLocalUseCase: SaveTemplateToLocalUseCase,
-    private val saveTemplateInFirebaseUseCase: SaveTemplateInFirebaseUseCase
+    private val saveTemplateInFirebaseUseCase: SaveTemplateInFirebaseUseCase,
+    private val deleteTemplateFromFirebaseUseCase: DeleteTemplateFromFirebaseUseCase,
+    private val shareTemplateUseCase: ShareTemplateUseCase
 ) : ViewModel() {
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
         viewModelScope.launch {
@@ -76,10 +80,10 @@ class TemplateViewModel(
     private val _planningDay = mutableStateOf("Ամսաթիվ")
     val planningDay = _planningDay
 
-    private val _tempGlorifyingSongs = MutableLiveData<SnapshotStateList<Song>>().apply {
+    private val _tempGlorifying = MutableLiveData<SnapshotStateList<Song>>().apply {
         value = mutableStateListOf<Song>()
     }
-    val tempGlorifyingSongs = _tempGlorifyingSongs
+    val tempGlorifyingSongs = _tempGlorifying
 
     private val _tempWorship = MutableLiveData<SnapshotStateList<Song>>().apply {
         value = mutableStateListOf<Song>()
@@ -151,6 +155,7 @@ class TemplateViewModel(
     val tempGlorifyingAllAddSongs = _tempGlorifyingAllAddSongs
     val tempFavoriteAllAddSongs = _tempFavoriteAllAddSongs
     val tempWorshipAllAddSongs = _tempWorshipAllAddSongs
+
     val tempGiftAllAddSongs = _tempGiftAllAddSongs
     val glorifyingAddSong = _tempGlorifyingAddSongs
     val worshipAddSong = _tempWorshipAddSongs
@@ -160,6 +165,7 @@ class TemplateViewModel(
         songTemplate.id = "SongTemplate"
         saveTemplateInFirebaseUseCase.execute(songTemplate)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun saveSongTemplateToLocalStorage() {
@@ -221,6 +227,51 @@ class TemplateViewModel(
 
     }
 
+
+    fun checkFields(
+        templateFieldState: MutableState<NewTemplateFieldState>,
+        tempPerformerName: MutableState<String>,
+        tempWeekday: MutableState<String>,
+        planningDay: MutableState<String>,
+        glorifyingSongsState: SnapshotStateList<Song>,
+        worshipSongsState: SnapshotStateList<Song>,
+        giftSongsState: SnapshotStateList<Song>,
+    ): Result<Unit> {
+        return if (tempPerformerName.value.isNotEmpty()) {
+            if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
+                if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
+                    if (glorifyingSongsState.isNotEmpty()) {
+                        if (worshipSongsState.isNotEmpty()) {
+                            if (giftSongsState.isNotEmpty()) {
+                                templateFieldState.value = NewTemplateFieldState.DONE
+                                Result.success(Unit)
+                            } else {
+                                templateFieldState.value = NewTemplateFieldState.INVALID_GIFT
+                                Result.failure(IllegalAccessError())
+                            }
+                        } else {
+                            templateFieldState.value = NewTemplateFieldState.INVALID_WORSHIP
+                            Result.failure(IllegalAccessError())
+                        }
+                    } else {
+                        templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
+                        Result.failure(IllegalAccessError())
+                    }
+                } else {
+                    templateFieldState.value = NewTemplateFieldState.INVALID_DAY
+                    Result.failure(IllegalAccessError())
+                }
+            } else {
+                templateFieldState.value = NewTemplateFieldState.INVALID_WEEKDAY
+                Result.failure(IllegalAccessError())
+            }
+        } else {
+            templateFieldState.value = NewTemplateFieldState.INVALID_NAME
+            Result.failure(IllegalAccessError())
+        }
+
+    }
+
     fun onTemplateTypeSelected(type: TemplateType) {
         templateSelectedType.value = type
     }
@@ -232,5 +283,23 @@ class TemplateViewModel(
                 templateUiState.value = templates
             }
         }
+    }
+
+    fun deleteTemplateFromFirebase(it: SongTemplate) {
+        viewModelScope.launch { deleteTemplateFromFirebaseUseCase.execute(it) }
+    }
+
+    fun shareTemplate(it: SongTemplate) {
+        viewModelScope.launch { shareTemplateUseCase.execute(it) }
+    }
+
+    fun cleanFields() {
+        tempGlorifyingSongs.value?.clear()
+        tempWorshipSongs.value?.clear()
+        tempGiftSongs.value?.clear()
+
+        tempPerformerName.value = ""
+        tempWeekday.value = ""
+        planningDay.value = ""
     }
 }

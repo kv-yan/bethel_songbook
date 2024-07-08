@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.pop_up.SeeSongDialog
 import ru.betel.app.ui.widgets.tabs.teb_screens.TabScreenCategory
-import ru.betel.data.extensions.updateSong
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AddSong
 
@@ -33,16 +32,22 @@ import ru.betel.domain.model.ui.AddSong
 @Composable
 fun CategoryTabs(
     categorySongs: MutableList<AddSong>,
-    categoryTitle: MutableState<String>,
+    categoryTitle: String,
     allSongs: State<MutableList<AddSong>>,
     favoriteSongs: State<MutableList<AddSong>>,
     searchAppBarText: MutableState<String>,
     categoryListForAdd: SnapshotStateList<Song>,
     handleBackPress: () -> Unit,
 ) {
+
+    updateIsAddedState(categorySongs, categoryListForAdd)
+    updateIsAddedState(allSongs.value, categoryListForAdd)
+    updateIsAddedState(favoriteSongs.value, categoryListForAdd)
+
+
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val tabRowItems = listOf(categoryTitle.value, "Առանձնացվածները", "Բոլորը")
+    val tabRowItems = listOf(categoryTitle, "Առանձնացվածները", "Բոլորը")
     val horizontalScrollState = rememberScrollState()
     val selectedSongForShowing = remember {
         mutableStateOf(
@@ -151,8 +156,14 @@ fun CategoryTabs(
                                 categoryListForAdd.remove(item.song)
                                 item.isAdded.value = !item.isAdded.value
                             }
-                            sortedFavoriteSong.value.updateSong(item)
-                            sortedAllSong.value.updateSong(item)
+                            updateIsAddedState(
+                                sortedFavoriteSong.value.toMutableList(),
+                                categoryListForAdd
+                            )
+                            updateIsAddedState(
+                                sortedAllSong.value.toMutableList(),
+                                categoryListForAdd
+                            )
                         },
                         onItemLongPress = { songItem ->
                             selectedSongForShowing.value = songItem
@@ -170,9 +181,14 @@ fun CategoryTabs(
                                 categoryListForAdd.remove(item.song)
                                 item.isAdded.value = !item.isAdded.value
                             }
-
-                            sortedAllSong.value.updateSong(item)
-                            sortedCategorySong.value.updateSong(item)
+                            updateIsAddedState(
+                                sortedAllSong.value.toMutableList(),
+                                categoryListForAdd
+                            )
+                            updateIsAddedState(
+                                sortedCategorySong.value.toMutableList(),
+                                categoryListForAdd
+                            )
                         },
                         onItemLongPress = { songItem ->
                             selectedSongForShowing.value = songItem
@@ -191,9 +207,14 @@ fun CategoryTabs(
                                 categoryListForAdd.remove(item.song)
                                 item.isAdded.value = !item.isAdded.value
                             }
-
-                            sortedFavoriteSong.value.updateSong(item)
-                            sortedCategorySong.value.updateSong(item)
+                            updateIsAddedState(
+                                sortedFavoriteSong.value.toMutableList(),
+                                categoryListForAdd
+                            )
+                            updateIsAddedState(
+                                sortedCategorySong.value.toMutableList(),
+                                categoryListForAdd
+                            )
                         },
                         onItemLongPress = { songItem ->
                             selectedSongForShowing.value = songItem
@@ -204,4 +225,13 @@ fun CategoryTabs(
         }
     }
     SeeSongDialog(song = selectedSongForShowing.value, isShowDialog = isShowViewSongDialog)
+}
+
+private fun updateIsAddedState(
+    addSongs: MutableList<AddSong>,
+    categoryListForAdd: SnapshotStateList<Song>
+) {
+    addSongs.forEach { addSong ->
+        addSong.isAdded.value = categoryListForAdd.contains(addSong.song)
+    }
 }

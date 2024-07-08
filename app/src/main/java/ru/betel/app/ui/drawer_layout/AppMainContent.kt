@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.betel.app.ui.screens.category.CategoryScreen
 import ru.betel.app.ui.screens.edit.song.EditSongScreen
+import ru.betel.app.ui.screens.edit.template.EditTemplateScreen
 import ru.betel.app.ui.screens.favorite.FavoriteScreen
 import ru.betel.app.ui.screens.home.HomeScreen
 import ru.betel.app.ui.screens.new_song.NewSongScreen
@@ -49,7 +50,7 @@ fun AppMainContent(
 
         NavHost(
             navController = navController,
-            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
+            startDestination = Screens.TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {
@@ -138,6 +139,16 @@ fun AppMainContent(
                     actionBarState = actionBarState,
                     settingViewModel = settingViewModel,
                     editViewModel = editViewModel
+                )
+            }
+            composable(Screens.EDIT_TEMPLATE_SCREEN.route) {
+                EditTemplateScreen(
+                    navController = navController,
+                    actionBarState = actionBarState,
+                    songViewModel = songViewModel,
+                    templateViewModel = templateViewModel,
+                    settingViewModel = settingViewModel,
+                    editViewModel =editViewModel
                 )
             }
         }

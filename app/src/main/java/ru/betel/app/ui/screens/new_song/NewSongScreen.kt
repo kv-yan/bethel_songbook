@@ -44,7 +44,7 @@ import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
-import ru.betel.domain.enum_state.NewSongFieldState
+import ru.betel.domain.model.ui.NewSongFieldState
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens

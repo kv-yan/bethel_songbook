@@ -21,11 +21,13 @@ import ru.betel.app.ui.action_bar.SingleSongActionBar
 import ru.betel.app.ui.action_bar.SingleTemplateActionBar
 import ru.betel.app.ui.action_bar.TemplateActionBar
 import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
+import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
@@ -48,14 +50,29 @@ fun MenuDrawerLayout(
     scaffoldState.drawerState
     val actionBarState = remember { mutableStateOf(ActionBarState.HOME_SCREEN) }
     val scope = rememberCoroutineScope()
-    val deleteDialogState = remember { mutableStateOf(false) }
+    val deleteSongDialogState = remember { mutableStateOf(false) }
+    val deleteTemplateDialogState = remember { mutableStateOf(false) }
     val songState =
-        remember { mutableStateOf<Song>(Song("", "", "", "","", false, false, false, false)) }
+        remember { mutableStateOf<Song>(Song("", "", "", "", "", false, false, false, false)) }
+    val templateState = remember {
+        mutableStateOf<SongTemplate>(
+            SongTemplate(
+                "", "", "", "", false, emptyList(), emptyList(), emptyList()
+            )
+        )
+    }
 
 
-    DeleteSongDialog(showDialog = deleteDialogState, song = songState, onConfirmationClick = {
+    DeleteSongDialog(showDialog = deleteSongDialogState, song = songState, onConfirmationClick = {
         songViewModel.deleteSongFromFirebase(it)
     }) {
+        navController.popBackStack()
+    }
+    DeleteTemplateDialog(showDialog = deleteTemplateDialogState,
+        template = templateState,
+        onConfirmationClick = {
+            templateViewModel.deleteTemplateFromFirebase(it)
+        }) {
         navController.popBackStack()
     }
 
@@ -140,18 +157,24 @@ fun MenuDrawerLayout(
                     },
                     onDeleteBtnClick = {
                         songState.value = it
-                        deleteDialogState.value = true
+                        deleteSongDialogState.value = true
                     })
             }
 
             ActionBarState.SINGLE_TEMPLATE_SCREEN -> {
                 SingleTemplateActionBar(navController = navController,
                     settingViewModel = settingViewModel,
+                    editViewModel = editViewModel,
+                    templateViewModel = templateViewModel,
                     onSettingsBtnClick = {
                         onSettingsBtnClick()
                     },
                     onShareBtnClick = {
-                        songViewModel.shareSong(songViewModel.selectedSong.value)
+                        templateViewModel.shareTemplate(templateViewModel.singleTemplate.value)
+                    },
+                    onDeleteBtnClick = {
+                        templateState.value = it
+                        deleteTemplateDialogState.value = true
                     })
             }
 
@@ -160,11 +183,17 @@ fun MenuDrawerLayout(
             }
 
             ActionBarState.NEW_TEMPLATE_SCREEN -> {
-                NewTemplateActionBar(navController = navController)
+                NewTemplateActionBar(
+                    navController = navController,
+                    editViewModel = editViewModel
+                )
             }
 
             ActionBarState.FAVORITE_SCREEN -> {
-                NewTemplateActionBar(navController = navController)
+                NewTemplateActionBar(
+                    navController = navController,
+                    editViewModel = editViewModel
+                )
             }
         }
     },

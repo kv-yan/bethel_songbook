@@ -19,14 +19,14 @@ fun Song.getMessageForShare(): String {
 fun List<Song>.getSongsTitle(): String {
     var songList = ""
     this.forEach {
-        songList += "  ${it.title}\n"
+        songList += "  ${it.title} (${it.tonality})\n"
     }
     return songList
 }
 
 fun List<AddSong>.updateSong(addSong: AddSong) {
     this.forEach {
-        if (it.song == addSong.song ) {
+        if (it.song == addSong.song) {
             it.isAdded.value = addSong.isAdded.value
         }
     }

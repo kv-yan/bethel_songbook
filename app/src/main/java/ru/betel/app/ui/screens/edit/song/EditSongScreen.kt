@@ -50,7 +50,6 @@ fun EditSongScreen(
 ) {
     val currentSong by editViewModel.currentSong.collectAsState()
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
-    val categoryTextFieldValue = remember { mutableStateOf("") }
     val tonality = remember { mutableStateOf(currentSong.tonality) }
     val temp = remember { mutableStateOf(currentSong.temp) }
     val title = remember { mutableStateOf(currentSong.title) }

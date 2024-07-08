@@ -72,7 +72,7 @@ fun TemplatesSongScreen(
     ) { page ->
         // Content for each page
         Log.e(TAG, "TemplatesSongScreen: index : $page")
-        TemplatesSongItem(song = currentTemplateSongsList[page], settingViewModel.songbookTextSize)
+        TemplatesSongItem(song = currentTemplateSongsList[page], settingViewModel.songbookTextSize, songViewModel)
     }
 
     BackHandler {
