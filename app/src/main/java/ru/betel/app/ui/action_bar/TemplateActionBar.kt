@@ -183,8 +183,8 @@ fun TemplateActionBar(
                     .background(color = actionBarColor)
                     .padding(horizontal = 11.dp, vertical = 6.dp)
             ) {
-                SearchTopAppBar(text = viewModel.searchAppBarText, onTextChange = { text ->
-                    viewModel.searchAppBarText.value = text
+                SearchTopAppBar(text = templateViewModel.searchQuery, onTextChange = { text ->
+                    templateViewModel.searchQuery.value = text
                 }, onCloseClicked = {
                     searchAppBarState.value = SearchAppBarState.CLOSED
                     viewModel.searchAppBarText.value = ""

@@ -38,14 +38,11 @@ fun EditSongTonAndTemp(
     isShowDialog: MutableState<Boolean>,
     mutableSongState: MutableState<Song>,
 ) {
-    val tonality = remember {
-        mutableStateOf(mutableSongState.value.tonality)
-    }
-    println()
-    val temp = remember {
-        mutableStateOf(mutableSongState.value.temp)
-    }
-    val onDismiss = { isShowDialog.value = !isShowDialog.value }
+    val tonality = remember { mutableStateOf(mutableSongState.value.tonality) }
+    val temp = remember { mutableStateOf(mutableSongState.value.temp) }
+
+    val onDismiss = { isShowDialog.value = false }
+
     if (isShowDialog.value) {
         AlertDialog(onDismissRequest = { onDismiss() }, buttons = {
             Surface(shape = RoundedCornerShape(15.dp), color = Color.White) {
@@ -78,7 +75,7 @@ fun EditSongTonAndTemp(
 
                         Spacer(modifier = Modifier.width(10.dp))
 
-                        // tonality
+                        // temp
                         Column(Modifier.fillMaxWidth()) {
                             Text(
                                 text = "Տեմպ*", style = TextStyle(
@@ -92,7 +89,7 @@ fun EditSongTonAndTemp(
                             Spacer(modifier = Modifier.height(4.dp))
                             MyTextFieldsForEditScreen(
                                 placeholder = "Տեմպ",
-                                fieldText = tonality,
+                                fieldText = temp,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -108,7 +105,7 @@ fun EditSongTonAndTemp(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Row(modifier = Modifier.fillMaxWidth(0.9f)) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
                             SaveButton(modifier = Modifier.fillMaxWidth(0.5f), fontSize = 13.sp) {
                                 mutableSongState.value.tonality = tonality.value
                                 mutableSongState.value.temp = temp.value

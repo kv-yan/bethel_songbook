@@ -1,10 +1,5 @@
 package ru.betel.data.extensions
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.forEach
 import ru.betel.domain.converters.toSong
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
@@ -12,12 +7,12 @@ import ru.betel.domain.model.entity.SongTemplateEntity
 
 fun SongTemplate.getSongsTitle(): String {
     var songsList = ""
-    val glorifyingSong: ArrayList<Song> =
-        this.glorifyingSong as ArrayList<Song>
-    val worshipSong: ArrayList<Song> =
-        this.worshipSong as ArrayList<Song>
-    val giftSong: ArrayList<Song> =
-        this.giftSong as ArrayList<Song>
+    val glorifyingSong: List<Song> =
+        this.glorifyingSong as List<Song>
+    val worshipSong: List<Song> =
+        this.worshipSong as List<Song>
+    val giftSong: List<Song> =
+        this.giftSong as List<Song>
 
     glorifyingSong.forEach {
         songsList += "${it.title}\n"
@@ -29,8 +24,8 @@ fun SongTemplate.getSongsTitle(): String {
     }
     val worshipSongList = songsList
     songsList = ""
-    giftSong.forEach {
-        songsList += "${it.title}\n"
+    giftSong.forEachIndexed { index, it ->
+        songsList += "${it.title}${if (giftSong.size - 1 == index) "" else "\n"}"
     }
     val giftSongList = songsList
     return "$glorifyingSongList\n$worshipSongList\n$giftSongList"

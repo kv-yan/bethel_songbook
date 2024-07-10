@@ -30,6 +30,8 @@ import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
+import java.text.Normalizer
+import java.util.Locale
 
 class TemplateViewModel(
     private val getAllTemplatesUseCase: GetTemplatesFromFirebaseUseCase,
@@ -301,5 +303,25 @@ class TemplateViewModel(
         tempPerformerName.value = ""
         tempWeekday.value = ""
         planningDay.value = ""
+    }
+
+    val searchQuery = mutableStateOf("")
+
+    fun searchTemplates(query: String): List<SongTemplate> {
+        if (query.isBlank()) return templateUiState.value
+
+        val normalizedQuery = normalizeText(query)
+        return templateUiState.value.filter { template ->
+            template.glorifyingSong.any { normalizeText(it.title).contains(normalizedQuery) } ||
+                    template.worshipSong.any { normalizeText(it.title).contains(normalizedQuery) } ||
+                    template.giftSong.any { normalizeText(it.title).contains(normalizedQuery) }
+        }
+    }
+
+    private fun normalizeText(text: String): String {
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
+            .replace("[\\p{M}]".toRegex(), "")
+            .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9\\s]+".toRegex(), "")
+            .lowercase(Locale.getDefault())
     }
 }

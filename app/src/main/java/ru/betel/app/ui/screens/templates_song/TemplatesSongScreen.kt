@@ -1,6 +1,5 @@
 package ru.betel.app.ui.screens.templates_song
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,10 +55,6 @@ fun TemplatesSongScreen(
             if (song.title == clickedSong.title && song.words == clickedSong.words) {
                 currentSongIndex.value = index
                 scope.launch {
-                    Log.e(
-                        TAG,
-                        "TemplatesSongScreen: currentSongIndex.value :: ${currentSongIndex.value}",
-                    )
                     pagerState.scrollToPage(currentSongIndex.value, 0f)
                 }
                 return@LaunchedEffect
@@ -70,9 +65,9 @@ fun TemplatesSongScreen(
     HorizontalPager(
         state = pagerState, modifier = Modifier.fillMaxSize()
     ) { page ->
-        // Content for each page
-        Log.e(TAG, "TemplatesSongScreen: index : $page")
-        TemplatesSongItem(song = currentTemplateSongsList[page], settingViewModel.songbookTextSize, songViewModel)
+        TemplatesSongItem(
+            song = currentTemplateSongsList[page], settingViewModel.songbookTextSize, songViewModel
+        )
     }
 
     BackHandler {

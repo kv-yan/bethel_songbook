@@ -187,7 +187,7 @@ fun LoginBottomSheetContent(
                         delay(3000)
                         if (FirebaseAuth.getInstance().currentUser != null) {
                             bottomSheetState.hide()
-                            toastMsg.value = "Բարի գալուս ադմին ռեշիմ"
+                            toastMsg.value = "Բարի գալուս ադմին ռեժիմ"
                             isShowingToast.value = true
                             delay(1000)
                             onActivityRestart()

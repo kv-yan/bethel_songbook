@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
@@ -40,89 +40,9 @@ import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.theme.textFieldPlaceholder
 import ru.betel.data.extensions.getSongsTitle
+import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.SongbookTextSize
-
-
-/*
-@Composable
-fun SongTemplateColumItem(
-    template: SongTemplate, textSize: SongbookTextSize, onCLick: () -> Unit,
-) {
-    val isShowingTemplateDetails = remember { mutableStateOf(false) }
-    Surface(
-        color = drawerLayoutSecondaryColor, shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 5.dp)
-            .clickable { onCLick() },
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp, vertical =  5.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = template.performerName, style = TextStyle(
-                        fontSize = textSize.normalItemDefaultTextSize,
-                        fontFamily = FontFamily(Font(R.font.mardoto_medium)),
-                        fontWeight = FontWeight(500),
-                        color = Color.Black,
-                    ), modifier = Modifier.fillMaxWidth(0.4f)
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = "${template.weekday.substring(0..2)}. | ${template.createDate}",
-                        style = TextStyle(
-                            fontSize = if (textSize.normalItemDefaultTextSize > 18.sp) 16.sp else textSize.smallItemDefaultTextSize,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(400),
-                            color = textFieldPlaceholder,
-                        ),
-                    )
-                    IconButton(onClick = {
-                        isShowingTemplateDetails.value = !isShowingTemplateDetails.value
-                    }, modifier = Modifier.size(24.dp)) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            if (isShowingTemplateDetails.value) Icons.Filled.KeyboardArrowUp
-                            else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                }
-            }
-
-            AnimatedVisibility(visible = isShowingTemplateDetails.value) {
-                Divider(color = songDividerColor, thickness = 1.dp)
-                Text(
-                    text = template.getSongsTitle(),
-                    lineHeight = 30.sp,
-                    style = TextStyle(
-                        fontSize = textSize.normalItemDefaultTextSize,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF111111),
-                    ),
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 12.dp)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-    }
-
-}
-*/
-
 
 @Composable
 fun SongTemplateColumItem(
@@ -144,18 +64,15 @@ fun SongTemplateColumItem(
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = template.performerName,
-                    style = TextStyle(
+                    text = template.performerName, style = TextStyle(
                         fontSize = textSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(500),
                         color = Color.Black,
-                    ),
-                    modifier = Modifier.fillMaxWidth(0.4f)
+                    ), modifier = Modifier.fillMaxWidth(0.4f)
                 )
 
                 Row(
@@ -187,23 +104,54 @@ fun SongTemplateColumItem(
                     }
                 }
             }
-
             AnimatedVisibility(visible = isShowingTemplateDetails) {
-                Divider(color = songDividerColor, thickness = 1.dp)
-                Text(
-                    text = template.getSongsTitle(),
-                    lineHeight = 30.sp,
-                    style = TextStyle(
-                        fontSize = textSize.normalItemDefaultTextSize,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF111111),
-                    ),
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = 12.dp, top = 4.dp, bottom = 12.dp)
-                )
+                Column(Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.height(1.dp))
+                    Divider(color = songDividerColor, thickness = 1.dp)
+                    Spacer(modifier = Modifier.height(1.dp))
+                    Text(
+                        text = template.getSongsTitle(), lineHeight = 24.sp, style = TextStyle(
+                            fontSize = textSize.normalItemDefaultTextSize,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF111111),
+                        ), color = Color.Black, modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
-
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
+}
+
+@Preview
+@Composable
+private fun Template() {
+    val song = Song(
+        "",
+        "Բարձրյալ Արքա հավիտենական",
+        "-4",
+        "Բարձրյալ Արքա հավիտենական \nԲարձրյալ Արքա հավիտենական",
+        "70",
+        false,
+        false,
+        false,
+        false
+    )
+    val template = SongTemplate(
+        "1",
+        "2024-07-01",
+        "Կարեն Վարդանյան",
+        "Կիրակի",
+        false,
+        listOf(song, song, song, song),
+        listOf(song, song, song, song),
+        listOf(song)
+    )
+    SongTemplateColumItem(
+        template, SongbookTextSize(
+            normalItemDefaultTextSize = 16.sp,
+            smallItemDefaultTextSize = 13.sp,
+            textFieldItemDefaultTextSize = 14.sp,
+        )
+    ) {}
 }

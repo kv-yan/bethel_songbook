@@ -1,5 +1,6 @@
 package ru.betel.app.ui.widgets
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -7,9 +8,11 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -22,6 +25,8 @@ import org.burnoutcrew.reorderable.reorderable
 import ru.betel.app.ui.items.song.SongItemWithDeleteBtn
 import ru.betel.data.extensions.toSnapshotStateList
 import ru.betel.domain.model.Song
+
+private const val TAG = "VARDANYAN"
 
 @Composable
 fun LazyColumnForAddNewTemplate(

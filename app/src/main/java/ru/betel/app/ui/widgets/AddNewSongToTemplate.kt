@@ -39,9 +39,7 @@ fun AddNewSongToTemplate(
     categorySongs: SnapshotStateList<Song>?,
     onAddItemClick: () -> Unit,
 ) {
-    val isShowEditTonalityTempDialog = remember {
-        mutableStateOf(false)
-    }
+    val isShowEditTonalityTempDialog = remember { mutableStateOf(false) }
     val selectedSong = remember {
         mutableStateOf(
             Song(
@@ -61,15 +59,11 @@ fun AddNewSongToTemplate(
     Surface(
         color = fieldBg,
         shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
+        modifier = Modifier.padding(horizontal = 12.dp)
     ) {
-        Column(
-            Modifier.fillMaxWidth()
-        ) {
-
+        Column(Modifier.fillMaxWidth()) {
             Row(
-                modifier = Modifier.padding(start = 10.dp ),
+                modifier = Modifier.padding(start = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -94,7 +88,7 @@ fun AddNewSongToTemplate(
             Surface(
                 color = Color.White,
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.padding(start = 10.dp , end = 10.dp , bottom = if (categorySongs?.isEmpty() == true) 0.dp else 12.dp)
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = if (categorySongs?.isEmpty() == true) 0.dp else 12.dp)
             ) {
                 if (categorySongs != null) {
                     LazyColumnForAddNewTemplate(songList = categorySongs) {
