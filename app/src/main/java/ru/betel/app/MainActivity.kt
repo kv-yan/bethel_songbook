@@ -1,6 +1,7 @@
 package ru.betel.app
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             val songViewModel: SongViewModel = get()
             val templateViewModel: TemplateViewModel = get()
             val settingsViewModel: SettingViewModel = get()
@@ -38,7 +40,14 @@ class MainActivity : ComponentActivity() {
             ) {
                 restartApplication(this)
             }
+//            SplashScreen()
         }
+    }
+
+    private fun getVideoUri(): Uri {
+        val rawId = resources.getIdentifier("songbook_v", "raw", packageName)
+        val videoUri = "android.resource://$packageName/$rawId"
+        return Uri.parse(videoUri)
     }
 
     private fun restartApplication(activity: Activity) {

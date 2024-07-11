@@ -26,8 +26,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -112,5 +111,8 @@ dependencies {
     // reorderList
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
-
+    // player
+    implementation("com.google.accompanist:accompanist-insets:0.23.1")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.17.1")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.17.1")
 }

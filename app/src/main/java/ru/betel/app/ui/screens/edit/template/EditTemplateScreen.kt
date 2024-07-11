@@ -342,7 +342,8 @@ private fun MainContent(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(text = songViewModel.searchAppBarText,
+                SearchTopAppBar(
+                    text = songViewModel.searchAppBarText,
                     onTextChange = {},
                     onCloseClicked = {},
                     textSize = settingViewModel.songbookTextSize
