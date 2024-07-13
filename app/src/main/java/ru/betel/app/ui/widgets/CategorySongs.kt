@@ -1,7 +1,9 @@
 package ru.betel.app.ui.widgets
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
@@ -27,6 +29,7 @@ import ru.betel.domain.model.ui.SongbookTextSize
 fun CategorySongs(
     categoryTitle: String,
     fontSize: SongbookTextSize,
+    isSingMode: Boolean = false,
     categorySongs: List<Song>,
     onItemClick: (Song) -> Unit,
 ) {
@@ -57,19 +60,23 @@ fun CategorySongs(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = categoryTitle,
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    lineHeight = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.mardoto_medium)),
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF111111),
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
-            )
+            if (!isSingMode) {
+                Text(
+                    text = categoryTitle,
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        lineHeight = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF111111),
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
+                )
+            } else {
+                Spacer(modifier = Modifier.height(12.dp))
+            }
             Surface(
                 color = Color.White, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(
                     start = 10.dp,

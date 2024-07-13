@@ -72,7 +72,7 @@ fun EditTemplateScreen(
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
     editViewModel: EditViewModel
-) {
+) {}/*{
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveDialog = remember { mutableStateOf(false) }
     Box {
@@ -115,7 +115,7 @@ fun EditTemplateScreen(
             }
         }
     }
-}
+}*/
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -130,7 +130,7 @@ private fun MainContent(
     isShowingDialog: MutableState<Boolean>,
     templateFieldState: MutableState<NewTemplateFieldState>,
     editViewModel: EditViewModel
-) {
+) {}/*{
     actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
 
     val currentTemplate = editViewModel.currentTemplate.value
@@ -139,9 +139,8 @@ private fun MainContent(
     val tempWorshipSongs = editViewModel.tempWorshipSongs
     val tempGiftSongs = editViewModel.tempGiftSongs
 
-    val tempPerformerName = remember {
-        mutableStateOf(currentTemplate.performerName)
-    }
+    val tempPerformerName = remember { mutableStateOf(currentTemplate.performerName) }
+    val isSingleMode = remember { mutableStateOf(false) }
     val tempWeekday = editViewModel.tempWeekday
     val planningDay = editViewModel.planningDay
 
@@ -316,7 +315,7 @@ private fun MainContent(
                                 createDate = planningDay.value,
                                 performerName = tempPerformerName.value,
                                 weekday = tempWeekday.value,
-                                favorite = false,
+                                isSingleMode = false,
                                 glorifyingSong = tempGlorifyingSongs.toList(),
                                 worshipSong = tempWorshipSongs.toList(),
                                 giftSong = tempGiftSongs.toList()
@@ -354,7 +353,7 @@ private fun MainContent(
                     allSongs = selectedCategoryBottomSheetAllSongs,
                     searchAppBarText = songViewModel.searchAppBarText,
                     favoriteSongs = bottomSheetFavoriteSong,
-                    categoryListForAdd = selectedCategoryForAddNewSong
+                    categoryListForAdd = selectedCategoryForAddNewSong, isSingleMode = isSingleMode
                 ) {
                     scope.launch {
                         bottomSheetState.hide()
@@ -373,4 +372,4 @@ private fun MainContent(
         cleanAllFields()
         navController.popBackStack()
     }
-}
+}*/

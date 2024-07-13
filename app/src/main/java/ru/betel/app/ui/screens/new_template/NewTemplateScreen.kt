@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
@@ -33,12 +34,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarTextColor
@@ -54,10 +58,12 @@ import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
-import ru.betel.domain.model.ui.NewTemplateFieldState
+import ru.betel.data.extensions.toMutableState
+import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.AddSong
+import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.test.DayPickerDialog
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -136,29 +142,33 @@ private fun MainContent(
             templateViewModel.worshipAddSong.observeAsState(initial = mutableListOf())
         }
 
-        else -> {
+        "Ընծա" ->{
             templateViewModel.giftAddSong.observeAsState(initial = mutableListOf())
+        }else -> {
+            templateViewModel.singleModeAddSong.observeAsState(initial = mutableListOf())
         }
     }
     var selectedCategoryForAddNewSong = when (selectedCategory.value) {
         "Փառաբանություն" -> templateViewModel.tempGlorifyingSongs
-
         "Երկրպագություն" -> templateViewModel.tempWorshipSongs
-
-        else -> templateViewModel.tempGiftSongs
+        "Ընծա" -> templateViewModel.tempGiftSongs
+        else -> templateViewModel.tempSingleModeSongs
     }
-    val bottomSheetAllSongsForGlorifyingCategory: State<MutableList<AddSong>> =
-        templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf())
-    val bottomSheetAllSongsForWorshipCategory: State<MutableList<AddSong>> =
-        templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf())
-    val bottomSheetAllSongsForGiftCategory: State<MutableList<AddSong>> =
-        templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf())
-    val bottomSheetFavoriteSong: State<MutableList<AddSong>> =
-        templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf())
+    val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempSingleModeAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         "Փառաբանություն" -> bottomSheetAllSongsForGlorifyingCategory
         "Երկրպագություն" -> bottomSheetAllSongsForWorshipCategory
-        else -> bottomSheetAllSongsForGiftCategory
+        "Ընծա" -> bottomSheetAllSongsForGiftCategory
+        else -> bottomSheetAllSongsForSingleModeCategory
     }
     val verticalScrollState = rememberScrollState()
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -236,14 +246,17 @@ private fun MainContent(
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
+
+                    /*
+                    // in this way all worked correctly
+                    now i need to add new mode
                     templateViewModel.tempGlorifyingSongs.value?.let {
                         AddNewSongToTemplate(
                             categoryTitle = "Փառաբանություն", categorySongs = it
                         ) {
                             selectedCategory.value = "Փառաբանություն"
                             selectedCategoryForAddNewSong = templateViewModel.tempGlorifyingSongs
-                            selectedCategoryBottomSheetAllSongs =
-                                bottomSheetAllSongsForGlorifyingCategory
+                            selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGlorifyingCategory
                             scope.launch { bottomSheetState.show() }
                         }
                     }
@@ -272,24 +285,53 @@ private fun MainContent(
                             selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGiftCategory
                             scope.launch { bottomSheetState.show() }
                         }
+                    }*/
+                    if (templateViewModel.isSingleMode.value) {
+                        SingleModeSongs(
+                            templateViewModel = templateViewModel,
+                            selectedCategory = selectedCategory,
+                            selectedCategoryForAddNewSong = selectedCategoryForAddNewSong,
+                            selectedCategoryBottomSheetAllSongs = selectedCategoryBottomSheetAllSongs,
+                            bottomSheetAllSongsForSingleModeCategory = bottomSheetAllSongsForGiftCategory,
+                            bottomSheetState = bottomSheetState,
+                            scope = scope
+                        )
+                    } else {
+                        CategorizedSongs(
+                            templateViewModel = templateViewModel,
+                            selectedCategory = selectedCategory,
+                            selectedCategoryForAddNewSong = selectedCategoryForAddNewSong,
+                            selectedCategoryBottomSheetAllSongs = selectedCategoryBottomSheetAllSongs,
+                            bottomSheetAllSongsForGlorifyingCategory = bottomSheetAllSongsForGlorifyingCategory,
+                            bottomSheetAllSongsForWorshipCategory = bottomSheetAllSongsForWorshipCategory,
+                            bottomSheetAllSongsForGiftCategory = bottomSheetAllSongsForGiftCategory,
+                            bottomSheetState = bottomSheetState,
+                            scope = scope
+                        )
                     }
+
                     Spacer(modifier = Modifier.height(12.dp))
 
                     SaveButton {
                         templateViewModel.checkFields(templateFieldState)
                         isShowingDialog.value = true
+                        val isSingleMode = templateViewModel.isSingleMode.value
                         if (templateFieldState.value == NewTemplateFieldState.DONE) {
                             templateViewModel.saveTemplateToFirebase(
                                 SongTemplate(
-                                    "",
-                                    templateViewModel.planningDay.value,
-                                    templateViewModel.tempPerformerName.value,
-                                    templateViewModel.tempWeekday.value,
-                                    false,
-                                    templateViewModel.tempGlorifyingSongs.value ?: mutableListOf(),
-                                    templateViewModel.tempWorshipSongs.value ?: mutableListOf(),
-                                    templateViewModel.tempGiftSongs.value ?: mutableListOf()
-
+                                    id = "",
+                                    createDate = templateViewModel.planningDay.value,
+                                    performerName = templateViewModel.tempPerformerName.value,
+                                    weekday = templateViewModel.tempWeekday.value,
+                                    isSingleMode = isSingleMode,
+                                    glorifyingSong = if (!isSingleMode) templateViewModel.tempGlorifyingSongs.value
+                                        ?: mutableListOf() else mutableListOf(),
+                                    worshipSong = if (!isSingleMode) templateViewModel.tempWorshipSongs.value
+                                        ?: mutableListOf() else mutableListOf(),
+                                    giftSong = if (!isSingleMode) templateViewModel.tempGiftSongs.value
+                                        ?: mutableListOf() else mutableListOf(),
+                                    singleModeSongs = if (isSingleMode) templateViewModel.tempSingleModeSongs.value
+                                        ?: mutableListOf() else mutableListOf()
                                 )
                             )
                             navController.popBackStack()
@@ -312,7 +354,6 @@ private fun MainContent(
                     textSize = settingViewModel.songbookTextSize
                 )
                 selectedCategoryForAddNewSong.value?.let {
-
                     CategoryTabs(
                         categorySongs = categorySongsList.value,
                         categoryTitle = selectedCategory.value,
@@ -329,3 +370,82 @@ private fun MainContent(
             }
         })
 }
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CategorizedSongs(
+    templateViewModel: TemplateViewModel,
+    selectedCategory: MutableState<String>,
+    selectedCategoryForAddNewSong: MutableLiveData<SnapshotStateList<Song>>,
+    selectedCategoryBottomSheetAllSongs: MutableState<MutableList<AddSong>>,
+    bottomSheetAllSongsForGlorifyingCategory: State<MutableList<AddSong>>,
+    bottomSheetAllSongsForWorshipCategory: State<MutableList<AddSong>>,
+    bottomSheetAllSongsForGiftCategory: State<MutableList<AddSong>>,
+    bottomSheetState: ModalBottomSheetState,
+    scope: CoroutineScope
+) {
+    templateViewModel.initCategorizedSongs()
+    templateViewModel.tempGlorifyingSongs.value?.let {
+        AddNewSongToTemplate(
+            categoryTitle = "Փառաբանություն", categorySongs = it
+        ) {
+            selectedCategory.value = "Փառաբանություն"
+            selectedCategoryForAddNewSong.postValue(templateViewModel.tempGlorifyingSongs.value)
+            selectedCategoryBottomSheetAllSongs.value =
+                bottomSheetAllSongsForGlorifyingCategory.value
+            scope.launch { bottomSheetState.show() }
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+
+
+    templateViewModel.tempWorshipSongs.value?.let {
+        AddNewSongToTemplate(
+            categoryTitle = "Երկրպագություն", categorySongs = it
+        ) {
+            selectedCategory.value = "Երկրպագություն"
+            selectedCategoryForAddNewSong.value = templateViewModel.tempWorshipSongs.value
+            selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForWorshipCategory.value
+            scope.launch { bottomSheetState.show() }
+        }
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+
+    templateViewModel.tempGiftSongs.value?.let {
+        AddNewSongToTemplate(
+            categoryTitle = "Ընծա", categorySongs = it
+        ) {
+            selectedCategory.value = "Ընծա"
+            selectedCategoryForAddNewSong.value = templateViewModel.tempGiftSongs.value
+            selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForGiftCategory.value
+            scope.launch { bottomSheetState.show() }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SingleModeSongs(
+    templateViewModel: TemplateViewModel,
+    selectedCategory: MutableState<String>,
+    selectedCategoryForAddNewSong: MutableLiveData<SnapshotStateList<Song>>,
+    selectedCategoryBottomSheetAllSongs: MutableState<MutableList<AddSong>>,
+    bottomSheetAllSongsForSingleModeCategory: State<MutableList<AddSong>>,
+    bottomSheetState: ModalBottomSheetState,
+    scope: CoroutineScope
+) {
+    templateViewModel.initSingleMode()
+    templateViewModel.tempSingleModeSongs.value?.let {
+        AddNewSongToTemplate(
+            categoryTitle = "Առանձնացված", categorySongs = it
+        ) {
+            selectedCategory.value = "Առանձնացված"
+            selectedCategoryForAddNewSong.value = it
+            selectedCategoryBottomSheetAllSongs.value =
+                bottomSheetAllSongsForSingleModeCategory.value
+            scope.launch { bottomSheetState.show() }
+        }
+    }
+}
+

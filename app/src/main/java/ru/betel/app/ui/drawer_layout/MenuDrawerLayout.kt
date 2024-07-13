@@ -57,7 +57,7 @@ fun MenuDrawerLayout(
     val templateState = remember {
         mutableStateOf<SongTemplate>(
             SongTemplate(
-                "", "", "", "", false, emptyList(), emptyList(), emptyList()
+                "", "", "", "", false, emptyList(), emptyList(), emptyList(), emptyList()
             )
         )
     }
@@ -185,14 +185,16 @@ fun MenuDrawerLayout(
             ActionBarState.NEW_TEMPLATE_SCREEN -> {
                 NewTemplateActionBar(
                     navController = navController,
-                    editViewModel = editViewModel
+                    editViewModel = editViewModel,
+                    templateViewModel = templateViewModel
                 )
             }
 
             ActionBarState.FAVORITE_SCREEN -> {
                 NewTemplateActionBar(
                     navController = navController,
-                    editViewModel = editViewModel
+                    editViewModel = editViewModel,
+                    templateViewModel = templateViewModel
                 )
             }
         }

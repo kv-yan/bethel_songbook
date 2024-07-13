@@ -50,7 +50,7 @@ fun AppMainContent(
 
         NavHost(
             navController = navController,
-            startDestination = Screens.TEMPLATE_SCREEN.route,
+            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {

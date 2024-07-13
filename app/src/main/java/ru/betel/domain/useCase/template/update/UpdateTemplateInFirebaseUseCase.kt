@@ -19,7 +19,7 @@ class UpdateTemplateInFirebaseUseCase {
             "createDate" to newTemplate.createDate,
             "performerName" to newTemplate.performerName,
             "weekday" to newTemplate.weekday,
-            "favorite" to newTemplate.favorite,
+            "favorite" to newTemplate.isSingleMode,
             "glorifyingSong" to newTemplate.glorifyingSong.map { it.toMap() },
             "worshipSong" to newTemplate.worshipSong.map { it.toMap() },
             "giftSong" to newTemplate.giftSong.map { it.toMap() }

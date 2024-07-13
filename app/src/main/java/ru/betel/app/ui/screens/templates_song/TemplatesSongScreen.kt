@@ -43,9 +43,13 @@ fun TemplatesSongScreen(
         mutableStateOf(0)
     }
     val currentTemplateSongsList = mutableListOf<Song>().apply {
-        addAll(template.glorifyingSong)
-        addAll(template.worshipSong)
-        addAll(template.giftSong)
+        if (template.isSingleMode) {
+            addAll(template.singleModeSongs)
+        } else {
+            addAll(template.glorifyingSong)
+            addAll(template.worshipSong)
+            addAll(template.giftSong)
+        }
     }
 
     val pagerState = rememberPagerState(pageCount = { currentTemplateSongsList.size })
@@ -66,7 +70,11 @@ fun TemplatesSongScreen(
         state = pagerState, modifier = Modifier.fillMaxSize()
     ) { page ->
         TemplatesSongItem(
-            song = currentTemplateSongsList[page], settingViewModel.songbookTextSize, songViewModel
+            song = currentTemplateSongsList[page],
+            textSize = settingViewModel.songbookTextSize,
+            remainingQuantity = "${page + 1} | ${currentTemplateSongsList.size}",
+
+            songViewModel = songViewModel
         )
     }
 

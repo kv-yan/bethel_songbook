@@ -29,6 +29,7 @@ import ru.betel.app.ui.widgets.CategorySongs
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
+import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 
@@ -77,42 +78,76 @@ fun SingleTemplateScreen(
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+            if (template.isSingleMode) {
+                SingleModeSongs(settingViewModel, template, navController, songViewModel)
+            } else {
+                CategorizedSongs(settingViewModel, template, navController, songViewModel)
+            }
 
-            CategorySongs(
-                fontSize = settingViewModel.songbookTextSize,
-                categoryTitle = "Փառաբանություն",
-                categorySongs = template.glorifyingSong
-            ) {
-//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
-                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
-                songViewModel.selectedSong.value = it
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            CategorySongs(
-                categoryTitle = "Երկրպագություն",
-                fontSize = settingViewModel.songbookTextSize,
-                categorySongs = template.worshipSong
-            ) {
-//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
-                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
-                songViewModel.selectedSong.value = it
-
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            CategorySongs(
-                categoryTitle = "Ընծա",
-                fontSize = settingViewModel.songbookTextSize,
-                categorySongs = template.giftSong
-            ) {
-//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
-                navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
-                songViewModel.selectedSong.value = it
-            }
         }
     }
 
 
     BackHandler {
         navController.popBackStack()
+    }
+}
+
+
+@Composable
+fun CategorizedSongs(
+    settingViewModel: SettingViewModel,
+    template: SongTemplate,
+    navController: NavController,
+    songViewModel: SongViewModel
+) {
+    CategorySongs(
+        fontSize = settingViewModel.songbookTextSize,
+        categoryTitle = "Փառաբանություն",
+        categorySongs = template.glorifyingSong
+    ) {
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+        navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
+        songViewModel.selectedSong.value = it
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+    CategorySongs(
+        categoryTitle = "Երկրպագություն",
+        fontSize = settingViewModel.songbookTextSize,
+        categorySongs = template.worshipSong
+    ) {
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+        navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
+        songViewModel.selectedSong.value = it
+
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+    CategorySongs(
+        categoryTitle = "Ընծա",
+        fontSize = settingViewModel.songbookTextSize,
+        categorySongs = template.giftSong
+    ) {
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+        navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
+        songViewModel.selectedSong.value = it
+    }
+}
+
+@Composable
+fun SingleModeSongs(
+    settingViewModel: SettingViewModel,
+    template: SongTemplate,
+    navController: NavController,
+    songViewModel: SongViewModel
+) {
+    CategorySongs(
+        fontSize = settingViewModel.songbookTextSize,
+        categoryTitle = "Փառաբանություն",
+        isSingMode = true,
+        categorySongs = template.singleModeSongs
+    ) {
+//                navController.navigate(route = Screens.SINGLE_SONG_SCREEN.route)
+        navController.navigate(route = Screens.TEMPLATES_SONGS_SCREEN.route)
+        songViewModel.selectedSong.value = it
     }
 }

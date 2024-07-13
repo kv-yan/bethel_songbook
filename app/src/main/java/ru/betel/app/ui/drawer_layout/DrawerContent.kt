@@ -1,6 +1,5 @@
 package ru.betel.app.ui.drawer_layout
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DrawerState
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +39,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.betel.app.R
 import ru.betel.app.ui.items.menu.DrawerMenuItem
+import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.dividerColor
 import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.domain.model.ui.MenuItem
@@ -112,9 +113,10 @@ fun DrawerContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(modifier = Modifier.padding(20.dp)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.app_logo_transparent),
+                    Icon(
+                        painter = painterResource(id = R.drawable.des_1),
                         contentDescription = null,
+                        tint = actionBarColor,
                         modifier = Modifier.size(80.dp)
                     )
                     Column(modifier = Modifier.padding(start = 11.dp, top = 20.dp)) {
@@ -141,7 +143,6 @@ fun DrawerContent(
                     }
                 }
             }
-//            Spacer(modifier = Modifier.height(24.dp))
 
 
             // Menu part
@@ -158,7 +159,6 @@ fun DrawerContent(
                         navController.navigate(item.screen.route)
                     }
                 }
-
             }
             Box(
                 modifier = Modifier
@@ -166,7 +166,7 @@ fun DrawerContent(
                     .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomStart
             ) {
-                Column() {
+                Column {
                     Spacer(
                         modifier = Modifier
                             .padding(bottom = 12.dp)

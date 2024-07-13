@@ -35,10 +35,11 @@ class EditViewModel(
             createDate = "Error",
             performerName = "Error",
             weekday = "Error",
-            favorite = false,
+            isSingleMode = false,
             glorifyingSong = emptyList(),
             worshipSong = emptyList(),
-            giftSong = emptyList()
+            giftSong = emptyList(),
+            singleModeSongs = emptyList()
         )
     )
 
@@ -46,9 +47,9 @@ class EditViewModel(
     val tempWorshipSongs = mutableStateListOf<Song>()
     val tempGiftSongs = mutableStateListOf<Song>()
 
-    val tempPerformerName = mutableStateOf(currentTemplate.value.performerName)
-    val tempWeekday = mutableStateOf("")
-    val planningDay = mutableStateOf("")
+    private val tempPerformerName = mutableStateOf(currentTemplate.value.performerName)
+    val tempWeekday = mutableStateOf("Շաբաթվա օր")
+    val planningDay = mutableStateOf("Ամսաթիվ")
 
     fun onSaveUpdates(current: Song, updatedSong: Song) {
         updateSongInFirebaseUseCase.execute(current, updatedSong)

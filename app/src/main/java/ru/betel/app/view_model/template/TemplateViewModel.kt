@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.betel.data.extensions.toImmutableAddSongList
 import ru.betel.data.extensions.toSongTemplate
-import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.AddSong
+import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.ui.TemplateType
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
@@ -66,10 +66,11 @@ class TemplateViewModel(
             createDate = "Error",
             performerName = "Error",
             weekday = "Error",
-            favorite = false,
+            isSingleMode = false,
             glorifyingSong = emptyList(),
             worshipSong = emptyList(),
-            giftSong = emptyList()
+            giftSong = emptyList(),
+            singleModeSongs = emptyList()
         )
     )
 
@@ -96,6 +97,11 @@ class TemplateViewModel(
         value = mutableStateListOf<Song>()
     }
     val tempGiftSongs = _tempGift
+
+    private val _tempSingleMode = MutableLiveData<SnapshotStateList<Song>>().apply {
+        value = mutableStateListOf<Song>()
+    }
+    val tempSingleModeSongs = _tempSingleMode
 
     private val _tempGlorifyingAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
         viewModelScope.launch {
@@ -154,14 +160,28 @@ class TemplateViewModel(
         }
     }
 
+    private val _tempSingleModeAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
+        viewModelScope.launch {
+            getAllSongsUseCase.execute().collect {
+                value = mutableListOf<Song>().toImmutableAddSongList()
+            }
+        }
+    }
+
+    private val _isSingleMode = mutableStateOf(false)
+
     val tempGlorifyingAllAddSongs = _tempGlorifyingAllAddSongs
     val tempFavoriteAllAddSongs = _tempFavoriteAllAddSongs
     val tempWorshipAllAddSongs = _tempWorshipAllAddSongs
-
     val tempGiftAllAddSongs = _tempGiftAllAddSongs
+    val tempSingleModeAddSongs = _tempSingleModeAddSongs
+
     val glorifyingAddSong = _tempGlorifyingAddSongs
     val worshipAddSong = _tempWorshipAddSongs
     val giftAddSong = _tempGiftAddSongs
+    val singleModeAddSong = _tempSingleModeAddSongs
+
+    val isSingleMode = _isSingleMode
 
     fun saveTemplateToFirebase(songTemplate: SongTemplate) {
         songTemplate.id = "SongTemplate"
@@ -180,10 +200,11 @@ class TemplateViewModel(
                             createDate = planningDay.value,
                             performerName = tempPerformerName.value,
                             weekday = tempWeekday.value,
-                            favorite = false,
+                            isSingleMode = false,
                             glorifyingSong = glorifyingSongs,
                             worshipSong = worshipSongs,
-                            giftSong = giftSongs
+                            giftSong = giftSongs,
+                            singleModeSongs = emptyList()
                         )
                     }
                 }
@@ -197,22 +218,33 @@ class TemplateViewModel(
         return if (tempPerformerName.value.isNotEmpty()) {
             if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
                 if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
-                    if (tempGlorifyingSongs.value?.isNotEmpty() == true) {
-                        if (tempWorshipSongs.value?.isNotEmpty() == true) {
-                            if (tempGiftSongs.value?.isNotEmpty() == true) {
-                                templateFieldState.value = NewTemplateFieldState.DONE
-                                Result.success(Unit)
+                    if (isSingleMode.value){
+                        if (tempSingleModeSongs.value?.isNotEmpty() == true){
+                            templateFieldState.value = NewTemplateFieldState.DONE
+                            Result.success(Unit)
+                        }else {
+                            templateFieldState.value = NewTemplateFieldState.INVALID_SINGLE_MODE
+                            Result.failure(IllegalAccessError())
+                        }
+                    }else{
+                        if (tempGlorifyingSongs.value?.isNotEmpty() == true) {
+                            if (tempWorshipSongs.value?.isNotEmpty() == true) {
+                                if (tempGiftSongs.value?.isNotEmpty() == true) {
+                                    templateFieldState.value = NewTemplateFieldState.DONE
+                                    Result.success(Unit)
+                                } else {
+                                    templateFieldState.value = NewTemplateFieldState.INVALID_GIFT
+                                    Result.failure(IllegalAccessError())
+                                }
                             } else {
-                                templateFieldState.value = NewTemplateFieldState.INVALID_GIFT
+                                templateFieldState.value = NewTemplateFieldState.INVALID_WORSHIP
                                 Result.failure(IllegalAccessError())
                             }
                         } else {
-                            templateFieldState.value = NewTemplateFieldState.INVALID_WORSHIP
+                            templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
                             Result.failure(IllegalAccessError())
                         }
-                    } else {
-                        templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
-                        Result.failure(IllegalAccessError())
+
                     }
                 } else {
                     templateFieldState.value = NewTemplateFieldState.INVALID_DAY
@@ -229,6 +261,18 @@ class TemplateViewModel(
 
     }
 
+    fun initCategorizedSongs(){
+//        tempGlorifyingSongs.value = mutableStateListOf()
+//        tempWorshipSongs.value = mutableStateListOf()
+//        tempGiftSongs.value = mutableStateListOf()
+        tempSingleModeSongs.value = mutableStateListOf()
+    }
+    fun initSingleMode(){
+        tempGlorifyingSongs.value = mutableStateListOf()
+        tempWorshipSongs.value = mutableStateListOf()
+        tempGiftSongs.value = mutableStateListOf()
+//        tempSingleModeSongs.value = mutableStateListOf()
+    }
 
     fun checkFields(
         templateFieldState: MutableState<NewTemplateFieldState>,
@@ -312,15 +356,16 @@ class TemplateViewModel(
 
         val normalizedQuery = normalizeText(query)
         return templateUiState.value.filter { template ->
-            template.glorifyingSong.any { normalizeText(it.title).contains(normalizedQuery) } ||
-                    template.worshipSong.any { normalizeText(it.title).contains(normalizedQuery) } ||
-                    template.giftSong.any { normalizeText(it.title).contains(normalizedQuery) }
+            template.glorifyingSong.any { normalizeText(it.title).contains(normalizedQuery) } || template.worshipSong.any {
+                normalizeText(
+                    it.title
+                ).contains(normalizedQuery)
+            } || template.giftSong.any { normalizeText(it.title).contains(normalizedQuery) }
         }
     }
 
     private fun normalizeText(text: String): String {
-        return Normalizer.normalize(text, Normalizer.Form.NFD)
-            .replace("[\\p{M}]".toRegex(), "")
+        return Normalizer.normalize(text, Normalizer.Form.NFD).replace("[\\p{M}]".toRegex(), "")
             .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9\\s]+".toRegex(), "")
             .lowercase(Locale.getDefault())
     }

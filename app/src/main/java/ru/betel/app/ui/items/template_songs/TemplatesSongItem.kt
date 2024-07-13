@@ -1,6 +1,7 @@
 package ru.betel.app.ui.items.template_songs
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +30,9 @@ import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
-fun TemplatesSongItem(song: Song, textSize: SongbookTextSize, songViewModel: SongViewModel) {
+fun TemplatesSongItem(
+    song: Song, textSize: SongbookTextSize, remainingQuantity: String, songViewModel: SongViewModel
+) {
     val scrollState = rememberScrollState()
 
     LaunchedEffect(song) {
@@ -40,16 +43,36 @@ fun TemplatesSongItem(song: Song, textSize: SongbookTextSize, songViewModel: Son
             .fillMaxSize()
             .verticalScroll(scrollState),
     ) {
-        Text(
-            text = song.title, style = TextStyle(
-                fontSize = textSize.normalItemDefaultTextSize,
-                fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                fontWeight = FontWeight(700),
-                color = actionBarColor,
-            ), textAlign = TextAlign.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = song.title,
+                style = TextStyle(
+                    fontSize = textSize.normalItemDefaultTextSize,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(700),
+                    color = actionBarColor,
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            )
+
+            Text(
+                text = remainingQuantity,
+                style = TextStyle(
+                    fontSize = textSize.normalItemDefaultTextSize,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(700),
+                    color = textFieldPlaceholder,
+                ),
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            )
+
+        }
         Row(
             modifier = Modifier
                 .padding(start = 20.dp, end = 20.dp, top = 12.dp)

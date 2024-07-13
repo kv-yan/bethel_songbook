@@ -72,7 +72,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-messaging-ktx:23.1.2")
     implementation("com.google.firebase:firebase-database-ktx:20.2.2")
+    implementation ("com.google.firebase:firebase-messaging:23.1.2")
 
     // navigation
     implementation("androidx.navigation:navigation-compose:2.7.2")
@@ -115,4 +117,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.23.1")
     implementation("com.google.android.exoplayer:exoplayer-core:2.17.1")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.17.1")
+
+    // Ui controller
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
 }

@@ -1,27 +1,16 @@
 package ru.betel.app.ui.screens.splash
 
-import android.content.Context
-import android.net.Uri
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
-import android.window.SplashScreen
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,16 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlinx.coroutines.delay
 import ru.betel.app.R
 
@@ -86,10 +68,14 @@ private fun Context.buildPlayerView(exoPlayer: ExoPlayer) = StyledPlayerView(thi
 
 @Composable
 fun SplashScreen() {
-    var isVisible by remember { mutableStateOf(false) }
+    var isVisible by remember {
+        mutableStateOf(
+            false
+        )
+    }
 
     LaunchedEffect(Unit) {
-        delay(1000) // 1 second delay for example
+        delay(500) // 1 second delay for example
         isVisible = true
     }
 
@@ -106,12 +92,13 @@ fun SplashScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color(0xFF121212)),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_splash),
+        Icon(
+            painter = painterResource(id = R.drawable.des_1),
             contentDescription = null,
+            tint = Color.White,
             modifier = Modifier
                 .size(225.dp)
                 .offset(y = offsetY)

@@ -28,24 +28,37 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     val createDate = template["createDate"] as String
                     val performerName = template["performerName"] as String
                     val weekday = template["weekday"] as String
-                    val favorite = template["favorite"] as Boolean
-                    val glorifyingSong =
-                        getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
-                    val worshipSong =
-                        getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
-                    val giftSong =
-                        getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
+                    val isSingleMode = template["singleMode"] as Boolean
+                    var glorifyingSong: List<Song>
+                    var worshipSong: List<Song>
+                    var giftSong: List<Song>
+                    var singleModeSongs: List<Song>
+
+                    if (isSingleMode){
+                        singleModeSongs = getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
+                        glorifyingSong = listOf<Song>()
+                        worshipSong = listOf<Song>()
+                        giftSong = listOf<Song>()
+                    }
+                    else {
+                        singleModeSongs = listOf<Song>()
+                        glorifyingSong = getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
+                        worshipSong = getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
+                        giftSong = getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
+                    }
+
 
                     templateList.add(
                         SongTemplate(
-                            item.key.toString(),
-                            createDate,
-                            performerName,
-                            weekday,
-                            favorite,
-                            glorifyingSong,
-                            worshipSong,
-                            giftSong
+                            id = item.key.toString(),
+                            createDate = createDate,
+                            performerName = performerName,
+                            weekday = weekday,
+                            isSingleMode = isSingleMode,
+                            glorifyingSong = glorifyingSong,
+                            worshipSong = worshipSong,
+                            giftSong = giftSong,
+                            singleModeSongs = singleModeSongs
                         )
                     )
                 }

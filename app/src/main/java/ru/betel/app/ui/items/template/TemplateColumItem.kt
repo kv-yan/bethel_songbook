@@ -145,7 +145,8 @@ private fun Template() {
         false,
         listOf(song, song, song, song),
         listOf(song, song, song, song),
-        listOf(song)
+        listOf(song),
+        listOf(song),
     )
     SongTemplateColumItem(
         template, SongbookTextSize(

@@ -48,7 +48,8 @@ fun List<SongTemplateEntity>.toSongTemplate(): MutableList<SongTemplate> {
                 entity.favorite,
                 entity.glorifyingSong.toSong(),
                 entity.worshipSong.toSong(),
-                entity.giftSong.toSong()
+                entity.giftSong.toSong(),
+                singleModeSongs = emptyList()
             )
         )
     }
