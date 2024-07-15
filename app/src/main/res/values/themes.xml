@@ -3,5 +3,9 @@
 
     <style name="Theme.Songbook" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">#022976</item>
+        <item name="android:windowSplashScreenBackground">@color/black</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/black</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/empty</item>
+        <item name="android:windowSplashscreenContent">@drawable/empty</item>
     </style>
 </resources>

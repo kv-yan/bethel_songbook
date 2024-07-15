@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getVideoUri(): Uri {
-        val rawId = resources.getIdentifier("songbook_v", "raw", packageName)
+        val rawId = resources.getIdentifier("songbook_v1", "raw", packageName)
         val videoUri = "android.resource://$packageName/$rawId"
         return Uri.parse(videoUri)
     }
