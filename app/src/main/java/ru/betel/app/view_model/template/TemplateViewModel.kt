@@ -26,6 +26,7 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
@@ -44,6 +45,7 @@ class TemplateViewModel(
     private val saveTemplateToLocalUseCase: SaveTemplateToLocalUseCase,
     private val saveTemplateInFirebaseUseCase: SaveTemplateInFirebaseUseCase,
     private val deleteTemplateFromFirebaseUseCase: DeleteTemplateFromFirebaseUseCase,
+    private val deleteTemplateFromLocalUseCase: DeleteTemplateFromLocalUseCase,
     private val shareTemplateUseCase: ShareTemplateUseCase
 ) : ViewModel() {
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
@@ -59,6 +61,7 @@ class TemplateViewModel(
     val templateUiState = mutableStateOf<List<SongTemplate>>(emptyList())
 
     val templateSelectedType = mutableStateOf(TemplateType.ALL)
+    val createdNewTemplate = mutableStateOf<SongTemplate?>(null)
 
     val singleTemplate = MutableStateFlow(
         SongTemplate(
@@ -190,27 +193,9 @@ class TemplateViewModel(
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun saveSongTemplateToLocalStorage() {
+    fun saveTemplateToLocalStorage(template: SongTemplate) {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentTemplate = tempGiftSongs.value?.toList()?.let { giftSongs ->
-                tempWorshipSongs.value?.toList()?.let { worshipSongs ->
-                    tempGlorifyingSongs.value?.toList()?.let { glorifyingSongs ->
-                        SongTemplate(
-                            id = "Error",
-                            createDate = planningDay.value,
-                            performerName = tempPerformerName.value,
-                            weekday = tempWeekday.value,
-                            isSingleMode = false,
-                            glorifyingSong = glorifyingSongs,
-                            worshipSong = worshipSongs,
-                            giftSong = giftSongs,
-                            singleModeSongs = emptyList()
-                        )
-                    }
-                }
-            }
-
-            currentTemplate?.let { saveTemplateToLocalUseCase.execute(it) }
+            saveTemplateToLocalUseCase.execute(template)
         }
     }
 
@@ -328,6 +313,10 @@ class TemplateViewModel(
             getAllTemplatesUseCase.execute().collect { templates ->
                 templateUiState.value = templates
             }
+
+            getTemplatesFromLocalUseCase.execute().collect {
+                localTemplateState.value = it.toSongTemplate()
+            }
         }
     }
 
@@ -335,6 +324,9 @@ class TemplateViewModel(
         viewModelScope.launch { deleteTemplateFromFirebaseUseCase.execute(it) }
     }
 
+    fun deleteTemplateFromLocal(it: SongTemplate) {
+        viewModelScope.launch { deleteTemplateFromLocalUseCase.execute(it) }
+    }
     fun shareTemplate(it: SongTemplate) {
         viewModelScope.launch { shareTemplateUseCase.execute(it) }
     }

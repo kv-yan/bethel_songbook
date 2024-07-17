@@ -6,13 +6,13 @@ import ru.betel.domain.model.entity.SongTemplateEntity
 
 @Dao
 interface TemplateDao {
-    @Query("SELECT * FROM song_templates")
+    @Query("SELECT * FROM template")
     fun getAllSongTemplates(): Flow<List<SongTemplateEntity>>
 
-    @Query("SELECT * FROM song_templates WHERE id = :id")
+    @Query("SELECT * FROM template WHERE id = :id")
     suspend fun getSongTemplateById(id: String): SongTemplateEntity?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSongTemplate(songTemplate: SongTemplateEntity)
 
     @Update

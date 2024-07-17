@@ -41,15 +41,15 @@ fun List<SongTemplateEntity>.toSongTemplate(): MutableList<SongTemplate> {
     this.forEach { entity ->
         songTemplateList.add(
             SongTemplate(
-                entity.id.toString(),
-                entity.createDate,
-                entity.performerName,
-                entity.weekday,
-                entity.favorite,
-                entity.glorifyingSong.toSong(),
-                entity.worshipSong.toSong(),
-                entity.giftSong.toSong(),
-                singleModeSongs = emptyList()
+                id = entity.id.toString(),
+                createDate = entity.createDate,
+                performerName = entity.performerName,
+                weekday = entity.weekday,
+                isSingleMode = entity.isSingleMode,
+                glorifyingSong = entity.glorifyingSong.toSong(),
+                worshipSong = entity.worshipSong.toSong(),
+                giftSong = entity.giftSong.toSong(),
+                singleModeSongs = entity.singleModeSongs.toSong()
             )
         )
     }

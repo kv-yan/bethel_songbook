@@ -6,7 +6,7 @@ import ru.betel.domain.model.entity.SongEntity
 
 @Dao
 interface SongDao {
-    @Query("SELECT * FROM Song")
+    @Query("SELECT * FROM song")
     suspend fun getAllSong(): List<SongEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

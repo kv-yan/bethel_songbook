@@ -6,7 +6,7 @@ import java.util.*
 
 fun SongTemplate.toEntity(): SongTemplateEntity {
     return SongTemplateEntity(
-        id = this.id.toInt(),
+        id = 0,
         this.createDate,
         this.performerName,
         this.weekday,
@@ -14,6 +14,21 @@ fun SongTemplate.toEntity(): SongTemplateEntity {
         this.glorifyingSong.toEntity(),
         this.worshipSong.toEntity(),
         this.giftSong.toEntity(),
+        this.singleModeSongs.toEntity(),
+    )
+}
+
+fun SongTemplate.toUpdateEntity(): SongTemplateEntity {
+    return SongTemplateEntity(
+        id = id.toInt(),
+        this.createDate,
+        this.performerName,
+        this.weekday,
+        this.isSingleMode,
+        this.glorifyingSong.toEntity(),
+        this.worshipSong.toEntity(),
+        this.giftSong.toEntity(),
+        this.singleModeSongs.toEntity(),
     )
 }
 
@@ -26,11 +41,11 @@ fun List<SongTemplateEntity>.toSongTemplate(): MutableList<SongTemplate> {
                 createDate = entity.createDate,
                 performerName = entity.performerName,
                 weekday = entity.weekday,
-                isSingleMode = entity.favorite,
+                isSingleMode = entity.isSingleMode,
                 glorifyingSong = entity.glorifyingSong.toSong(),
                 worshipSong = entity.worshipSong.toSong(),
                 giftSong = entity.giftSong.toSong(),
-                singleModeSongs = emptyList()
+                singleModeSongs = entity.singleModeSongs.toSong()
             )
         )
     }

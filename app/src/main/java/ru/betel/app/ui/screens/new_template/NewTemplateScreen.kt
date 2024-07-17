@@ -42,9 +42,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.betel.app.R
+import ru.betel.app.ui.screens.new_song.cleanFieldsValues
 import ru.betel.app.ui.theme.actionBarTextColor
 import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.theme.songDividerColor
@@ -53,6 +55,8 @@ import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.WeekdayDropDownMenu
+import ru.betel.app.ui.widgets.pop_up.CheckTemplatePropertiesDialog
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -76,7 +80,8 @@ fun NewTemplateScreen(
     settingViewModel: SettingViewModel,
 ) {
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
-    val isShowingSaveDialog = remember { mutableStateOf(false) }
+    val isShowingSaveStateDialog = remember { mutableStateOf(false) }
+    val isShowingSaveModeDialog = remember { mutableStateOf(false) }
     Box {
         MainContent(
             navController = navController,
@@ -84,12 +89,13 @@ fun NewTemplateScreen(
             songViewModel = songViewModel,
             templateViewModel = templateViewModel,
             settingViewModel = settingViewModel,
-            isShowingDialog = isShowingSaveDialog,
-            templateFieldState = templateFieldState
+            isShowingSaveStateDialog = isShowingSaveStateDialog,
+            templateFieldState = templateFieldState,
+            isShowingSaveModeDialog = isShowingSaveModeDialog
         )
 
         AppSnackbar(
-            isShowingSaveDialog,
+            isShowingSaveStateDialog,
             Modifier
                 .offset(y = 40.dp)
                 .padding(horizontal = 24.dp)
@@ -127,8 +133,9 @@ private fun MainContent(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
-    isShowingDialog: MutableState<Boolean>,
-    templateFieldState: MutableState<NewTemplateFieldState>
+    templateFieldState: MutableState<NewTemplateFieldState>,
+    isShowingSaveStateDialog: MutableState<Boolean>,
+    isShowingSaveModeDialog: MutableState<Boolean>
 ) {
     val isShowingDayDialog = remember { mutableStateOf(false) }
 
@@ -142,13 +149,15 @@ private fun MainContent(
             templateViewModel.worshipAddSong.observeAsState(initial = mutableListOf())
         }
 
-        "Ընծա" ->{
+        "Ընծա" -> {
             templateViewModel.giftAddSong.observeAsState(initial = mutableListOf())
-        }else -> {
+        }
+
+        else -> {
             templateViewModel.singleModeAddSong.observeAsState(initial = mutableListOf())
         }
     }
-    var selectedCategoryForAddNewSong = when (selectedCategory.value) {
+    val selectedCategoryForAddNewSong = when (selectedCategory.value) {
         "Փառաբանություն" -> templateViewModel.tempGlorifyingSongs
         "Երկրպագություն" -> templateViewModel.tempWorshipSongs
         "Ընծա" -> templateViewModel.tempGiftSongs
@@ -160,10 +169,8 @@ private fun MainContent(
         templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> =
         templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =
-        templateViewModel.tempSingleModeAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> =
-        templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =templateViewModel.tempSingleModeAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> = templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         "Փառաբանություն" -> bottomSheetAllSongsForGlorifyingCategory
         "Երկրպագություն" -> bottomSheetAllSongsForWorshipCategory
@@ -247,52 +254,13 @@ private fun MainContent(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    /*
-                    // in this way all worked correctly
-                    now i need to add new mode
-                    templateViewModel.tempGlorifyingSongs.value?.let {
-                        AddNewSongToTemplate(
-                            categoryTitle = "Փառաբանություն", categorySongs = it
-                        ) {
-                            selectedCategory.value = "Փառաբանություն"
-                            selectedCategoryForAddNewSong = templateViewModel.tempGlorifyingSongs
-                            selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGlorifyingCategory
-                            scope.launch { bottomSheetState.show() }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-
-                    templateViewModel.tempWorshipSongs.value?.let {
-                        AddNewSongToTemplate(
-                            categoryTitle = "Երկրպագություն", categorySongs = it
-                        ) {
-                            selectedCategory.value = "Երկրպագություն"
-                            selectedCategoryForAddNewSong = templateViewModel.tempWorshipSongs
-                            selectedCategoryBottomSheetAllSongs =
-                                bottomSheetAllSongsForWorshipCategory
-                            scope.launch { bottomSheetState.show() }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    templateViewModel.tempGiftSongs.value?.let {
-                        AddNewSongToTemplate(
-                            categoryTitle = "Ընծա", categorySongs = it
-                        ) {
-                            selectedCategory.value = "Ընծա"
-                            selectedCategoryForAddNewSong = templateViewModel.tempGiftSongs
-                            selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGiftCategory
-                            scope.launch { bottomSheetState.show() }
-                        }
-                    }*/
                     if (templateViewModel.isSingleMode.value) {
                         SingleModeSongs(
                             templateViewModel = templateViewModel,
                             selectedCategory = selectedCategory,
                             selectedCategoryForAddNewSong = selectedCategoryForAddNewSong,
                             selectedCategoryBottomSheetAllSongs = selectedCategoryBottomSheetAllSongs,
-                            bottomSheetAllSongsForSingleModeCategory = bottomSheetAllSongsForGiftCategory,
+                            bottomSheetAllSongsForSingleModeCategory = bottomSheetAllSongsForSingleModeCategory,
                             bottomSheetState = bottomSheetState,
                             scope = scope
                         )
@@ -314,29 +282,53 @@ private fun MainContent(
 
                     SaveButton {
                         templateViewModel.checkFields(templateFieldState)
-                        isShowingDialog.value = true
+                        isShowingSaveStateDialog.value =
+                            templateFieldState.value != NewTemplateFieldState.DONE
                         val isSingleMode = templateViewModel.isSingleMode.value
+                        val createdTemplate = SongTemplate(
+                            id = "",
+                            createDate = templateViewModel.planningDay.value,
+                            performerName = templateViewModel.tempPerformerName.value,
+                            weekday = templateViewModel.tempWeekday.value,
+                            isSingleMode = isSingleMode,
+                            glorifyingSong = if (!isSingleMode) templateViewModel.tempGlorifyingSongs.value ?: mutableListOf() else mutableListOf(),
+                            worshipSong = if (!isSingleMode) templateViewModel.tempWorshipSongs.value ?: mutableListOf() else mutableListOf(),
+                            giftSong = if (!isSingleMode) templateViewModel.tempGiftSongs.value ?: mutableListOf() else mutableListOf(),
+                            singleModeSongs = if (isSingleMode) templateViewModel.tempSingleModeSongs.value ?: mutableListOf() else mutableListOf()
+                        )
+
                         if (templateFieldState.value == NewTemplateFieldState.DONE) {
-                            templateViewModel.saveTemplateToFirebase(
-                                SongTemplate(
-                                    id = "",
-                                    createDate = templateViewModel.planningDay.value,
-                                    performerName = templateViewModel.tempPerformerName.value,
-                                    weekday = templateViewModel.tempWeekday.value,
-                                    isSingleMode = isSingleMode,
-                                    glorifyingSong = if (!isSingleMode) templateViewModel.tempGlorifyingSongs.value
-                                        ?: mutableListOf() else mutableListOf(),
-                                    worshipSong = if (!isSingleMode) templateViewModel.tempWorshipSongs.value
-                                        ?: mutableListOf() else mutableListOf(),
-                                    giftSong = if (!isSingleMode) templateViewModel.tempGiftSongs.value
-                                        ?: mutableListOf() else mutableListOf(),
-                                    singleModeSongs = if (isSingleMode) templateViewModel.tempSingleModeSongs.value
-                                        ?: mutableListOf() else mutableListOf()
-                                )
-                            )
-                            navController.popBackStack()
+                            templateViewModel.createdNewTemplate.value = createdTemplate
+                            if (FirebaseAuth.getInstance().currentUser != null) {
+                                isShowingSaveModeDialog.value = true
+                            } else {
+                                templateViewModel.saveTemplateToLocalStorage(createdTemplate)
+                                isShowingSaveStateDialog.value = true
+                                navController.popBackStack()
+                            }
                         }
                     }
+
+                    CheckTemplatePropertiesDialog(
+                        isShowingSaveModeDialog, templateViewModel
+                    ) { mode,createdTemplate, isSendingNotification ->
+                        when (mode) {
+                            TemplateSaveMode.LOCAL -> {
+                                templateViewModel.saveTemplateToLocalStorage(createdTemplate)
+                            }
+
+                            TemplateSaveMode.SERVER -> {
+                                templateViewModel.saveTemplateToFirebase(createdTemplate)
+                                if (isSendingNotification){
+                                    // TODO: sent notification
+                                }
+                            }
+                        }
+                        isShowingSaveModeDialog.value = false
+                        isShowingSaveStateDialog.value = true
+                        navController.popBackStack()
+                    }
+
                 }
             }
         },

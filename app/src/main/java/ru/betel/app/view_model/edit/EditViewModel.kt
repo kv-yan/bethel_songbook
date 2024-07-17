@@ -1,17 +1,23 @@
 package ru.betel.app.view_model.edit
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
+import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
 
 class EditViewModel(
     private val updateSongInFirebaseUseCase: UpdateSongInFirebaseUseCase,
-    private val updateTemplateInFirebaseUseCase: UpdateTemplateInFirebaseUseCase
+    private val updateTemplateInFirebaseUseCase: UpdateTemplateInFirebaseUseCase,
+    private val updateTemplateInLocalUseCase: UpdateTemplateInLocalUseCase
 
 ) : ViewModel() {
     val currentSong = MutableStateFlow(
@@ -55,8 +61,20 @@ class EditViewModel(
         updateSongInFirebaseUseCase.execute(current, updatedSong)
     }
 
-    fun onSaveUpdates(current: SongTemplate, updatedSong: SongTemplate) {
-        updateTemplateInFirebaseUseCase.execute(current, updatedSong)
+
+    fun updateTemplate(mode: TemplateSaveMode, new: SongTemplate, old: SongTemplate) {
+        viewModelScope.launch {
+            Log.e("MODE", "updateTemplate: mode :: $mode", )
+            when (mode) {
+                TemplateSaveMode.LOCAL -> {
+                    updateTemplateInLocalUseCase.execute(new)
+                }
+
+                TemplateSaveMode.SERVER -> {
+                    updateTemplateInFirebaseUseCase.execute(old, new)
+                }
+            }
+        }
     }
 
     fun cleanFields() {

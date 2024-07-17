@@ -25,6 +25,7 @@ import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
@@ -33,6 +34,7 @@ import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
+import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
 
 val appModule = module {
     single<SharedPreferences> {
@@ -68,7 +70,8 @@ val appModule = module {
             getFavoriteSongsUseCase = get<GetFavoriteSongsUseCase>(),
             saveTemplateInFirebaseUseCase = get<SaveTemplateInFirebaseUseCase>(),
             deleteTemplateFromFirebaseUseCase = get<DeleteTemplateFromFirebaseUseCase>(),
-            shareTemplateUseCase = get<ShareTemplateUseCase>()
+            shareTemplateUseCase = get<ShareTemplateUseCase>(),
+            deleteTemplateFromLocalUseCase = get<DeleteTemplateFromLocalUseCase>()
         )
     }
 
@@ -85,7 +88,8 @@ val appModule = module {
     viewModel {
         EditViewModel(
             updateSongInFirebaseUseCase = get<UpdateSongInFirebaseUseCase>(),
-            updateTemplateInFirebaseUseCase = get<UpdateTemplateInFirebaseUseCase>()
+            updateTemplateInFirebaseUseCase = get<UpdateTemplateInFirebaseUseCase>(),
+            updateTemplateInLocalUseCase = get<UpdateTemplateInLocalUseCase>()
         )
     }
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import ru.betel.app.DoubleBackToExitApp
+import ru.betel.app.ui.DoubleBackToExitApp
 import ru.betel.app.ui.widgets.CategorizedLazyColumn
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
@@ -25,7 +25,6 @@ import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongCategory
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
-import java.text.Collator
 import java.text.Normalizer
 import java.util.Locale
 import java.util.regex.Pattern

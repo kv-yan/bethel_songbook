@@ -1,6 +1,8 @@
 package ru.betel.app.ui.drawer_layout
 
+import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -22,6 +24,7 @@ import ru.betel.app.ui.action_bar.SingleTemplateActionBar
 import ru.betel.app.ui.action_bar.TemplateActionBar
 import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
@@ -33,6 +36,7 @@ import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
 
 
+@SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MenuDrawerLayout(
@@ -68,10 +72,29 @@ fun MenuDrawerLayout(
     }) {
         navController.popBackStack()
     }
-    DeleteTemplateDialog(showDialog = deleteTemplateDialogState,
+    val saveMode = mutableStateOf<TemplateSaveMode>(
+            try {
+                templateState.value.id.toInt()
+                TemplateSaveMode.LOCAL
+            } catch (ex: Exception) {
+                TemplateSaveMode.SERVER
+            }
+
+        )
+
+    DeleteTemplateDialog(mode = saveMode.value,
+        showDialog = deleteTemplateDialogState,
         template = templateState,
-        onConfirmationClick = {
-            templateViewModel.deleteTemplateFromFirebase(it)
+        onConfirmationClick = { template, mode ->
+            when (mode) {
+                TemplateSaveMode.LOCAL -> {
+                    templateViewModel.deleteTemplateFromLocal(template)
+                }
+
+                TemplateSaveMode.SERVER -> {
+                    templateViewModel.deleteTemplateFromFirebase(template)
+                }
+            }
         }) {
         navController.popBackStack()
     }

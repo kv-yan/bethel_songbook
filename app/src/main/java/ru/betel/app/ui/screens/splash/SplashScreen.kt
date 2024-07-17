@@ -48,6 +48,7 @@ import ru.betel.app.R
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,8 +76,11 @@ fun VideoSplashScreen(videoUri: Uri) {
 
     DisposableEffect(
         AndroidView(
-            factory = { it.buildPlayerView(exoPlayer) }, modifier = Modifier.fillMaxSize().background(
-                Color.White)
+            factory = { it.buildPlayerView(exoPlayer) }, modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Color.White
+                )
         )
     ) {
         onDispose {
@@ -126,7 +130,9 @@ fun SplashScreen() {
             .background(Color(0xFF121212)),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
+        /*Image(modifier = Modifier
+            .fillMaxSize(),painter = painterResource(id = R.drawable.img), contentDescription =null )
+        */Icon(
             painter = painterResource(id = R.drawable.des_1),
             contentDescription = null,
             tint = Color.White,
@@ -140,5 +146,5 @@ fun SplashScreen() {
 @Preview
 @Composable
 private fun Splash() {
-//    SplashScreen()
+    SplashScreen()
 }

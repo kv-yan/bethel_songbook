@@ -10,22 +10,6 @@ import ru.betel.app.ui.items.song.SongItemWithWordsAndCheckBox
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AddSong
 
-@Composable
-fun TabScreenCategory(
-    categorySongs: SnapshotStateList<AddSong>,
-    onItemLongPress: (Song) -> Unit,
-    onItemClick: (AddSong) -> Unit,
-) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(categorySongs) { item ->
-            SongItemWithWordsAndCheckBox(item, onItemLongPress = {
-                onItemLongPress(it)
-            }) {
-                onItemClick(item)
-            }
-        }
-    }
-}
 
 @Composable
 fun TabScreenCategory(

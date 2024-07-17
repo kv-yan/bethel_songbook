@@ -8,6 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import ru.betel.app.ui.theme.actionBarColor
@@ -15,9 +16,10 @@ import ru.betel.domain.model.SongTemplate
 
 @Composable
 fun DeleteTemplateDialog(
+    mode: TemplateSaveMode,
     showDialog: MutableState<Boolean>,
     template: MutableState<SongTemplate>,
-    onConfirmationClick: (SongTemplate) -> Unit,
+    onConfirmationClick: (SongTemplate, TemplateSaveMode) -> Unit,
     onUpdateSongs: () -> Unit
 ) {
     val onDismiss = { showDialog.value = false }
@@ -28,15 +30,28 @@ fun DeleteTemplateDialog(
                 pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
                 append(template.value.createDate)
                 pop()
-                append("'օրվա ցուցակը?")
+                append("' օրվա ցուցակը?")
             }
             Text(text = dialogTitle, fontSize = 14.sp)
         }, text = {
-            Text(text = "Ջնջելու դեպքում հնարավոր չի լինի այն վերականգնել․")
+            val text = buildAnnotatedString {
+                append("Ջնջելու դեպքում այն կջնջվի ")
+                pushStyle(SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic))
+                append(
+                    when (mode) {
+                        TemplateSaveMode.SERVER -> "ԲՈԼՈՐԻ"
+                        TemplateSaveMode.LOCAL -> "ՄԻԱՅՆ ՔԵԶ"
+                    }
+                )
+                pop()
+                append(" մոտ և հնարավոր չի լինի այն վերականգնել․")
+            }
+
+            Text(text = text)
 
         }, confirmButton = {
             Text("Ջնջել", color = actionBarColor, modifier = Modifier.clickable {
-                onConfirmationClick(template.value)
+                onConfirmationClick(template.value, mode)
                 onUpdateSongs()
                 onDismiss()
             })

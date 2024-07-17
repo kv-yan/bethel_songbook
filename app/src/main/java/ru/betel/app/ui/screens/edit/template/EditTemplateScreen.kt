@@ -51,6 +51,7 @@ import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.WeekdayDropDownMenu
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.ui.widgets.tabs.CategoryTabs
 import ru.betel.app.view_model.edit.EditViewModel
@@ -72,7 +73,7 @@ fun EditTemplateScreen(
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
     editViewModel: EditViewModel
-) {}/*{
+) {
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveDialog = remember { mutableStateOf(false) }
     Box {
@@ -115,7 +116,7 @@ fun EditTemplateScreen(
             }
         }
     }
-}*/
+}
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -130,10 +131,16 @@ private fun MainContent(
     isShowingDialog: MutableState<Boolean>,
     templateFieldState: MutableState<NewTemplateFieldState>,
     editViewModel: EditViewModel
-) {}/*{
+) {
     actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
 
     val currentTemplate = editViewModel.currentTemplate.value
+    val saveMode = try {
+        currentTemplate.id.toInt()
+        TemplateSaveMode.LOCAL
+    } catch (ex: Exception) {
+        TemplateSaveMode.SERVER
+    }
 
     val tempGlorifyingSongs = editViewModel.tempGlorifyingSongs
     val tempWorshipSongs = editViewModel.tempWorshipSongs
@@ -321,8 +328,12 @@ private fun MainContent(
                                 giftSong = tempGiftSongs.toList()
                             )
 
-                            editViewModel.onSaveUpdates(
-                                editViewModel.currentTemplate.value, editedTemplate
+
+
+                            editViewModel.updateTemplate(
+                                mode = saveMode,
+                                old = editViewModel.currentTemplate.value,
+                                new = editedTemplate
                             )
                             templateViewModel.loadTemplate()
                             templateViewModel.singleTemplate.value = editedTemplate
@@ -341,8 +352,7 @@ private fun MainContent(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(
-                    text = songViewModel.searchAppBarText,
+                SearchTopAppBar(text = songViewModel.searchAppBarText,
                     onTextChange = {},
                     onCloseClicked = {},
                     textSize = settingViewModel.songbookTextSize
@@ -353,7 +363,7 @@ private fun MainContent(
                     allSongs = selectedCategoryBottomSheetAllSongs,
                     searchAppBarText = songViewModel.searchAppBarText,
                     favoriteSongs = bottomSheetFavoriteSong,
-                    categoryListForAdd = selectedCategoryForAddNewSong, isSingleMode = isSingleMode
+                    categoryListForAdd = selectedCategoryForAddNewSong,
                 ) {
                     scope.launch {
                         bottomSheetState.hide()
@@ -363,7 +373,6 @@ private fun MainContent(
             }
         })
 
-
     fun cleanAllFields() {
         editViewModel.cleanFields()
     }
@@ -372,4 +381,4 @@ private fun MainContent(
         cleanAllFields()
         navController.popBackStack()
     }
-}*/
+}

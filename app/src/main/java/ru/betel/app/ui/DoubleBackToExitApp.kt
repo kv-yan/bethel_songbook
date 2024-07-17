@@ -1,5 +1,6 @@
-package ru.betel.app
+package ru.betel.app.ui
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -25,7 +26,7 @@ fun DoubleBackToExitApp() {
 
     BackHandler {
         if (backPressedOnce) {
-            (context as? MainActivity)?.finish()
+            (context as? Activity)?.finish()
         } else {
             backPressedOnce = true
             Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()

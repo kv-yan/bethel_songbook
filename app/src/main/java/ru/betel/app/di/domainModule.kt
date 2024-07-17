@@ -1,6 +1,7 @@
 package ru.betel.app.di
 
 import org.koin.dsl.module
+import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.auth.FirebaseAuthRepo
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.network.NetworkUtils
@@ -33,6 +34,7 @@ import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
@@ -42,6 +44,7 @@ import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
+import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
 
 val domainModule = module {
     single<GetAllSongsUseCase> {
@@ -144,5 +147,13 @@ val domainModule = module {
 
     single<ShareTemplateUseCase> {
         ShareTemplateUseCase(shareSongTemplateOnPlatforms = get<ShareRepo>())
+    }
+
+    single<UpdateTemplateInLocalUseCase> {
+        UpdateTemplateInLocalUseCase(dao = get<TemplateDao>())
+    }
+
+    single<DeleteTemplateFromLocalUseCase> {
+        DeleteTemplateFromLocalUseCase(dao = get<TemplateDao>())
     }
 }

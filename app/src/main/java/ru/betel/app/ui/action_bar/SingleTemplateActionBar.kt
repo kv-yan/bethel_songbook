@@ -41,8 +41,6 @@ fun SingleTemplateActionBar(
     onShareBtnClick: () -> Unit,
     onDeleteBtnClick: (SongTemplate) -> Unit,
 ) {
-
-
     Surface(
         color = actionBarColor, modifier = Modifier
             .fillMaxWidth()

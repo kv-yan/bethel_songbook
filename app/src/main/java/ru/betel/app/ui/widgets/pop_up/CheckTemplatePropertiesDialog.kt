@@ -33,15 +33,25 @@ import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.SaveButton
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode.LOCAL
+import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode.SERVER
+import ru.betel.app.view_model.template.TemplateViewModel
+import ru.betel.domain.model.SongTemplate
+
+enum class TemplateSaveMode() {
+    LOCAL, SERVER
+}
 
 
 @Composable
 fun CheckTemplatePropertiesDialog(
-    isShowDialog: MutableState<Boolean>, onSaveClick: (Boolean) -> Unit
+    isShowDialog: MutableState<Boolean>,
+    viewModel: TemplateViewModel,
+    onSaveClick: (TemplateSaveMode,SongTemplate, Boolean) -> Unit
 ) {
     val isSelectedSelfVisibility = remember { mutableStateOf(false) }
     val isSendNotificationToAllUsers = remember { mutableStateOf(false) }
-
+    val createdNewTemplate = viewModel.createdNewTemplate
     val onDismiss = { isShowDialog.value = !isShowDialog.value }
     if (isShowDialog.value) {
         AlertDialog(onDismissRequest = { onDismiss() }, buttons = {
@@ -133,8 +143,12 @@ fun CheckTemplatePropertiesDialog(
 
                     }
 
-                    SaveButton() {
-
+                    SaveButton {
+                        val saveMode = if (isSelectedSelfVisibility.value) LOCAL else SERVER
+                        if (createdNewTemplate.value != null){
+                            onSaveClick(saveMode,
+                                createdNewTemplate.value!!, isSendNotificationToAllUsers.value)
+                        }
                     }
 
                 }
@@ -153,8 +167,6 @@ fun CheckTemplatePropertiesPrev() {
         )
     }
 
-    CheckTemplatePropertiesDialog(isShowing) {
 
-    }
 }
 

@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.get
 import ru.betel.app.request.RequestNotificationPermission
@@ -31,6 +32,7 @@ import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
 import kotlin.system.exitProcess
 
+
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -39,6 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        subscribeNotificationTopic()
         setContent {
             RequestNotificationPermission()
 
@@ -96,5 +99,15 @@ class MainActivity : ComponentActivity() {
         activity.finishAffinity()
         activity.startActivity(intent);
         exitProcess(0)
+    }
+
+    private fun subscribeNotificationTopic(){
+        FirebaseMessaging.getInstance().subscribeToTopic("new_template")
+            .addOnCompleteListener { task ->
+                var msg = "Done"
+                if (!task.isSuccessful) {
+                    msg = "Failed"
+                }
+            }
     }
 }
