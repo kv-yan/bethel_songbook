@@ -57,7 +57,6 @@ fun DatePickerScreen(dayState: MutableState<String>) {
         )
     }
 
-    // Use a state to hold the selected date
     val selectedDate = remember {
         mutableStateOf<LocalDate?>(null)
     }

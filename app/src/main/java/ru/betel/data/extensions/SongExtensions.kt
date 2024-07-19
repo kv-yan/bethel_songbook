@@ -16,10 +16,10 @@ fun Song.getMessageForShare(): String {
     return "${this.title} \n\n ${this.words}"
 }
 
-fun List<Song>.getSongsTitle(): String {
+fun List<Song>.getSongsTitle(showTonality: Boolean = true): String {
     var songList = ""
     this.forEach {
-        songList += "  ${it.title} (${it.tonality})\n"
+        songList += "  ${it.title} ${if (showTonality) "${it.tonality}" else ""} \n"
     }
     return songList
 }

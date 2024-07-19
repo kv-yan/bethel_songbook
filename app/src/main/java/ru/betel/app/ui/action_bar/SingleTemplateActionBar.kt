@@ -11,7 +11,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +42,7 @@ fun SingleTemplateActionBar(
     onSettingsBtnClick: () -> Unit,
     onShareBtnClick: () -> Unit,
     onDeleteBtnClick: (SongTemplate) -> Unit,
+    onNotificationBtnClick: (SongTemplate) -> Unit,
 ) {
     Surface(
         color = actionBarColor, modifier = Modifier
@@ -82,16 +85,14 @@ fun SingleTemplateActionBar(
                 IconButton(
                     onClick = { expanded.value = true },
                     modifier = Modifier
-                        .width(12.dp)
-                        .height(12.dp)
+                        .width(24.dp)
+                        .height(24.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_add_item),
+                        imageVector = Icons.Default.Add,
                         contentDescription = "image description",
                         tint = Color.White,
-                        modifier = Modifier
-                            .width(12.dp)
-                            .height(12.dp)
+                        modifier = Modifier.size(17.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(20.dp))
@@ -109,7 +110,21 @@ fun SingleTemplateActionBar(
                     Spacer(modifier = Modifier.width(20.dp))
                     IconButton(
                         onClick = {
-                            editViewModel.currentTemplate.value = templateViewModel.singleTemplate.value
+                            onNotificationBtnClick(templateViewModel.singleTemplate.value)
+                        }, modifier = Modifier.size(20.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Send notification",
+                            tint = Color.White,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(19.dp))
+                    IconButton(
+                        onClick = {
+                            editViewModel.currentTemplate.value =
+                                templateViewModel.singleTemplate.value
                             navController.navigate(Screens.EDIT_TEMPLATE_SCREEN.route)
                         }, modifier = Modifier.size(20.dp)
                     ) {

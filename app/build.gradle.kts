@@ -122,4 +122,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+
+// okHttp
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }

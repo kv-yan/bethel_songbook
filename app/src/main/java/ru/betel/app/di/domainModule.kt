@@ -5,6 +5,7 @@ import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.auth.FirebaseAuthRepo
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.network.NetworkUtils
+import ru.betel.domain.repository.notification.NotificationRepository
 import ru.betel.domain.repository.share.ShareRepo
 import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
 import ru.betel.domain.repository.song.get.all.GetAllSongs
@@ -25,6 +26,7 @@ import ru.betel.domain.useCase.favorite.DeleteFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
+import ru.betel.domain.useCase.notification.SendNotificationToAllUsersUseCase
 import ru.betel.domain.useCase.share.ShareSongUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
@@ -155,5 +157,9 @@ val domainModule = module {
 
     single<DeleteTemplateFromLocalUseCase> {
         DeleteTemplateFromLocalUseCase(dao = get<TemplateDao>())
+    }
+
+    single<SendNotificationToAllUsersUseCase> {
+        SendNotificationToAllUsersUseCase(notificationRepository = get<NotificationRepository>())
     }
 }

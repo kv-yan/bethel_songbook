@@ -20,6 +20,7 @@ import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.ui.TemplateType
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
+import ru.betel.domain.useCase.notification.SendNotificationToAllUsersUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
@@ -46,7 +47,8 @@ class TemplateViewModel(
     private val saveTemplateInFirebaseUseCase: SaveTemplateInFirebaseUseCase,
     private val deleteTemplateFromFirebaseUseCase: DeleteTemplateFromFirebaseUseCase,
     private val deleteTemplateFromLocalUseCase: DeleteTemplateFromLocalUseCase,
-    private val shareTemplateUseCase: ShareTemplateUseCase
+    private val shareTemplateUseCase: ShareTemplateUseCase,
+    private val sendNotificationToAllUsersUseCase: SendNotificationToAllUsersUseCase
 ) : ViewModel() {
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
         viewModelScope.launch {
@@ -203,15 +205,15 @@ class TemplateViewModel(
         return if (tempPerformerName.value.isNotEmpty()) {
             if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
                 if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
-                    if (isSingleMode.value){
-                        if (tempSingleModeSongs.value?.isNotEmpty() == true){
+                    if (isSingleMode.value) {
+                        if (tempSingleModeSongs.value?.isNotEmpty() == true) {
                             templateFieldState.value = NewTemplateFieldState.DONE
                             Result.success(Unit)
-                        }else {
+                        } else {
                             templateFieldState.value = NewTemplateFieldState.INVALID_SINGLE_MODE
                             Result.failure(IllegalAccessError())
                         }
-                    }else{
+                    } else {
                         if (tempGlorifyingSongs.value?.isNotEmpty() == true) {
                             if (tempWorshipSongs.value?.isNotEmpty() == true) {
                                 if (tempGiftSongs.value?.isNotEmpty() == true) {
@@ -246,13 +248,14 @@ class TemplateViewModel(
 
     }
 
-    fun initCategorizedSongs(){
+    fun initCategorizedSongs() {
 //        tempGlorifyingSongs.value = mutableStateListOf()
 //        tempWorshipSongs.value = mutableStateListOf()
 //        tempGiftSongs.value = mutableStateListOf()
         tempSingleModeSongs.value = mutableStateListOf()
     }
-    fun initSingleMode(){
+
+    fun initSingleMode() {
         tempGlorifyingSongs.value = mutableStateListOf()
         tempWorshipSongs.value = mutableStateListOf()
         tempGiftSongs.value = mutableStateListOf()
@@ -327,6 +330,7 @@ class TemplateViewModel(
     fun deleteTemplateFromLocal(it: SongTemplate) {
         viewModelScope.launch { deleteTemplateFromLocalUseCase.execute(it) }
     }
+
     fun shareTemplate(it: SongTemplate) {
         viewModelScope.launch { shareTemplateUseCase.execute(it) }
     }
@@ -361,4 +365,11 @@ class TemplateViewModel(
             .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9\\s]+".toRegex(), "")
             .lowercase(Locale.getDefault())
     }
+
+    fun sendNotification(item: SongTemplate) {
+        viewModelScope.launch {
+            sendNotificationToAllUsersUseCase.execute(item)
+        }
+    }
 }
+

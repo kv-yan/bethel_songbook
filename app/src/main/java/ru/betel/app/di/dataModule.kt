@@ -7,6 +7,7 @@ import org.koin.dsl.module
 import ru.betel.data.reopsitory.auth.FirebaseAuthRepoImpl
 import ru.betel.data.reopsitory.favorite.FavoriteSongsRepoImpl
 import ru.betel.data.reopsitory.network.NetworkUtilsImpl
+import ru.betel.data.reopsitory.notification.NotificationRepositoryImpl
 import ru.betel.data.reopsitory.song.delete.DeleteSongFromFirebaseImpl
 import ru.betel.data.reopsitory.song.get.all.GetAllSongsImpl
 import ru.betel.data.reopsitory.song.get.category.GetFromSongbookSongsImpl
@@ -22,9 +23,14 @@ import ru.betel.data.reopsitory.template.get.GetTemplatesFromLocalImpl
 import ru.betel.data.reopsitory.template.set.SaveTemplateToLocalImpl
 import ru.betel.data.share.ShareRepoImpl
 import ru.betel.domain.dao.FavoriteSongsDao
+import ru.betel.domain.dao.SongDao
+import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.auth.FirebaseAuthRepo
+import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.network.NetworkUtils
+import ru.betel.domain.repository.notification.NotificationRepository
 import ru.betel.domain.repository.share.ShareRepo
+import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
 import ru.betel.domain.repository.song.get.all.GetAllSongs
 import ru.betel.domain.repository.song.get.category.GetFromSongbookSongs
 import ru.betel.domain.repository.song.get.category.GetGiftSongs
@@ -32,15 +38,11 @@ import ru.betel.domain.repository.song.get.category.GetGlorifyingSongs
 import ru.betel.domain.repository.song.get.category.GetWorshipSongs
 import ru.betel.domain.repository.song.get.firebase.GetSongsFromFirebase
 import ru.betel.domain.repository.song.get.local.GetSongsFromLocal
-import ru.betel.domain.dao.SongDao
 import ru.betel.domain.repository.song.sync.SyncSongsFromFBToLocalStorage
+import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromLocal
 import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
-import ru.betel.domain.dao.TemplateDao
-import ru.betel.domain.repository.favorite.FavoriteSongsRepo
-import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
-import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 
 
@@ -69,8 +71,7 @@ val dataModule = module {
 
     single<SyncSongsFromFBToLocalStorage> {
         SyncSongsFromFBToLocalStorageImpl(
-            getSongsFromFirebase = get<GetSongsFromFirebase>(),
-            songDao = get<SongDao>()
+            getSongsFromFirebase = get<GetSongsFromFirebase>(), songDao = get<SongDao>()
         )
     }
 
@@ -131,4 +132,7 @@ val dataModule = module {
         DeleteTemplateFromFirebaseImpl(database = get<FirebaseDatabase>())
     }
 
+    single<NotificationRepository> {
+        NotificationRepositoryImpl(context = get<Context>())
+    }
 }

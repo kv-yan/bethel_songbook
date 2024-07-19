@@ -16,6 +16,7 @@ import ru.betel.domain.useCase.favorite.DeleteFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
+import ru.betel.domain.useCase.notification.SendNotificationToAllUsersUseCase
 import ru.betel.domain.useCase.share.ShareSongUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
@@ -71,7 +72,8 @@ val appModule = module {
             saveTemplateInFirebaseUseCase = get<SaveTemplateInFirebaseUseCase>(),
             deleteTemplateFromFirebaseUseCase = get<DeleteTemplateFromFirebaseUseCase>(),
             shareTemplateUseCase = get<ShareTemplateUseCase>(),
-            deleteTemplateFromLocalUseCase = get<DeleteTemplateFromLocalUseCase>()
+            deleteTemplateFromLocalUseCase = get<DeleteTemplateFromLocalUseCase>(),
+            sendNotificationToAllUsersUseCase = get<SendNotificationToAllUsersUseCase>(),
         )
     }
 

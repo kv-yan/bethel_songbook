@@ -133,7 +133,7 @@ fun SplashScreen() {
         /*Image(modifier = Modifier
             .fillMaxSize(),painter = painterResource(id = R.drawable.img), contentDescription =null )
         */Icon(
-            painter = painterResource(id = R.drawable.des_1),
+            painter = painterResource(id = R.drawable.ic_notification),
             contentDescription = null,
             tint = Color.White,
             modifier = Modifier

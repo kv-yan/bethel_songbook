@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
         exitProcess(0)
     }
 
-    private fun subscribeNotificationTopic(){
+    private fun subscribeNotificationTopic() {
         FirebaseMessaging.getInstance().subscribeToTopic("new_template")
             .addOnCompleteListener { task ->
                 var msg = "Done"

@@ -2,7 +2,6 @@ package ru.betel.app.ui.drawer_layout
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -24,6 +23,7 @@ import ru.betel.app.ui.action_bar.SingleTemplateActionBar
 import ru.betel.app.ui.action_bar.TemplateActionBar
 import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
+import ru.betel.app.ui.widgets.pop_up.SendNotificationDialog
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -55,6 +55,7 @@ fun MenuDrawerLayout(
     val actionBarState = remember { mutableStateOf(ActionBarState.HOME_SCREEN) }
     val scope = rememberCoroutineScope()
     val deleteSongDialogState = remember { mutableStateOf(false) }
+    val sendNotificationDialogState = remember { mutableStateOf(false) }
     val deleteTemplateDialogState = remember { mutableStateOf(false) }
     val songState =
         remember { mutableStateOf<Song>(Song("", "", "", "", "", false, false, false, false)) }
@@ -72,15 +73,20 @@ fun MenuDrawerLayout(
     }) {
         navController.popBackStack()
     }
-    val saveMode = mutableStateOf<TemplateSaveMode>(
-            try {
-                templateState.value.id.toInt()
-                TemplateSaveMode.LOCAL
-            } catch (ex: Exception) {
-                TemplateSaveMode.SERVER
-            }
 
-        )
+    SendNotificationDialog(showDialog = sendNotificationDialogState, template = templateState, onConfirmationClick = {
+        templateViewModel.sendNotification(it)
+        sendNotificationDialogState.value = false
+    })
+    val saveMode = mutableStateOf<TemplateSaveMode>(
+        try {
+            templateState.value.id.toInt()
+            TemplateSaveMode.LOCAL
+        } catch (ex: Exception) {
+            TemplateSaveMode.SERVER
+        }
+
+    )
 
     DeleteTemplateDialog(mode = saveMode.value,
         showDialog = deleteTemplateDialogState,
@@ -198,6 +204,9 @@ fun MenuDrawerLayout(
                     onDeleteBtnClick = {
                         templateState.value = it
                         deleteTemplateDialogState.value = true
+                    }, onNotificationBtnClick = {
+                        sendNotificationDialogState.value = true
+                        templateState.value = it
                     })
             }
 
