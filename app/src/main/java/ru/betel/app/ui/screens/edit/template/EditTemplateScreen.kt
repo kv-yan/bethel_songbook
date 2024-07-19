@@ -25,7 +25,6 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,20 +36,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarTextColor
-import ru.betel.app.ui.theme.fieldBg
-import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.AddNewSongToTemplate
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.WeekdayDropDownMenu
+import ru.betel.app.ui.widgets.pop_up.DayPickerDialog
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.ui.widgets.tabs.CategoryTabs
@@ -62,7 +58,6 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.AddSongCategory
 import ru.betel.domain.model.ui.NewTemplateFieldState
-import ru.betel.test.DayPickerDialog
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -74,8 +69,10 @@ fun EditTemplateScreen(
     settingViewModel: SettingViewModel,
     editViewModel: EditViewModel
 ) {
+    val appTheme = settingViewModel.appTheme.value
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveDialog = remember { mutableStateOf(false) }
+
     Box {
         MainContent(
             navController = navController,
@@ -98,19 +95,19 @@ fun EditTemplateScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(templateFieldState.value.bgColor, RoundedCornerShape(8.dp))
+                    .background(appTheme.fieldBackgroundColor, RoundedCornerShape(8.dp))
                     .padding(16.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(if (templateFieldState.value == NewTemplateFieldState.DONE) R.drawable.ic_done else R.drawable.ic_error),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = templateFieldState.value.msg,
-                    color = actionBarTextColor,
+                    color = appTheme.actionBarIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -132,6 +129,8 @@ private fun MainContent(
     templateFieldState: MutableState<NewTemplateFieldState>,
     editViewModel: EditViewModel
 ) {
+
+    val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
 
     val currentTemplate = editViewModel.currentTemplate.value
@@ -210,22 +209,18 @@ private fun MainContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(verticalScrollState),
-                color = MaterialTheme.colorScheme.background
+                color = appTheme.screenBackgroundColor
             ) {
                 Spacer(modifier = Modifier.width(6.dp))
 
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                ) {
-
+                Column(Modifier.fillMaxSize()) {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp, horizontal = 12.dp)
                     ) {
                         MyTextFields(
+                            appTheme = appTheme,
                             placeholder = "Առաջնորդ",
                             fieldText = tempPerformerName,
                             modifier = Modifier
@@ -243,10 +238,12 @@ private fun MainContent(
                         Surface(
                             modifier = Modifier.clickable {
                                 songViewModel.isDropdownMenuVisible.value = true
-                            }, shape = RoundedCornerShape(8.dp), color = fieldBg
+                            }, shape = RoundedCornerShape(8.dp), appTheme.fieldBackgroundColor
                         ) {
                             WeekdayDropDownMenu(
-                                selectedDay = tempWeekday, modifier = Modifier.fillMaxWidth(0.49f)
+                                appTheme = appTheme,
+                                selectedDay = tempWeekday,
+                                modifier = Modifier.fillMaxWidth(0.49f)
                             )
                         }
 
@@ -259,9 +256,11 @@ private fun MainContent(
                             .fillMaxWidth()
                             .height(38.dp),
                             shape = RoundedCornerShape(8.dp),
-                            color = fieldBg) {
+                            color = appTheme.fieldBackgroundColor) {
                             DayPickerDialog(
-                                isShowing = isShowingDayDialog, dayState = planningDay
+                                appTheme = appTheme,
+                                isShowing = isShowingDayDialog,
+                                dayState = planningDay
                             )
                         }
                     }
@@ -270,12 +269,14 @@ private fun MainContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(1.dp)
-                            .background(color = songDividerColor)
+                            .background(color = appTheme.dividerColor)
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
                     AddNewSongToTemplate(
-                        categoryTitle = "Փառաբանություն", categorySongs = tempGlorifyingSongs
+                        appTheme = appTheme,
+                        categoryTitle = "Փառաբանություն",
+                        categorySongs = tempGlorifyingSongs
                     ) {
                         selectedCategory.value = AddSongCategory.GLORIFYING
                         selectedCategoryForAddNewSong = tempGlorifyingSongs
@@ -287,7 +288,9 @@ private fun MainContent(
 
 
                     AddNewSongToTemplate(
-                        categoryTitle = "Երկրպագություն", categorySongs = tempWorshipSongs
+                        appTheme = appTheme,
+                        categoryTitle = "Երկրպագություն",
+                        categorySongs = tempWorshipSongs
                     ) {
                         selectedCategory.value = AddSongCategory.WORSHIP
                         selectedCategoryForAddNewSong = tempWorshipSongs
@@ -297,7 +300,7 @@ private fun MainContent(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     AddNewSongToTemplate(
-                        categoryTitle = "Ընծա", categorySongs = tempGiftSongs
+                        appTheme = appTheme, categoryTitle = "Ընծա", categorySongs = tempGiftSongs
                     ) {
                         selectedCategory.value = AddSongCategory.GIFT
                         selectedCategoryForAddNewSong = tempGiftSongs
@@ -306,7 +309,7 @@ private fun MainContent(
                     }
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    SaveButton {
+                    SaveButton(appTheme) {
                         templateViewModel.checkFields(
                             templateFieldState = templateFieldState,
                             tempPerformerName = tempPerformerName,

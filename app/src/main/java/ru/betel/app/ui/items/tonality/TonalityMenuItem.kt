@@ -20,17 +20,18 @@ import androidx.compose.ui.unit.sp
 import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.R
 import ru.betel.app.ui.theme.textFieldPlaceholder
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongTonality
 
 
 @Composable
-fun TonalityMenuItem(
+fun TonalityMenuItem(appTheme: AppTheme,
     isShowDropdownMenu: MutableState<Boolean>,
     tonality: SongTonality,
     onClick: (item: SongTonality) -> Unit,
 ) {
     Box(Modifier
-        .background(if (tonality.isSelected.value) drawerLayoutSecondaryColor else Color.White)
+        .background(if (tonality.isSelected.value)appTheme.fieldBackgroundColor else  appTheme.screenBackgroundColor )
         .clickable {
             onClick(tonality)
             isShowDropdownMenu.value = false
@@ -42,7 +43,7 @@ fun TonalityMenuItem(
                 lineHeight = 14.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
-                color = if (tonality.isSelected.value) textFieldPlaceholder else Color.Black,
+                color = if (tonality.isSelected.value) appTheme.primaryTextColor else appTheme.secondaryTextColor,
             ), textAlign = TextAlign.Center, modifier = Modifier.widthIn(min = 30.dp)
         )
     }

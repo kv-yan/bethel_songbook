@@ -2,6 +2,7 @@ package ru.betel.app.ui.drawer_layout
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -46,11 +47,11 @@ fun AppMainContent(
         mutableStateOf(true)
     }
     val coroutineScope = rememberCoroutineScope()
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(settingViewModel.appTheme.value.backgroundColor)) {
 
         NavHost(
             navController = navController,
-            startDestination = Screens.TEMPLATE_SCREEN.route,
+            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {
@@ -114,11 +115,9 @@ fun AppMainContent(
 
             composable(Screens.SINGLE_SONG_SCREEN.route) {
                 SingleSongScreen(
-                    isSongFromTemplate = isFrom,
                     navController = navController,
                     actionBarState = actionBarState,
                     viewModel = songViewModel,
-                    templateViewModel = templateViewModel,
                     settingViewModel = settingViewModel,
                 )
             }

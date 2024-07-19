@@ -24,14 +24,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun SongItemWithTonalityAndTemp(
+    appTheme: AppTheme,
     item: Song, index: Int,
     isLastItem: Boolean,
     fontSize: SongbookTextSize,
@@ -42,68 +42,26 @@ fun SongItemWithTonalityAndTemp(
         Modifier
             .fillMaxWidth()
             .heightIn(min = 35.dp)
-            .background(Color.White)
+            .background(appTheme.screenBackgroundColor)
             .clickable {
                 onItemClick(item)
             }, verticalArrangement = Arrangement.Center
     ) {
-        Spacer(modifier = Modifier.height(8.dp))/*
-                Row(
-                    modifier = Modifier, verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "$index.", style = TextStyle(
-                            fontSize = fontSize.normalItemDefaultTextSize,
-                            lineHeight = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(400),
-                            color = Color.Black
-                        ), modifier = Modifier.padding(start = 8.dp)
-                    )
-                    Text(
-                        text = item.title, maxLines = 1, style = TextStyle(
-                            fontSize = fontSize.normalItemDefaultTextSize,
-                            lineHeight = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(400),
-                            color = Color.Black
-                        ), modifier = Modifier
-                            .fillMaxWidth(0.6f)
-                            .padding(start = 8.dp)
-                    )
+        Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "130 | ${item.tonality}", style = TextStyle(
-                                fontSize = fontSize.normalItemDefaultTextSize,
-                                fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                                fontWeight = FontWeight(400),
-                                color = Color.Black,
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                    }
-                }
-        */
 
         Row(
             modifier = Modifier, verticalAlignment = Alignment.CenterVertically
         ) {
-            // Index on the left
             Text(
                 text = "$index.", style = TextStyle(
                     fontSize = fontSize.normalItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
-                    color = Color.Black
+                    color = appTheme.secondaryTextColor
                 ), modifier = Modifier.padding(start = 8.dp)
             )
 
-            // Centered title with remaining width
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -117,7 +75,7 @@ fun SongItemWithTonalityAndTemp(
                         fontSize = fontSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                         fontWeight = FontWeight(400),
-                        color = Color.Black
+                        color = appTheme.primaryTextColor
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -136,7 +94,7 @@ fun SongItemWithTonalityAndTemp(
                         fontSize = fontSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                         fontWeight = FontWeight(400),
-                        color = Color.Black,
+                        color = appTheme.primaryTextColor,
                     )
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -147,7 +105,7 @@ fun SongItemWithTonalityAndTemp(
             Modifier.height(8.dp)
         )
         if (!isLastItem) {
-            Divider(Modifier.fillMaxWidth(), 1.dp, color = songDividerColor)
+            Divider(Modifier.fillMaxWidth(), 1.dp, color = appTheme.dividerColor)
         }
     }
 }

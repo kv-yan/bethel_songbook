@@ -1,7 +1,9 @@
 package ru.betel.app.ui.widgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,7 +13,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -22,11 +23,12 @@ import ru.betel.app.R
 import ru.betel.app.ui.items.song.SongItemWithWords
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongCategory
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 
 @Composable
-fun SongCategoryHeader(header: String) {
+fun SongCategoryHeader(appTheme: AppTheme,header: String) {
     Text(
         text = header,
         style = TextStyle(
@@ -34,7 +36,7 @@ fun SongCategoryHeader(header: String) {
             lineHeight = 20.sp,
             fontFamily = FontFamily(Font(R.font.mardoto_regular)),
             fontWeight = FontWeight.W700,
-            color = Color.Gray,
+            color = appTheme.secondaryTextColor,
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -45,6 +47,7 @@ fun SongCategoryHeader(header: String) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategorizedLazyColumn(
+    appTheme: AppTheme = AppTheme.GRAY,
     categories: List<SongCategory>,
     textSize: SongbookTextSize,
     onEditClick: (Song) -> Unit,
@@ -52,20 +55,22 @@ fun CategorizedLazyColumn(
     onDeleteClick: (Song) -> Unit,
     onItemClick: (Song) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(Modifier.fillMaxSize().background(appTheme.screenBackgroundColor)) {
         categories.forEach { category ->
             stickyHeader {
                 Surface(
-                    color = Color.White.copy(alpha = 0.95f),
+                    color = appTheme.screenBackgroundColor.copy(alpha = 0.95f),
                     elevation = 3.dp,
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    SongCategoryHeader(header = category.charName)
+                    SongCategoryHeader(appTheme = appTheme,header = category.charName)
                 }
             }
 
             items(category.items, key = { it.id }) { song ->
                 SongItemWithWords(
+                    isEnableLongPress = true,
+                    appTheme = appTheme,
                     item = song,
                     textSize = textSize,
                     onEditClick = onEditClick,

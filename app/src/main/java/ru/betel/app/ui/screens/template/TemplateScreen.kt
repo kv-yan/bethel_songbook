@@ -1,6 +1,7 @@
 package ru.betel.app.ui.screens.template
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,7 +36,7 @@ fun TemplateScreen(
     settingViewModel: SettingViewModel,
 ) {
     actionBarState.value = ActionBarState.TEMPLATE_SCREEN
-
+    val appTheme = settingViewModel.appTheme.value
     val templates by viewModel.templateUiState
     val localTemplate by viewModel.localTemplateState.observeAsState(mutableListOf())
     val searchQuery by viewModel.searchQuery
@@ -50,27 +51,37 @@ fun TemplateScreen(
     val filteredTemplates = viewModel.searchTemplates(searchQuery)
 
     SwipeRefresh(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(appTheme.screenBackgroundColor),
         state = swipeRefreshState,
         onRefresh = viewModel::loadTemplate,
         refreshTriggerDistance = 40.dp,
     ) {
         Box(contentAlignment = Alignment.Center) {
-            val itemsList = if (viewModel.templateSelectedType.value == TemplateType.ALL) filteredTemplates else localTemplate
+            val itemsList =
+                if (viewModel.templateSelectedType.value == TemplateType.ALL) filteredTemplates else localTemplate
 
             when {
                 itemsList.isEmpty() && searchQuery.isEmpty() -> {
-                    LoadingScreen()
+                    LoadingScreen(appTheme)
                 }
+
                 itemsList.isEmpty() && searchQuery.isNotEmpty() -> {
-                    NothingFoundScreen()
+                    NothingFoundScreen(appTheme)
                 }
+
                 else -> {
                     LazyColumn(
-                        Modifier.fillMaxSize()
+                        Modifier.fillMaxSize().background(appTheme.screenBackgroundColor)
                     ) {
                         item { Spacer(modifier = Modifier.height(16.dp)) }
                         items(itemsList, key = { it.id }) { template ->
-                            SongTemplateColumItem(template, settingViewModel.songbookTextSize) {
+                            SongTemplateColumItem(
+                                appTheme= appTheme,
+                                template = template,
+                                textSize = settingViewModel.songbookTextSize
+                            ) {
                                 viewModel.singleTemplate.value = template
                                 navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
                             }

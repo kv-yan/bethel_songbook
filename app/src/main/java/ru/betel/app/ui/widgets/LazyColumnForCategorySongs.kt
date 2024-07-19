@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ru.betel.app.ui.items.song.SongItemWithTonalityAndTemp
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun LazyColumnForCategorySongs(
+    appTheme: AppTheme,
     songList: List<Song>, fontSize: SongbookTextSize, onItemClick: (Song) -> Unit,
 ) {
     LazyColumn(
@@ -22,6 +24,7 @@ fun LazyColumnForCategorySongs(
     ) {
         itemsIndexed(songList) { index, item ->
             SongItemWithTonalityAndTemp(
+                appTheme = appTheme,
                 item = item,
                 fontSize = fontSize,
                 index = index + 1,

@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.betel.app.ui.items.song.FavoriteSongItemWithWords
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun FavoriteSongsList(
+    appTheme: AppTheme,
     songs: List<Song>,
     songbookTextSize: SongbookTextSize,
     onSongSelected: (Song) -> Unit,
@@ -21,7 +23,7 @@ fun FavoriteSongsList(
     Column(Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(songs) { song ->
-                FavoriteSongItemWithWords(
+                FavoriteSongItemWithWords(appTheme = appTheme,
                     item = song,
                     textSize = songbookTextSize,
                     onItemClick = { onSongSelected(song) }) {

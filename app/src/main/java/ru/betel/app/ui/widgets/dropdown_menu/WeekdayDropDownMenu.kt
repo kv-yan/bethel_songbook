@@ -1,5 +1,6 @@
 package ru.betel.app.ui.widgets.dropdown_menu
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -29,12 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.items.weekday.WeekdayMenuItem
-import ru.betel.app.ui.theme.fieldBg
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.Weekday
 
 
 @Composable
-fun WeekdayDropDownMenu(selectedDay: MutableState<String>, modifier: Modifier = Modifier) {
+fun WeekdayDropDownMenu(
+    appTheme: AppTheme,
+    selectedDay: MutableState<String>,
+    modifier: Modifier = Modifier
+) {
     val expanded = remember { mutableStateOf(false) }
     val weekdays = remember {
         mutableStateOf(
@@ -52,7 +56,7 @@ fun WeekdayDropDownMenu(selectedDay: MutableState<String>, modifier: Modifier = 
 
     Surface(
         shape = RoundedCornerShape(8.dp),
-        color = fieldBg,
+        color = appTheme.fieldBackgroundColor,
         modifier = modifier.height(38.dp)
     ) {
         Row(
@@ -69,23 +73,29 @@ fun WeekdayDropDownMenu(selectedDay: MutableState<String>, modifier: Modifier = 
                     lineHeight = 14.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF111111),
+                    color = appTheme.primaryTextColor,
                 )
             )
             Spacer(modifier = Modifier.width(5.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_drop_down),
                 contentDescription = null,
+                tint = appTheme.primaryTextColor,
                 modifier = Modifier.size(width = 10.dp, height = 7.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
         }
         DropdownMenu(
+            modifier = Modifier.background(appTheme.fieldBackgroundColor),
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false },
         ) {
             for (weekday in weekdays.value) {
-                WeekdayMenuItem(isShowDropdownMenu = expanded, weekday = weekday) { item ->
+                WeekdayMenuItem(
+                    appTheme = appTheme,
+                    isShowDropdownMenu = expanded,
+                    weekday = weekday
+                ) { item ->
                     selectedDay.value = item.day
                     weekdays.value.forEach {
                         it.isSelected = item.day == it.day

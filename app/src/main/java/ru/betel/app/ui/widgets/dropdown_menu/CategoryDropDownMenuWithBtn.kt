@@ -1,5 +1,6 @@
 package ru.betel.app.ui.widgets.dropdown_menu
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -20,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.items.category.CategoryCheckBoxMenuItem
-import ru.betel.app.ui.theme.fieldBg
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongsCategory
 
 /*
@@ -153,13 +153,14 @@ fun CategoryDropDownMenuWithCheckBox(
     categories: List<SongsCategory>,
     categoryStates: List<MutableState<Boolean>>,
     modifier: Modifier,
+    appTheme: AppTheme,
 ) {
     val expanded = remember { mutableStateOf(false) }
     val selectedCategoriesSet = remember { mutableStateOf(mutableSetOf<String>()) }
 
     Surface(
         shape = RoundedCornerShape(8.dp),
-        color = fieldBg,
+        color = appTheme.fieldBackgroundColor,
         modifier = modifier
             .height(38.dp)
             .widthIn(min = 125.dp)
@@ -178,24 +179,28 @@ fun CategoryDropDownMenuWithCheckBox(
                     lineHeight = 14.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                     fontWeight = FontWeight(400),
-                    color = Color(0xFF111111),
+                    color = appTheme.primaryTextColor,
                 )
             )
             Spacer(modifier = Modifier.width(5.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_drop_down),
                 contentDescription = null,
+                tint = appTheme.primaryTextColor,
                 modifier = Modifier.size(width = 10.dp, height = 7.dp)
             )
 
 
             DropdownMenu(
-                modifier = Modifier.widthIn(120.dp),
+                modifier = Modifier
+                    .widthIn(120.dp)
+                    .background(appTheme.fieldBackgroundColor),
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false },
             ) {
                 for (index in categories.indices) {
                     CategoryCheckBoxMenuItem(
+                        appTheme = appTheme,
                         category = categories[index],
                         isCheckedItem = categoryStates[index]
                     ) { category, isChecked ->
@@ -209,6 +214,7 @@ fun CategoryDropDownMenuWithCheckBox(
         }
     }
 }
+
 fun updateSelectedCategory(
     selectedCategoriesSet: MutableState<MutableSet<String>>,
     category: SongsCategory,
@@ -219,7 +225,7 @@ fun updateSelectedCategory(
         SongsCategory.WORSHIP -> "Երկրպագություն"
         SongsCategory.GIFT -> "Ընծա"
         SongsCategory.FROM_SONGBOOK -> "Երգարանային"
-        SongsCategory.ALL ->""
+        SongsCategory.ALL -> ""
     }
     if (isChecked) {
         selectedCategoriesSet.value.remove(categoryText)

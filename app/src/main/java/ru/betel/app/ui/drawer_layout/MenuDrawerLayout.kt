@@ -32,6 +32,7 @@ import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
 
@@ -47,12 +48,12 @@ fun MenuDrawerLayout(
     navController: NavHostController,
     searchAppBarState: MutableState<SearchAppBarState>,
     textSize: SongbookTextSize,
+    actionBarState: MutableState<ActionBarState>,
     onSettingsBtnClick: () -> Unit,
     onLogInBtnClick: () -> Unit,
+    appTheme: AppTheme,
 ) {
     val scaffoldState = rememberScaffoldState()
-    scaffoldState.drawerState
-    val actionBarState = remember { mutableStateOf(ActionBarState.HOME_SCREEN) }
     val scope = rememberCoroutineScope()
     val deleteSongDialogState = remember { mutableStateOf(false) }
     val sendNotificationDialogState = remember { mutableStateOf(false) }
@@ -74,10 +75,12 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    SendNotificationDialog(showDialog = sendNotificationDialogState, template = templateState, onConfirmationClick = {
-        templateViewModel.sendNotification(it)
-        sendNotificationDialogState.value = false
-    })
+    SendNotificationDialog(showDialog = sendNotificationDialogState,
+        template = templateState,
+        onConfirmationClick = {
+            templateViewModel.sendNotification(it)
+            sendNotificationDialogState.value = false
+        })
     val saveMode = mutableStateOf<TemplateSaveMode>(
         try {
             templateState.value.id.toInt()
@@ -113,6 +116,7 @@ fun MenuDrawerLayout(
                     songViewModel = songViewModel,
                     settingViewModel = settingViewModel,
                     textSize = textSize,
+                    appTheme = appTheme,
                     onMenuIconClick = {
                         scope.launch {
                             scaffoldState.drawerState.open()
@@ -204,36 +208,30 @@ fun MenuDrawerLayout(
                     onDeleteBtnClick = {
                         templateState.value = it
                         deleteTemplateDialogState.value = true
-                    }, onNotificationBtnClick = {
+                    },
+                    onNotificationBtnClick = {
                         sendNotificationDialogState.value = true
                         templateState.value = it
                     })
             }
 
             ActionBarState.NEW_SONG_SCREEN -> {
-                NewSongActionBar(navController = navController)
+                NewSongActionBar(navController = navController, appTheme)
             }
 
             ActionBarState.NEW_TEMPLATE_SCREEN -> {
                 NewTemplateActionBar(
                     navController = navController,
                     editViewModel = editViewModel,
-                    templateViewModel = templateViewModel
-                )
-            }
-
-            ActionBarState.FAVORITE_SCREEN -> {
-                NewTemplateActionBar(
-                    navController = navController,
-                    editViewModel = editViewModel,
-                    templateViewModel = templateViewModel
+                    templateViewModel = templateViewModel,
+                    appTheme = appTheme
                 )
             }
         }
     },
         drawerContent = {
-
             DrawerContent(scope = scope,
+                appTheme = appTheme,
                 drawerState = scaffoldState.drawerState,
                 navController = navController,
                 onLogInBtnClick = {
@@ -245,7 +243,6 @@ fun MenuDrawerLayout(
         drawerContentColor = Color.Black,
         scaffoldState = scaffoldState,
         content = {
-
             AppMainContent(
                 navController = navController,
                 actionBarState = actionBarState,
@@ -256,6 +253,8 @@ fun MenuDrawerLayout(
             )
             it
         })
+
+
 }
 
 

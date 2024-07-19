@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -36,10 +37,12 @@ import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.theme.textFieldPlaceholder
+import ru.betel.domain.model.ui.AppTheme
 
 
 @Composable
 fun MyTextFields(
+    appTheme: AppTheme = AppTheme.DARK,
     placeholder: String,
     modifier: Modifier = Modifier,
     fieldText: MutableState<String>,
@@ -56,7 +59,7 @@ fun MyTextFields(
     var text by rememberSaveable { mutableStateOf(fieldText.value) }
 
     Surface(
-        shape = shape, color = fieldBg
+        shape = shape, color = appTheme.fieldBackgroundColor
     ) {
         Column(
             Modifier.padding(vertical = 9.dp)
@@ -80,8 +83,9 @@ fun MyTextFields(
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
                     textAlign = if (singleLine) TextAlign.Center else TextAlign.Start,
-                    color = Color.Black
+                    color = appTheme.primaryTextColor,
                 ),
+                cursorBrush = SolidColor(appTheme.primaryTextColor),
                 decorationBox = { innerTextField ->
                     Row(modifier, verticalAlignment = align) {
                         if (leadingIcon != null) leadingIcon()
@@ -91,7 +95,7 @@ fun MyTextFields(
                                 Text(
                                     placeholder,
                                     style = LocalTextStyle.current.copy(
-                                        fontSize = fontSize, color = textFieldPlaceholder
+                                        fontSize = fontSize, color = appTheme.primaryTextColor
                                     ),
                                 )
                             }
@@ -202,7 +206,7 @@ fun MyTextFields(
                 },
                 singleLine = singleLine,
                 modifier = modifier
-                        . height (20.dp)
+                    .height(20.dp)
                     .padding(start = 10.dp),
                 textStyle = TextStyle(
                     fontSize = fontSize,

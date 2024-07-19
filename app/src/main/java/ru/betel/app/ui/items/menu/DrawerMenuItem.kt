@@ -29,15 +29,16 @@ import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.ui.theme.menuTextSelectedColor
 import ru.betel.app.ui.theme.menuTextUnselectedColor
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.MenuItem
 
 @Composable
 fun DrawerMenuItem(
-    item: MenuItem, menuItemClick: () -> Unit,
+    item: MenuItem, appTheme: AppTheme, menuItemClick: () -> Unit,
 ) {
     Box(modifier = Modifier.padding(horizontal = 11.dp)) {
         Surface(
-            color = if (item.isSelected.value) drawerLayoutSecondaryColor else Color.White,
+            color = if (item.isSelected.value) drawerLayoutSecondaryColor else appTheme.screenBackgroundColor,
             shape = RoundedCornerShape(15.dp)
         ) {
             Column(modifier = Modifier.clickable {
@@ -47,8 +48,8 @@ fun DrawerMenuItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            if (item.isSelected.value) drawerLayoutSecondaryColor
-                            else Color.White
+                            if (item.isSelected.value) appTheme.fieldBackgroundColor
+                            else appTheme.screenBackgroundColor
                         )
                         .height(40.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -57,7 +58,7 @@ fun DrawerMenuItem(
                         painter = painterResource(id = if (item.isSelected.value) item.activeIcon else item.passiveIcon),
                         modifier = Modifier.size(20.dp),
                         contentDescription = null,
-                        tint = if (item.isSelected.value) actionBarColor else Color.Black
+                        tint = if (item.isSelected.value) appTheme.secondaryTextColor else appTheme.primaryTextColor
                     )
                     Text(
                         text = item.title,
@@ -65,7 +66,7 @@ fun DrawerMenuItem(
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight.Medium,
                         lineHeight = 20.sp,
-                        color = if (item.isSelected.value) menuTextSelectedColor else menuTextUnselectedColor,
+                        color = if (item.isSelected.value) appTheme.secondaryTextColor else appTheme.primaryTextColor,
                         modifier = Modifier.padding(5.dp)
                     )
                 }

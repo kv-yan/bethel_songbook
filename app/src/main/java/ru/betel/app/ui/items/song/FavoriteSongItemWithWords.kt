@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -25,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,17 +33,16 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
-import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.data.extensions.getWordsFirst2Lines
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 
 @Composable
 fun FavoriteSongItemWithWords(
+    appTheme: AppTheme,
     item: Song,
     textSize: SongbookTextSize,
     onItemClick: () -> Unit,
@@ -51,20 +50,27 @@ fun FavoriteSongItemWithWords(
 ) {
     val isShowAdditionBtn = remember { mutableStateOf(false) }
     val backgroundColor =
-        remember { mutableStateOf(if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White) }
-
+        remember { mutableStateOf(if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor) }
+    val horizontalScrollState = rememberScrollState()
     Column(modifier = Modifier
         .pointerInput(Unit) {
             detectTapGestures(onLongPress = {
                 isShowAdditionBtn.value = !isShowAdditionBtn.value
                 backgroundColor.value =
-                    if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White
+                    if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor
             }, onTap = {
                 onItemClick()
             })
         }
         .background(color = backgroundColor.value)) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(horizontalScrollState)
+                .widthIn(max = 450.dp)
+        ) {
             Spacer(modifier = Modifier.width(12.dp))
             IconButton(onClick = {
                 onRemoveFavSong(item)
@@ -72,7 +78,7 @@ fun FavoriteSongItemWithWords(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = null,
-                    tint = actionBarColor,
+                    tint = appTheme.primaryTextColor,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -85,7 +91,7 @@ fun FavoriteSongItemWithWords(
                         fontSize = textSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(500),
-                        color = Color(0xFF111111),
+                        color = appTheme.primaryTextColor,
                     )
                 )
                 Text(
@@ -93,18 +99,13 @@ fun FavoriteSongItemWithWords(
                         fontSize = textSize.smallItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(400),
-                        color = Color.Black.copy(alpha = 0.5f)
+                        color = appTheme.secondaryTextColor
                     ), modifier = Modifier.padding(start = 4.dp, top = 4.dp)
                 )
             }
 
             AnimatedVisibility(
-                visible = isShowAdditionBtn.value,
-                Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(
-                        rememberScrollState()
-                    )
+                visible = isShowAdditionBtn.value, Modifier.fillMaxWidth()
             ) {
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -115,7 +116,7 @@ fun FavoriteSongItemWithWords(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = null,
-                            tint = Color.Black,
+                            tint = appTheme.secondaryTextColor,
                             modifier = Modifier.size(15.dp, 20.dp)
                         )
                     }
@@ -124,7 +125,7 @@ fun FavoriteSongItemWithWords(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_share),
                             contentDescription = null,
-                            tint = Color.Black,
+                            tint = appTheme.secondaryTextColor,
                             modifier = Modifier.size(15.dp, 20.dp)
                         )
 
@@ -134,7 +135,7 @@ fun FavoriteSongItemWithWords(
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = null,
-                            tint = Color.Black,
+                            tint = appTheme.secondaryTextColor,
                             modifier = Modifier.size(17.dp)
                         )
                     }
@@ -142,7 +143,7 @@ fun FavoriteSongItemWithWords(
             }
         }
         Divider(
-            color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp)
+            color = appTheme.dividerColor, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp)
         )
     }
 }

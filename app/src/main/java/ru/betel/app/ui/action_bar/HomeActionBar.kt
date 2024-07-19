@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -30,11 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.AddNewItemDropdownMenu
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
 
@@ -42,13 +41,14 @@ import ru.betel.domain.model.ui.SongbookTextSize
 @Composable
 private fun ActionBarContent(
     navController: NavController,
+    appTheme: AppTheme,
     settingViewModel: SettingViewModel,
     onSearchClicked: () -> Unit,
     onMenuIconClick: () -> Unit,
     onSettingsBtnClick: () -> Unit,
 ) {
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -57,7 +57,7 @@ private fun ActionBarContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_menu),
                     contentDescription = "menu_btn",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(18.dp)
                         .height(10.dp)
@@ -70,7 +70,7 @@ private fun ActionBarContent(
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color.White,
+                    color = appTheme.actionBarIconColor,
                 )
             )
 
@@ -86,7 +86,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = "search btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(16.dp)
                             .height(16.dp)
@@ -112,7 +112,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_item),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(12.dp)
                             .height(12.dp)
@@ -124,7 +124,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
                         contentDescription = "add new item btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(3.dp)
                             .height(18.dp)
@@ -144,6 +144,7 @@ fun HomeActionBar(
     songViewModel: SongViewModel,
     settingViewModel: SettingViewModel,
     textSize: SongbookTextSize,
+    appTheme: AppTheme,
     onMenuIconClick: () -> Unit,
     onSettingsBtnClick: () -> Unit,
 ) {
@@ -151,6 +152,7 @@ fun HomeActionBar(
         SearchAppBarState.CLOSED -> {
             ActionBarContent(
                 navController = navController,
+                appTheme= appTheme,
                 settingViewModel = settingViewModel,
                 onMenuIconClick = { onMenuIconClick() },
                 onSettingsBtnClick = {
@@ -166,10 +168,10 @@ fun HomeActionBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = actionBarColor)
-                    .padding(horizontal = 11.dp, vertical = 6.dp)
+                    .background(color = appTheme.actionBarColor)
+                    .padding(horizontal = 6.dp, vertical = 6.dp)
             ) {
-                SearchTopAppBar(text = songViewModel.searchAppBarText,
+                SearchTopAppBar(appTheme, text = songViewModel.searchAppBarText,
                     textSize = textSize,
                     onTextChange = { text ->
                         songViewModel.searchAppBarText.value = text

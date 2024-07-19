@@ -19,6 +19,7 @@ import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromLocal
 import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
+import ru.betel.domain.repository.theme.ThemeRepository
 import ru.betel.domain.useCase.auth.CheckUserLoginStatusUseCase
 import ru.betel.domain.useCase.auth.LogInUseCase
 import ru.betel.domain.useCase.auth.LogOutUseCase
@@ -47,6 +48,8 @@ import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
+import ru.betel.domain.useCase.theme.GetThemeUseCase
+import ru.betel.domain.useCase.theme.SetThemeUseCase
 
 val domainModule = module {
     single<GetAllSongsUseCase> {
@@ -161,5 +164,13 @@ val domainModule = module {
 
     single<SendNotificationToAllUsersUseCase> {
         SendNotificationToAllUsersUseCase(notificationRepository = get<NotificationRepository>())
+    }
+
+    single<GetThemeUseCase> {
+        GetThemeUseCase(appThemeRepository = get<ThemeRepository>())
+    }
+
+    single<SetThemeUseCase> {
+        SetThemeUseCase(appThemeRepository = get<ThemeRepository>())
     }
 }

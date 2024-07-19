@@ -27,32 +27,30 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.ui.theme.songDividerColor
-import ru.betel.app.ui.theme.textFieldPlaceholder
 import ru.betel.data.extensions.getSongsTitle
-import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun SongTemplateColumItem(
-    template: SongTemplate, textSize: SongbookTextSize, onCLick: () -> Unit,
+    appTheme: AppTheme,
+    template: SongTemplate,
+    textSize: SongbookTextSize,
+    onCLick: () -> Unit,
 ) {
     var isShowingTemplateDetails by rememberSaveable { mutableStateOf(false) }
 
-
     Surface(
-        color = drawerLayoutSecondaryColor,
+        color = appTheme.fieldBackgroundColor,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 5.dp)
@@ -71,7 +69,7 @@ fun SongTemplateColumItem(
                         fontSize = textSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(500),
-                        color = Color.Black,
+                        color = appTheme.primaryTextColor,
                     ), modifier = Modifier.fillMaxWidth(0.4f)
                 )
 
@@ -86,7 +84,7 @@ fun SongTemplateColumItem(
                             fontSize = if (textSize.normalItemDefaultTextSize > 18.sp) 16.sp else textSize.smallItemDefaultTextSize,
                             fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                             fontWeight = FontWeight(400),
-                            color = textFieldPlaceholder,
+                            color = appTheme.secondaryTextColor,
                         ),
                     )
 
@@ -98,7 +96,7 @@ fun SongTemplateColumItem(
                             if (isShowingTemplateDetails) Icons.Filled.KeyboardArrowUp
                             else Icons.Filled.KeyboardArrowDown,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = appTheme.secondaryTextColor
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
@@ -110,49 +108,18 @@ fun SongTemplateColumItem(
                     Divider(color = songDividerColor, thickness = 1.dp)
                     Spacer(modifier = Modifier.height(1.dp))
                     Text(
-                        text = template.getSongsTitle(), lineHeight = 24.sp, style = TextStyle(
+                        text = template.getSongsTitle(),
+                        lineHeight = 24.sp,
+                        style = TextStyle(
                             fontSize = textSize.normalItemDefaultTextSize,
                             fontWeight = FontWeight(400),
-                            color = Color(0xFF111111),
-                        ), color = Color.Black, modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            color = appTheme.secondaryTextColor,
+                        ),
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun Template() {
-    val song = Song(
-        "",
-        "Բարձրյալ Արքա հավիտենական",
-        "-4",
-        "Բարձրյալ Արքա հավիտենական \nԲարձրյալ Արքա հավիտենական",
-        "70",
-        false,
-        false,
-        false,
-        false
-    )
-    val template = SongTemplate(
-        "1",
-        "2024-07-01",
-        "Կարեն Վարդանյան",
-        "Կիրակի",
-        false,
-        listOf(song, song, song, song),
-        listOf(song, song, song, song),
-        listOf(song),
-        listOf(song),
-    )
-    SongTemplateColumItem(
-        template, SongbookTextSize(
-            normalItemDefaultTextSize = 16.sp,
-            smallItemDefaultTextSize = 13.sp,
-            textFieldItemDefaultTextSize = 14.sp,
-        )
-    ) {}
 }

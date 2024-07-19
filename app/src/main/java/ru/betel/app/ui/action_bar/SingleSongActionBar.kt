@@ -50,14 +50,12 @@ fun SingleSongActionBar(
     val currentSong by songViewModel.selectedSong.collectAsState()
     val favoriteSongs by songViewModel.favoriteSongs.observeAsState(mutableListOf())
 //    val bookmarkIconState = favoriteSongs.contains(currentSong.value)
+    val appTheme by settingViewModel.appTheme
 
     val bookmarkIconState = isSongInFavorites(currentSong, favoriteSongs)
 
-    val showSnackBar = remember {
-        mutableStateOf(false)
-    }
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -67,7 +65,7 @@ fun SingleSongActionBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_go_back),
                     contentDescription = "go back",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(16.dp)
                         .height(16.dp)
@@ -98,7 +96,7 @@ fun SingleSongActionBar(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_item),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(12.dp)
                             .height(12.dp)
@@ -112,7 +110,7 @@ fun SingleSongActionBar(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_share),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -124,14 +122,13 @@ fun SingleSongActionBar(
                             songViewModel.deleteFavoriteSongs(currentSong)
                         } else {
                             songViewModel.insertFavoriteSongs()
-                            showSnackBar.value = true
                         }
                     }, modifier = Modifier.size(20.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = if (bookmarkIconState) R.drawable.ic_remove_bookmark else R.drawable.ic_add_bookmark),
                         contentDescription = "add/remove bookmark",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier.size(34.dp)
                     )
                 }
@@ -147,7 +144,7 @@ fun SingleSongActionBar(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit song",
-                            tint = Color.White,
+                            tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(34.dp)
                         )
                     }
@@ -160,7 +157,7 @@ fun SingleSongActionBar(
                         Icon(
                             painterResource(id = R.drawable.ic_delete),
                             contentDescription = "Edit song",
-                            tint = Color.White,
+                            tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -171,7 +168,7 @@ fun SingleSongActionBar(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
                         contentDescription = "add new item btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(3.dp)
                             .height(18.dp)
@@ -180,11 +177,6 @@ fun SingleSongActionBar(
                 Spacer(modifier = Modifier.width(16.dp))
             }
 
-            if (showSnackBar.value) {
-                Snackbar {
-                    Text(text = "Added to favorite list ")
-                }
-            }
         }
     }
 }

@@ -80,19 +80,25 @@ fun EditSongScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CategoryDropDownMenuWithCheckBox(
-                    selectedCategory = selectedCategory, categories = listOf(
+                    selectedCategory = selectedCategory,
+                    categories = listOf(
                         SongsCategory.GLORIFYING,
                         SongsCategory.WORSHIP,
                         SongsCategory.GIFT,
                         SongsCategory.FROM_SONGBOOK
-                    ), categoryStates = selectedItemListOf, modifier = Modifier
+                    ),
+                    categoryStates = selectedItemListOf,
+                    modifier = Modifier,
+                    appTheme = settingViewModel.appTheme.value
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
 
             Row {
                 TonalityDropDownMenu(
-                    tonality, modifier = Modifier.fillMaxSize(0.5f)
+                    appTheme = settingViewModel.appTheme.value,
+                    tonality,
+                    modifier = Modifier.fillMaxSize(0.5f)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 MyTextFields(

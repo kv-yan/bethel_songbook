@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.betel.app.ui.items.theme.AppThemeItem
 import ru.betel.app.ui.widgets.TextBtnForChangeTextSize
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.domain.model.ui.ThemeMode
@@ -40,21 +43,18 @@ fun TextSizeEditingBottomSheetContent(
                 onPlusBtnClick = { settingViewModel.increaseTextSize() })
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Add theme changing functionality
-            /*
-                        LazyRow(
-                            horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
-                        ) {
-                            items(modes) { mode ->
-                                AppThemeItem(mode) {
-                                    mode.isSelected = true
-                                    modes.forEach {
-                                        it.isSelected = mode == it
-                                    }
-                                }
-                            }
+            LazyRow(
+                horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
+            ) {
+                items(modes) { mode ->
+                    AppThemeItem(mode) {
+                        mode.isSelected = true
+                        modes.forEach {
+                            it.isSelected = mode == it
                         }
-            */
+                    }
+                }
+            }
         }
     }
 }

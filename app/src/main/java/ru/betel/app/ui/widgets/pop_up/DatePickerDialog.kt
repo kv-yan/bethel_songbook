@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package ru.betel.test
+package ru.betel.app.ui.widgets.pop_up
 
 
 import android.os.Build
@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
+import ru.betel.domain.model.ui.AppTheme
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -85,7 +86,9 @@ fun DatePickerScreen(dayState: MutableState<String>) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DayPickerDialog(isShowing: MutableState<Boolean>, dayState: MutableState<String>) {
+fun DayPickerDialog(
+    appTheme: AppTheme, isShowing: MutableState<Boolean>, dayState: MutableState<String>
+) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -99,20 +102,24 @@ fun DayPickerDialog(isShowing: MutableState<Boolean>, dayState: MutableState<Str
                 lineHeight = 14.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
-                color = Color(0xFF111111),
+                color = appTheme.primaryTextColor,
             )
         )
         Spacer(modifier = Modifier.width(5.dp))
         Icon(
             painter = painterResource(id = R.drawable.ic_drop_down),
             contentDescription = null,
+            tint = appTheme.primaryTextColor,
             modifier = Modifier.size(width = 10.dp, height = 7.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
     }
     if (isShowing.value) {
-        Surface(color = Color.White) {
-            AlertDialog(onDismissRequest = { isShowing.value = false }) {
+        Surface(color = appTheme.fieldBackgroundColor) {
+            AlertDialog(
+                onDismissRequest = { isShowing.value = false },
+                modifier = Modifier.background(appTheme.fieldBackgroundColor)
+            ) {
                 DatePickerScreen(dayState)
             }
         }

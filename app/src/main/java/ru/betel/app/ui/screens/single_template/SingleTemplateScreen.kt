@@ -1,6 +1,7 @@
 package ru.betel.app.ui.screens.single_template
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.Screens
 
 @Composable
@@ -45,11 +47,13 @@ fun SingleTemplateScreen(
     val template by templateViewModel.singleTemplate.collectAsState()
     actionBarState.value = ActionBarState.SINGLE_TEMPLATE_SCREEN
     val rememberScrollState = rememberScrollState()
+    val appTheme = settingViewModel.appTheme.value
 
     Surface {
         Column(
             Modifier
                 .fillMaxWidth()
+                .background(appTheme.screenBackgroundColor)
                 .verticalScroll(rememberScrollState)
         ) {
             Row(
@@ -58,11 +62,11 @@ fun SingleTemplateScreen(
                     .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Առաջ․՝ ${template.performerName}",
+                    text = template.performerName,
                     fontSize = fontSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color.Black,
+                    color = appTheme.secondaryTextColor,
                 )
 
                 Text(
@@ -71,7 +75,7 @@ fun SingleTemplateScreen(
                     overflow = TextOverflow.Ellipsis,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color.Black,
+                    color = appTheme.secondaryTextColor,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.End
                 )
@@ -79,9 +83,9 @@ fun SingleTemplateScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
             if (template.isSingleMode) {
-                SingleModeSongs(settingViewModel, template, navController, songViewModel)
+                SingleModeSongs(appTheme,settingViewModel, template, navController, songViewModel)
             } else {
-                CategorizedSongs(settingViewModel, template, navController, songViewModel)
+                CategorizedSongs(appTheme ,settingViewModel, template, navController, songViewModel)
             }
 
         }
@@ -96,12 +100,15 @@ fun SingleTemplateScreen(
 
 @Composable
 fun CategorizedSongs(
+    appTheme: AppTheme,
     settingViewModel: SettingViewModel,
     template: SongTemplate,
     navController: NavController,
     songViewModel: SongViewModel
 ) {
+    val appTheme = settingViewModel.appTheme.value
     CategorySongs(
+        appTheme=appTheme,
         fontSize = settingViewModel.songbookTextSize,
         categoryTitle = "Փառաբանություն",
         categorySongs = template.glorifyingSong
@@ -112,6 +119,7 @@ fun CategorizedSongs(
     }
     Spacer(modifier = Modifier.height(12.dp))
     CategorySongs(
+        appTheme=appTheme,
         categoryTitle = "Երկրպագություն",
         fontSize = settingViewModel.songbookTextSize,
         categorySongs = template.worshipSong
@@ -122,7 +130,7 @@ fun CategorizedSongs(
 
     }
     Spacer(modifier = Modifier.height(12.dp))
-    CategorySongs(
+    CategorySongs(appTheme=appTheme,
         categoryTitle = "Ընծա",
         fontSize = settingViewModel.songbookTextSize,
         categorySongs = template.giftSong
@@ -135,12 +143,13 @@ fun CategorizedSongs(
 
 @Composable
 fun SingleModeSongs(
+    appTheme: AppTheme,
     settingViewModel: SettingViewModel,
     template: SongTemplate,
     navController: NavController,
     songViewModel: SongViewModel
 ) {
-    CategorySongs(
+    CategorySongs(appTheme,
         fontSize = settingViewModel.songbookTextSize,
         categoryTitle = "Փառաբանություն",
         isSingMode = true,

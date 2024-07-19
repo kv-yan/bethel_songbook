@@ -7,10 +7,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,18 +18,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.ExoPlayer
@@ -41,25 +31,10 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 import com.google.android.exoplayer2.ui.StyledPlayerView
-import kotlinx.coroutines.delay
 import ru.betel.app.R
 
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
+import ru.betel.domain.model.ui.AppTheme
 
 @Composable
 fun SplashScreen(uri: Uri) {
@@ -106,7 +81,7 @@ private fun Context.buildPlayerView(exoPlayer: ExoPlayer) = StyledPlayerView(thi
 
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(appTheme : AppTheme) {
     val offsetY = remember { Animatable((-200f)) }
 
     LaunchedEffect(Unit) {
@@ -127,24 +102,16 @@ fun SplashScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF121212)),
+            .background(appTheme.backgroundColor),
         contentAlignment = Alignment.Center
     ) {
-        /*Image(modifier = Modifier
-            .fillMaxSize(),painter = painterResource(id = R.drawable.img), contentDescription =null )
-        */Icon(
+        Icon(
             painter = painterResource(id = R.drawable.ic_notification),
             contentDescription = null,
-            tint = Color.White,
+            tint = appTheme.primaryTextColor,
             modifier = Modifier
                 .size(225.dp)
                 .offset(y = offsetY.value.dp)
         )
     }
-}
-
-@Preview
-@Composable
-private fun Splash() {
-    SplashScreen()
 }

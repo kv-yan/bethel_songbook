@@ -3,8 +3,10 @@ package ru.betel.app.ui.screens.favorite
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,6 +48,7 @@ fun FavoriteScreen(
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
 ) {
+    val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.FAVORITE_SCREEN
 
     val categorySongs = viewModel.favoriteSongs.observeAsState(mutableListOf())
@@ -73,6 +76,7 @@ fun FavoriteScreen(
 
 
     SwipeRefresh(
+        modifier = Modifier.fillMaxSize().background(appTheme.screenBackgroundColor),
         state = swipeRefreshState,
         onRefresh = viewModel::loadSong,
         refreshTriggerDistance = 40.dp,
@@ -80,7 +84,7 @@ fun FavoriteScreen(
         if (sortedSongs.value.isEmpty() && searchAppBarText.value.isEmpty()) {
             Row(
                 Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth().background(appTheme.screenBackgroundColor)
                     .padding(top = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -91,21 +95,21 @@ fun FavoriteScreen(
                         lineHeight = 20.sp,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                         fontWeight = FontWeight(500),
-                        color = Color.Black,
+                        color = appTheme.primaryTextColor,
                     )
                 )
 
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add_bookmark),
                     contentDescription = "image description",
-                    tint = actionBarColor,
+                    tint = appTheme.primaryTextColor,
                     modifier = Modifier.size(34.dp)
                 )
 
             }
         } else if (sortedSongs.value.isNotEmpty()) {
 
-            FavoriteSongsList(songs = sortedSongs.value,
+            FavoriteSongsList(appTheme=appTheme,songs = sortedSongs.value,
                 settingViewModel.songbookTextSize,
                 onSongSelected = { song ->
                     viewModel.selectedSong.value = song
@@ -115,7 +119,7 @@ fun FavoriteScreen(
             }
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
-            NothingFoundScreen()
+            NothingFoundScreen(appTheme)
         }
     }
 

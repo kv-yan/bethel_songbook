@@ -44,8 +44,10 @@ fun SingleTemplateActionBar(
     onDeleteBtnClick: (SongTemplate) -> Unit,
     onNotificationBtnClick: (SongTemplate) -> Unit,
 ) {
+    val appTheme = settingViewModel.appTheme.value
+
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -59,7 +61,7 @@ fun SingleTemplateActionBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_go_back),
                     contentDescription = "go back",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(16.dp)
                         .height(16.dp)
@@ -91,7 +93,7 @@ fun SingleTemplateActionBar(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier.size(17.dp)
                     )
                 }
@@ -102,7 +104,7 @@ fun SingleTemplateActionBar(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_share),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -116,7 +118,7 @@ fun SingleTemplateActionBar(
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = "Send notification",
-                            tint = Color.White,
+                            tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(34.dp)
                         )
                     }
@@ -131,7 +133,7 @@ fun SingleTemplateActionBar(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit song",
-                            tint = Color.White,
+                            tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(34.dp)
                         )
                     }
@@ -144,7 +146,7 @@ fun SingleTemplateActionBar(
                         Icon(
                             painterResource(id = R.drawable.ic_delete),
                             contentDescription = "Edit song",
-                            tint = Color.White,
+                            tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -156,7 +158,7 @@ fun SingleTemplateActionBar(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
                         contentDescription = "add new item btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(3.dp)
                             .height(18.dp)

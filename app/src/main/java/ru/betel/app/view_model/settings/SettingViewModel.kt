@@ -1,6 +1,7 @@
 package ru.betel.app.view_model.settings
 
 import android.content.SharedPreferences
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,12 +14,15 @@ import ru.betel.app.ui.theme.normalItemDefaultTextSize
 import ru.betel.app.ui.theme.smallItemDefaultTextSize
 import ru.betel.app.ui.theme.textFieldItemDefaultTextSize
 import ru.betel.data.operators.plus
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 import ru.betel.domain.model.ui.ThemeMode
 import ru.betel.domain.useCase.auth.CheckUserLoginStatusUseCase
 import ru.betel.domain.useCase.auth.LogInUseCase
 import ru.betel.domain.useCase.auth.LogOutUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
+import ru.betel.domain.useCase.theme.GetThemeUseCase
+import ru.betel.domain.useCase.theme.SetThemeUseCase
 
 class SettingViewModel(
     val sharedPerf: SharedPreferences,
@@ -26,7 +30,22 @@ class SettingViewModel(
     private val logOutUseCase: LogOutUseCase,
     private val checkUserLoginStatusUseCase: CheckUserLoginStatusUseCase,
     getNetworkStateUseCase: GetNetworkStateUseCase,
+    private val getThemeUseCase: GetThemeUseCase,
+    private val setThemeUseCase: SetThemeUseCase
 ) : ViewModel() {
+
+    private val _appTheme: MutableState<AppTheme> = getThemeMode()
+    val appTheme = _appTheme
+
+    private fun getThemeMode(): MutableState<AppTheme> {
+        return mutableStateOf(getThemeUseCase.execute())
+    }
+
+    fun setTheme(themeIndex: Int, themeMode: AppTheme) {
+        setThemeUseCase.execute(themeIndex)
+        _appTheme.value = themeMode
+    }
+
     val modes = mutableStateListOf(ThemeMode.Light, ThemeMode.LightGray, ThemeMode.DarkGray)
     var checkUserLoginStatus = mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
     private var additionTextSize = mutableFloatStateOf(sharedPerf.getFloat("textSize", 0f))
@@ -44,40 +63,29 @@ class SettingViewModel(
     private fun updateTextSize(newSize: Float) {
         sharedPerf.edit().putFloat("textSize", newSize).apply()
         additionTextSize.floatValue = sharedPerf.getFloat("textSize", 0f)
-        println("settings ::updated song")
     }
 
     fun increaseTextSize() {
         val currentSize = additionTextSize.floatValue
         val newSize = currentSize + 1f
-        println("settings :: increaseTextSize :: check plus text size :: $newSize :: newSize >= 0f ${(newSize >= 0f)}")
         if (newSize >= 0f) {
             updateTextSize(newSize)
-            println("settings :: increaseTextSize :: currentSize = ${additionTextSize.floatValue}")
-            println("-------------------------------------------------------------------")
         }
     }
 
     fun decreaseTextSize() {
         val currentSize = additionTextSize.floatValue
         val newSize = currentSize - 1f
-        println("settings :: decreaseTextSize :: check minus text size :: $newSize :: newSize >= 0f ${(newSize >= 0f)}")
         if (newSize >= 0f) {
             updateTextSize(newSize)
-            println("settings :: decreaseTextSize :: currentSize = ${additionTextSize.floatValue}")
-            println("settings :: -------------------------------------------------------------------")
+
         }
     }
 
     fun signInWithEmailAndPassword(email: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = logInUseCase.execute(email, password)
-            if (result.isSuccess) {
-                println("heyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-            } else {
-                // TODO: handle can't sign in logick
-                println("nooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
-            }
+
         }
     }
 

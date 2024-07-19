@@ -1,7 +1,15 @@
 package ru.betel.app.ui.action_bar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -23,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.get
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.AddNewItemDropdownMenu
 import ru.betel.app.ui.widgets.dropdown_menu.TemplateDropdownMenu
@@ -42,8 +49,9 @@ private fun ActionBarContent(
     onMenuIconClick: () -> Unit,
     onSettingsBtnClick: () -> Unit,
 ) {
+    val appTheme = settingViewModel.appTheme.value
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -52,7 +60,7 @@ private fun ActionBarContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_menu),
                     contentDescription = "menu_btn",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(18.dp)
                         .height(10.dp)
@@ -79,7 +87,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = "search btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(16.dp)
                             .height(16.dp)
@@ -96,7 +104,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_category_more),
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(16.dp)
                             .height(12.dp)
@@ -104,7 +112,8 @@ private fun ActionBarContent(
                 }
                 TemplateDropdownMenu(
                     expanded = isShowTemplateMenu,
-                    templateViewModel.templateSelectedType, templateViewModel = templateViewModel
+                    templateViewModel.templateSelectedType,
+                    templateViewModel = templateViewModel
                 )
 
                 Spacer(modifier = Modifier.width(20.dp))
@@ -127,7 +136,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_item),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(12.dp)
                             .height(12.dp)
@@ -138,7 +147,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
                         contentDescription = "add new item btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(3.dp)
                             .height(18.dp)
@@ -163,7 +172,7 @@ fun TemplateActionBar(
     onSettingsBtnClick: () -> Unit,
 ) {
     val viewModel: SongViewModel = get()
-
+    val appTheme = settingViewModel.appTheme.value
     when (searchAppBarState.value) {
         SearchAppBarState.CLOSED -> {
             ActionBarContent(navController = navController,
@@ -180,15 +189,21 @@ fun TemplateActionBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = actionBarColor)
+                    .background(color = appTheme.actionBarColor)
                     .padding(horizontal = 11.dp, vertical = 6.dp)
             ) {
-                SearchTopAppBar(text = templateViewModel.searchQuery, onTextChange = { text ->
-                    templateViewModel.searchQuery.value = text
-                }, onCloseClicked = {
-                    searchAppBarState.value = SearchAppBarState.CLOSED
-                    viewModel.searchAppBarText.value = ""
-                }, textSize = textSize)
+                SearchTopAppBar(
+                    appTheme = appTheme,
+                    text = templateViewModel.searchQuery,
+                    onTextChange = { text ->
+                        templateViewModel.searchQuery.value = text
+                    },
+                    onCloseClicked = {
+                        searchAppBarState.value = SearchAppBarState.CLOSED
+                        viewModel.searchAppBarText.value = ""
+                    },
+                    textSize = textSize
+                )
             }
         }
     }

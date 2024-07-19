@@ -21,11 +21,12 @@ import androidx.navigation.NavController
 import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.domain.model.ui.Screens
 import ru.betel.app.R
+import ru.betel.domain.model.ui.AppTheme
 
 @Composable
-fun NewSongActionBar(navController: NavController) {
+fun NewSongActionBar(navController: NavController, appTheme: AppTheme) {
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -34,7 +35,7 @@ fun NewSongActionBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_go_back),
                     contentDescription = "menu_btn",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(16.dp)
                         .height(16.dp)
@@ -47,7 +48,7 @@ fun NewSongActionBar(navController: NavController) {
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color.White,
+                    color = appTheme.actionBarIconColor,
                 )
             )
         }

@@ -21,11 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarColor
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 import ru.betel.domain.model.ui.TrailingIconState
 
 @Composable
 fun SearchTopAppBar(
+    appTheme: AppTheme = AppTheme.GRAY,
     text: MutableState<String>,
     textSize: SongbookTextSize,
     onTextChange: (String) -> Unit,
@@ -46,12 +48,12 @@ fun SearchTopAppBar(
         singleLine = true,
         fieldText = text,
         fontSize = textSize.textFieldItemDefaultTextSize,
-        placeholder = "Որոնում",
+        placeholder = " Որոնում",
         leadingIcon = {
             Row {
                 Icon(painter = painterResource(id = R.drawable.ic_search),
                     contentDescription = null,
-                    tint = actionBarColor,
+                    tint = appTheme.actionBarColor,
                     modifier = Modifier
                         .width(16.dp)
                         .height(16.dp)
@@ -87,7 +89,7 @@ fun SearchTopAppBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = null,
-                    tint = actionBarColor,
+                    tint = appTheme.actionBarColor,
                     modifier = Modifier.size(12.dp)
                 )
             }

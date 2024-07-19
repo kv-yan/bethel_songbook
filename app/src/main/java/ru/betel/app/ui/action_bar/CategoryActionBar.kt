@@ -38,8 +38,10 @@ private fun ActionBarContent(
     onMenuIconClick: () -> Unit,
     onSettingsBtnClick: () -> Unit,
 ) {
+
+    val appTheme = settingViewModel.appTheme.value
     Surface(
-        color = actionBarColor, modifier = Modifier
+        color = appTheme.actionBarColor, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
@@ -48,7 +50,7 @@ private fun ActionBarContent(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_menu),
                     contentDescription = "menu_btn",
-                    tint = Color.White,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier
                         .width(18.dp)
                         .height(10.dp)
@@ -61,7 +63,7 @@ private fun ActionBarContent(
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color.White,
+                    color = appTheme.actionBarIconColor,
                 )
             )
 
@@ -75,7 +77,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_search),
                         contentDescription = "search btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(16.dp)
                             .height(16.dp)
@@ -90,7 +92,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_category_more),
                         contentDescription = "search btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(16.dp)
                             .height(12.dp)
@@ -116,7 +118,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_item),
                         contentDescription = "image description",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(12.dp)
                             .height(12.dp)
@@ -127,7 +129,7 @@ private fun ActionBarContent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_more_vert),
                         contentDescription = "add new item btn",
-                        tint = Color.White,
+                        tint = appTheme.actionBarIconColor,
                         modifier = Modifier
                             .width(3.dp)
                             .height(18.dp)
@@ -151,6 +153,7 @@ fun CategoryActionBar(
     textSize: SongbookTextSize,
     onSettingsBtnClick: () -> Unit,
 ) {
+    val appTheme = settingViewModel.appTheme.value
     when (searchAppBarState.value) {
         SearchAppBarState.CLOSED -> {
             ActionBarContent(
@@ -167,10 +170,10 @@ fun CategoryActionBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = actionBarColor)
+                    .background(color = appTheme.actionBarColor)
                     .padding(horizontal = 11.dp, vertical = 6.dp)
             ) {
-                SearchTopAppBar(text = viewModel.searchAppBarText, onTextChange = { text ->
+                SearchTopAppBar(appTheme = appTheme,text = viewModel.searchAppBarText, onTextChange = { text ->
                     viewModel.searchAppBarText.value = text
                     println("${viewModel.searchAppBarText.value} :: $text")
                 }, onCloseClicked = {

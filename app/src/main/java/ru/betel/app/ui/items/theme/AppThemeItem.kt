@@ -75,10 +75,3 @@ fun AppThemeItem(mode: ThemeMode, onItemClick: () -> Unit) {
         }
     }
 }
-
-
-@Preview
-@Composable
-fun AppThemeItemPrev() {
-    AppThemeItem(ThemeMode.LightGray){}
-}

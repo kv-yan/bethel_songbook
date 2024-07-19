@@ -25,7 +25,6 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,7 +36,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
@@ -46,16 +44,13 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.betel.app.R
-import ru.betel.app.ui.screens.new_song.cleanFieldsValues
-import ru.betel.app.ui.theme.actionBarTextColor
-import ru.betel.app.ui.theme.fieldBg
-import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.AddNewSongToTemplate
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.WeekdayDropDownMenu
 import ru.betel.app.ui.widgets.pop_up.CheckTemplatePropertiesDialog
+import ru.betel.app.ui.widgets.pop_up.DayPickerDialog
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.ui.widgets.tabs.CategoryTabs
@@ -67,8 +62,8 @@ import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.AddSong
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.NewTemplateFieldState
-import ru.betel.test.DayPickerDialog
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -79,6 +74,7 @@ fun NewTemplateScreen(
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
 ) {
+    val appTheme = settingViewModel.appTheme.value
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveStateDialog = remember { mutableStateOf(false) }
     val isShowingSaveModeDialog = remember { mutableStateOf(false) }
@@ -104,19 +100,19 @@ fun NewTemplateScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(templateFieldState.value.bgColor, RoundedCornerShape(8.dp))
+                    .background(appTheme.primaryButtonColor, RoundedCornerShape(8.dp))
                     .padding(16.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(if (templateFieldState.value == NewTemplateFieldState.DONE) R.drawable.ic_done else R.drawable.ic_error),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = appTheme.primaryIconColor,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = templateFieldState.value.msg,
-                    color = actionBarTextColor,
+                    color = appTheme.primaryIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -137,6 +133,8 @@ private fun MainContent(
     isShowingSaveStateDialog: MutableState<Boolean>,
     isShowingSaveModeDialog: MutableState<Boolean>
 ) {
+    val appTheme = settingViewModel.appTheme.value
+
     val isShowingDayDialog = remember { mutableStateOf(false) }
 
     val selectedCategory = remember { mutableStateOf("Փառաբանություն") }
@@ -169,8 +167,10 @@ private fun MainContent(
         templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> =
         templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =templateViewModel.tempSingleModeAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> = templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempSingleModeAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         "Փառաբանություն" -> bottomSheetAllSongsForGlorifyingCategory
         "Երկրպագություն" -> bottomSheetAllSongsForWorshipCategory
@@ -188,13 +188,11 @@ private fun MainContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(verticalScrollState),
-                color = MaterialTheme.colorScheme.background
+                color = appTheme.screenBackgroundColor
             ) {
                 actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
                 Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
+                    Modifier.fillMaxSize()
                 ) {
 
                     Row(
@@ -203,6 +201,7 @@ private fun MainContent(
                             .padding(vertical = 6.dp, horizontal = 12.dp)
                     ) {
                         MyTextFields(
+                            appTheme = appTheme,
                             placeholder = "Առաջնորդ",
                             fieldText = templateViewModel.tempPerformerName,
                             modifier = Modifier
@@ -220,9 +219,12 @@ private fun MainContent(
                         Surface(
                             modifier = Modifier.clickable {
                                 songViewModel.isDropdownMenuVisible.value = true
-                            }, shape = RoundedCornerShape(8.dp), color = fieldBg
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            color = appTheme.fieldBackgroundColor
                         ) {
                             WeekdayDropDownMenu(
+                                appTheme = appTheme,
                                 selectedDay = templateViewModel.tempWeekday,
                                 modifier = Modifier.fillMaxWidth(0.49f)
                             )
@@ -237,8 +239,9 @@ private fun MainContent(
                             .fillMaxWidth()
                             .height(38.dp),
                             shape = RoundedCornerShape(8.dp),
-                            color = fieldBg) {
+                            color = appTheme.fieldBackgroundColor) {
                             DayPickerDialog(
+                                appTheme = appTheme,
                                 isShowing = isShowingDayDialog,
                                 dayState = templateViewModel.planningDay
                             )
@@ -249,13 +252,14 @@ private fun MainContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(1.dp)
-                            .background(color = songDividerColor)
+                            .background(color = appTheme.dividerColor)
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     if (templateViewModel.isSingleMode.value) {
                         SingleModeSongs(
+                            appTheme = appTheme,
                             templateViewModel = templateViewModel,
                             selectedCategory = selectedCategory,
                             selectedCategoryForAddNewSong = selectedCategoryForAddNewSong,
@@ -266,6 +270,7 @@ private fun MainContent(
                         )
                     } else {
                         CategorizedSongs(
+                            appTheme = appTheme,
                             templateViewModel = templateViewModel,
                             selectedCategory = selectedCategory,
                             selectedCategoryForAddNewSong = selectedCategoryForAddNewSong,
@@ -280,7 +285,7 @@ private fun MainContent(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    SaveButton {
+                    SaveButton(appTheme = appTheme) {
                         templateViewModel.checkFields(templateFieldState)
                         isShowingSaveStateDialog.value =
                             templateFieldState.value != NewTemplateFieldState.DONE
@@ -291,10 +296,14 @@ private fun MainContent(
                             performerName = templateViewModel.tempPerformerName.value,
                             weekday = templateViewModel.tempWeekday.value,
                             isSingleMode = isSingleMode,
-                            glorifyingSong = if (!isSingleMode) templateViewModel.tempGlorifyingSongs.value ?: mutableListOf() else mutableListOf(),
-                            worshipSong = if (!isSingleMode) templateViewModel.tempWorshipSongs.value ?: mutableListOf() else mutableListOf(),
-                            giftSong = if (!isSingleMode) templateViewModel.tempGiftSongs.value ?: mutableListOf() else mutableListOf(),
-                            singleModeSongs = if (isSingleMode) templateViewModel.tempSingleModeSongs.value ?: mutableListOf() else mutableListOf()
+                            glorifyingSong = if (!isSingleMode) templateViewModel.tempGlorifyingSongs.value
+                                ?: mutableListOf() else mutableListOf(),
+                            worshipSong = if (!isSingleMode) templateViewModel.tempWorshipSongs.value
+                                ?: mutableListOf() else mutableListOf(),
+                            giftSong = if (!isSingleMode) templateViewModel.tempGiftSongs.value
+                                ?: mutableListOf() else mutableListOf(),
+                            singleModeSongs = if (isSingleMode) templateViewModel.tempSingleModeSongs.value
+                                ?: mutableListOf() else mutableListOf()
                         )
 
                         if (templateFieldState.value == NewTemplateFieldState.DONE) {
@@ -311,7 +320,7 @@ private fun MainContent(
 
                     CheckTemplatePropertiesDialog(
                         isShowingSaveModeDialog, templateViewModel
-                    ) { mode,createdTemplate, isSendingNotification ->
+                    ) { mode, createdTemplate, isSendingNotification ->
                         when (mode) {
                             TemplateSaveMode.LOCAL -> {
                                 templateViewModel.saveTemplateToLocalStorage(createdTemplate)
@@ -319,7 +328,7 @@ private fun MainContent(
 
                             TemplateSaveMode.SERVER -> {
                                 templateViewModel.saveTemplateToFirebase(createdTemplate)
-                                if (isSendingNotification){
+                                if (isSendingNotification) {
                                     // TODO: sent notification
                                 }
                             }
@@ -366,6 +375,7 @@ private fun MainContent(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategorizedSongs(
+    appTheme: AppTheme,
     templateViewModel: TemplateViewModel,
     selectedCategory: MutableState<String>,
     selectedCategoryForAddNewSong: MutableLiveData<SnapshotStateList<Song>>,
@@ -379,7 +389,7 @@ fun CategorizedSongs(
     templateViewModel.initCategorizedSongs()
     templateViewModel.tempGlorifyingSongs.value?.let {
         AddNewSongToTemplate(
-            categoryTitle = "Փառաբանություն", categorySongs = it
+            appTheme = appTheme, categoryTitle = "Փառաբանություն", categorySongs = it
         ) {
             selectedCategory.value = "Փառաբանություն"
             selectedCategoryForAddNewSong.postValue(templateViewModel.tempGlorifyingSongs.value)
@@ -393,7 +403,7 @@ fun CategorizedSongs(
 
     templateViewModel.tempWorshipSongs.value?.let {
         AddNewSongToTemplate(
-            categoryTitle = "Երկրպագություն", categorySongs = it
+            appTheme = appTheme, categoryTitle = "Երկրպագություն", categorySongs = it
         ) {
             selectedCategory.value = "Երկրպագություն"
             selectedCategoryForAddNewSong.value = templateViewModel.tempWorshipSongs.value
@@ -405,7 +415,7 @@ fun CategorizedSongs(
 
     templateViewModel.tempGiftSongs.value?.let {
         AddNewSongToTemplate(
-            categoryTitle = "Ընծա", categorySongs = it
+            appTheme = appTheme, categoryTitle = "Ընծա", categorySongs = it
         ) {
             selectedCategory.value = "Ընծա"
             selectedCategoryForAddNewSong.value = templateViewModel.tempGiftSongs.value
@@ -419,6 +429,7 @@ fun CategorizedSongs(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SingleModeSongs(
+    appTheme: AppTheme,
     templateViewModel: TemplateViewModel,
     selectedCategory: MutableState<String>,
     selectedCategoryForAddNewSong: MutableLiveData<SnapshotStateList<Song>>,
@@ -430,7 +441,7 @@ fun SingleModeSongs(
     templateViewModel.initSingleMode()
     templateViewModel.tempSingleModeSongs.value?.let {
         AddNewSongToTemplate(
-            categoryTitle = "Առանձնացված", categorySongs = it
+            appTheme = appTheme, categoryTitle = "Առանձնացված", categorySongs = it
         ) {
             selectedCategory.value = "Առանձնացված"
             selectedCategoryForAddNewSong.value = it

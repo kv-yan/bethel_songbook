@@ -9,7 +9,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-import org.json.JSONArray
 import org.json.JSONObject
 import ru.betel.data.extensions.getNotificationBody
 import ru.betel.domain.constants.serverKey
@@ -19,8 +18,10 @@ import ru.betel.domain.repository.notification.NotificationRepository
 import java.io.IOException
 
 
+
 class NotificationRepositoryImpl(private val context: Context) : NotificationRepository {
     private val TAG = "ERROR"
+
     override suspend fun sendNotification(template: SongTemplate) {
         val title = "${template.performerName}ը ավելացրել է նոր ցուցակ․"
         val body = template.getNotificationBody()
@@ -33,23 +34,12 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
                 put("title", title)
                 put("body", body)
             })
-/*
             put("data", JSONObject().apply {
-                put("id", template.id)
-                put("createDate", template.createDate)
-                put("performerName", template.performerName)
-                put("weekday", template.weekday)
-                put("isSingleMode", template.isSingleMode)
-                put("glorifyingSong", JSONArray(template.glorifyingSong.map { it.toJson() }))
-                put("worshipSong", JSONArray(template.worshipSong.map { it.toJson() }))
-                put("giftSong", JSONArray(template.giftSong.map { it.toJson() }))
-                put("singleModeSongs", JSONArray(template.singleModeSongs.map { it.toJson() }))
+                put("template_id", template.id)
             })
-*/
         }
 
         val requestBody = RequestBody.create("application/json; charset=utf-8".toMediaType(), json.toString())
-
         val request = Request.Builder().url("https://fcm.googleapis.com/fcm/send").post(requestBody)
             .addHeader("Authorization", "key=$serverKey")
             .addHeader("Content-Type", "application/json").build()
@@ -62,15 +52,30 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    println("Notification sent successfully.")
+                    Log.d(TAG, "Notification sent successfully.")
                 } else {
-                    println("Failed to send notification.")
+                    val errorBody = response.body?.string()
+                    Log.e(TAG, "Failed to send notification. Response: $errorBody")
                 }
             }
         })
     }
 
-    fun Song.toJson(): JSONObject {
+    private fun SongTemplate.toJson(): JSONObject {
+        return JSONObject().apply {
+            put("id", id)
+            put("createDate", createDate)
+            put("performerName", performerName)
+            put("weekday", weekday)
+            put("isSingleMode", isSingleMode)
+            put("glorifyingSong", glorifyingSong.map { it.toJson() })
+            put("worshipSong", worshipSong.map { it.toJson() })
+            put("giftSong", giftSong.map { it.toJson() })
+            put("singleModeSongs", singleModeSongs.map { it.toJson() })
+        }
+    }
+
+    private fun Song.toJson(): JSONObject {
         return JSONObject().apply {
             put("id", id)
             put("title", title)

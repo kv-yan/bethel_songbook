@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+src/main/java/ru/betel/domain/constants/constant.kt

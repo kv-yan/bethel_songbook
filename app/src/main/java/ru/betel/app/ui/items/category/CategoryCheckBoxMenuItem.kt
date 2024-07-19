@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,12 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.textFieldPlaceholder
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongsCategory
 
 @Composable
 fun CategoryCheckBoxMenuItem(
+    appTheme: AppTheme,
     isCheckedItem: MutableState<Boolean>,
     category: SongsCategory,
     isCheckBox: Boolean = true,
@@ -43,9 +43,7 @@ fun CategoryCheckBoxMenuItem(
                 onClick(category, isCheckedItem.value)
             }
             .fillMaxWidth()
-            .padding(6.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+            .padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.width(18.dp))
 
         if (isCheckBox) {
@@ -53,27 +51,32 @@ fun CategoryCheckBoxMenuItem(
                 checked = isCheckedItem.value,
                 modifier = Modifier.size(1.dp),
                 onCheckedChange = { onClick(category, isCheckedItem.value) },
-                colors = CheckboxDefaults.colors(checkedColor = actionBarColor)
+                colors = CheckboxDefaults.colors(
+                    checkedColor = appTheme.primaryTextColor,
+                    checkmarkColor = appTheme.fieldBackgroundColor,
+                    uncheckedColor = appTheme.secondaryTextColor
+                )
             )
         } else {
             RadioButton(
                 selected = isCheckedItem.value,
                 modifier = Modifier.size(1.dp),
                 onClick = { onClick(category, isCheckedItem.value) },
-                colors = RadioButtonDefaults.colors(selectedColor = actionBarColor)
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = appTheme.primaryTextColor,
+                    unselectedColor = appTheme.secondaryTextColor
+                )
             )
         }
 
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = category.title,
-            style = TextStyle(
+            text = category.title, style = TextStyle(
                 fontSize = 13.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
-                color = if (isCheckedItem.value) Color.Black else textFieldPlaceholder,
-            ),
-            modifier = Modifier.padding(start = 8.dp)
+                color = if (isCheckedItem.value) appTheme.primaryTextColor else appTheme.secondaryTextColor,
+            ), modifier = Modifier.padding(start = 8.dp)
         )
         Spacer(modifier = Modifier.width(18.dp))
     }

@@ -16,27 +16,27 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.R
+import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.app.ui.theme.textFieldPlaceholder
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.Weekday
 
 @Composable
 fun WeekdayMenuItem(
+    appTheme: AppTheme,
     isShowDropdownMenu: MutableState<Boolean>,
     weekday: Weekday,
     onClick: (item: Weekday) -> Unit,
 ) {
-    Box(
-        Modifier
-            .widthIn(min = 130.dp)
-            .background(if (weekday.isSelected) drawerLayoutSecondaryColor else Color.White)
-            .clickable {
-                onClick(weekday)
-                isShowDropdownMenu.value = false
-            }
-            .padding(vertical = 5.dp, horizontal = 11.dp)
-    ) {
+    Box(Modifier
+        .widthIn(min = 130.dp)
+        .background(if (weekday.isSelected) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor)
+        .clickable {
+            onClick(weekday)
+            isShowDropdownMenu.value = false
+        }
+        .padding(vertical = 5.dp, horizontal = 11.dp)) {
         Text(
             text = weekday.day,
             style = TextStyle(
@@ -44,7 +44,7 @@ fun WeekdayMenuItem(
                 lineHeight = 14.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
-                color = if (weekday.isSelected) textFieldPlaceholder else Color.Black,
+                color = if (weekday.isSelected) appTheme.primaryTextColor else appTheme.secondaryTextColor,
             ),
         )
 

@@ -38,6 +38,7 @@ fun TemplatesSongScreen(
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
     val template by templateViewModel.singleTemplate.collectAsState()
     val clickedSong by songViewModel.selectedSong.collectAsState()
+    val appTheme by settingViewModel.appTheme
 
     val currentSongIndex = remember {
         mutableStateOf(0)
@@ -70,6 +71,7 @@ fun TemplatesSongScreen(
         state = pagerState, modifier = Modifier.fillMaxSize()
     ) { page ->
         TemplatesSongItem(
+            appTheme = appTheme,
             song = currentTemplateSongsList[page],
             textSize = settingViewModel.songbookTextSize,
             remainingQuantity = "${page + 1} | ${currentTemplateSongsList.size}",

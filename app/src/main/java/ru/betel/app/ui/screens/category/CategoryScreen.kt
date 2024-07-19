@@ -3,11 +3,13 @@ package ru.betel.app.ui.screens.category
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -31,6 +33,7 @@ fun CategoryScreen(
     settingViewModel: SettingViewModel
 ) {
     actionBarState.value = ActionBarState.CATEGORY_SCREEN
+    val appTheme = settingViewModel.appTheme.value
 
     val categorySongs = when (viewModel.selectedCategory.collectAsState().value) {
         SongsCategory.ALL -> viewModel.allSongState.collectAsState(emptyList())
@@ -61,19 +64,21 @@ fun CategoryScreen(
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
 
 
-
     SwipeRefresh(
+        modifier = Modifier.background(appTheme.screenBackgroundColor),
         state = swipeRefreshState,
         onRefresh = viewModel::loadSong,
         refreshTriggerDistance = 40.dp,
     ) {
         if (sortedSongs.value.isEmpty() && searchAppBarText.value.isEmpty()) {
-            // showing loading animation
-            LoadingScreen()
+            LoadingScreen(appTheme)
         } else if (sortedSongs.value.isNotEmpty()) {
             // showing all songs
-            SongsList(songs = sortedSongs.value,
-                settingViewModel.songbookTextSize,
+            SongsList(
+                appTheme = appTheme,
+                songs = sortedSongs.value,
+                isEnableLongPress = false,
+                songbookTextSize = settingViewModel.songbookTextSize,
                 onEditClick = {},
                 onShareClick = {},
                 onDeleteClick = {}) { song ->
@@ -83,7 +88,7 @@ fun CategoryScreen(
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
             // showing nothing found page
-            NothingFoundScreen()
+            NothingFoundScreen(appTheme)
         }
     }
 

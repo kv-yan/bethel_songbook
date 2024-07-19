@@ -23,10 +23,12 @@ import ru.betel.app.R
 import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.widgets.pop_up.EditSongTonAndTemp
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun CategorySongs(
+    appTheme: AppTheme,
     categoryTitle: String,
     fontSize: SongbookTextSize,
     isSingMode: Boolean = false,
@@ -53,7 +55,7 @@ fun CategorySongs(
     }
 
     Surface(
-        color = fieldBg,
+        color = appTheme.fieldBackgroundColor,
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.padding(horizontal = 12.dp)
     ) {
@@ -68,7 +70,7 @@ fun CategorySongs(
                         lineHeight = 14.sp,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(400),
-                        color = Color(0xFF111111),
+                        color = appTheme.secondaryTextColor,
                     ),
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
@@ -78,13 +80,13 @@ fun CategorySongs(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             Surface(
-                color = Color.White, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(
+                color = appTheme.screenBackgroundColor, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(
                     start = 10.dp,
                     end = 10.dp,
                     bottom = if (categorySongs.isEmpty()) 0.dp else 12.dp
                 )
             ) {
-                LazyColumnForCategorySongs(songList = categorySongs, fontSize = fontSize) {
+                LazyColumnForCategorySongs(appTheme = appTheme,songList = categorySongs, fontSize = fontSize) {
                     onItemClick(it)
                 }
             }

@@ -27,10 +27,12 @@ import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.textFieldPlaceholder
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
 fun TemplatesSongItem(
+    appTheme: AppTheme,
     song: Song, textSize: SongbookTextSize, remainingQuantity: String, songViewModel: SongViewModel
 ) {
     val scrollState = rememberScrollState()
@@ -50,7 +52,7 @@ fun TemplatesSongItem(
                     fontSize = textSize.normalItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(700),
-                    color = actionBarColor,
+                    color = appTheme.primaryTextColor,
                 ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -64,7 +66,7 @@ fun TemplatesSongItem(
                     fontSize = textSize.normalItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(700),
-                    color = textFieldPlaceholder,
+                    color = appTheme.secondaryTextColor,
                 ),
                 textAlign = TextAlign.End,
                 modifier = Modifier
@@ -85,7 +87,7 @@ fun TemplatesSongItem(
                     fontSize = textSize.normalItemDefaultTextSize,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(700),
-                    color = textFieldPlaceholder,
+                    color = appTheme.secondaryTextColor,
                 ),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
@@ -101,7 +103,7 @@ fun TemplatesSongItem(
                 fontSize = textSize.normalItemDefaultTextSize,
                 fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                 fontWeight = FontWeight(400),
-                color = Color.Black.copy(alpha = 0.7f)
+                color = appTheme.secondaryTextColor
             ),
             modifier = Modifier
                 .padding(start = 20.dp, end = 20.dp, bottom = 50.dp)

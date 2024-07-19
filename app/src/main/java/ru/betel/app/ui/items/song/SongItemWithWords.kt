@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,15 +37,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
-import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
 import ru.betel.data.extensions.getWordsFirst2Lines
 import ru.betel.data.reopsitory.network.NetworkUtilsImpl
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 
 @Composable
 fun SongItemWithWords(
+    isEnableLongPress: Boolean = true,
+    appTheme: AppTheme,
     item: Song,
     textSize: SongbookTextSize,
     onEditClick: (Song) -> Unit,
@@ -58,24 +59,19 @@ fun SongItemWithWords(
     val networkUtils = remember { NetworkUtilsImpl(context) }
     val isShowAdditionBtn = remember { mutableStateOf(false) }
     val backgroundColor =
-        remember { derivedStateOf { if (isShowAdditionBtn.value) drawerLayoutSecondaryColor else Color.White } }
+        remember { derivedStateOf { if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor } }
     val horizontalScrollState = rememberScrollState()
     val isConnected = remember { networkUtils.isConnectedNetwork() }
 
-    Column(
-        modifier = Modifier
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        if (isConnected) {
-                            isShowAdditionBtn.value = !isShowAdditionBtn.value
-                        }
-                    },
-                    onTap = { onItemClick() }
-                )
-            }
-            .background(color = backgroundColor.value)
-    ) {
+    Column(modifier = Modifier
+        .pointerInput(Unit) {
+            detectTapGestures(onLongPress = {
+                if (isConnected) {
+                    isShowAdditionBtn.value = !isShowAdditionBtn.value
+                }
+            }, onTap = { onItemClick() })
+        }
+        .background(color = backgroundColor.value)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -85,12 +81,11 @@ fun SongItemWithWords(
         ) {
             Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 Text(
-                    text = item.title,
-                    style = TextStyle(
+                    text = item.title, style = TextStyle(
                         fontSize = textSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight.W500,
-                        color = Color(0xFF111111),
+                        color = appTheme.primaryTextColor,
                     )
                 )
                 Text(
@@ -98,13 +93,13 @@ fun SongItemWithWords(
                         fontSize = textSize.smallItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                         fontWeight = FontWeight(400),
-                        color = Color.Black.copy(alpha = 0.5f)
+                        color = appTheme.secondaryTextColor
                     ), modifier = Modifier.padding(start = 4.dp, top = 4.dp)
                 )
             }
 
 
-            if (isConnected) {
+            if (isConnected && isEnableLongPress) {
                 AnimatedVisibility(
                     visible = isShowAdditionBtn.value,
                     modifier = Modifier.horizontalScroll(rememberScrollState())
@@ -121,20 +116,19 @@ fun SongItemWithWords(
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = null,
-                                    tint = Color.Black,
+                                    tint = appTheme.primaryIconColor,
                                     modifier = Modifier.size(15.dp, 20.dp)
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         IconButton(
-                            onClick = { onShareClick(item) },
-                            modifier = Modifier.size(20.dp, 20.dp)
+                            onClick = { onShareClick(item) }, modifier = Modifier.size(20.dp, 20.dp)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_share),
                                 contentDescription = null,
-                                tint = Color.Black,
+                                tint = appTheme.primaryIconColor,
                                 modifier = Modifier.size(15.dp, 20.dp)
                             )
                         }
@@ -147,7 +141,7 @@ fun SongItemWithWords(
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = null,
-                                    tint = Color.Black,
+                                    tint = appTheme.primaryIconColor,
                                     modifier = Modifier.size(17.dp)
                                 )
                             }
@@ -157,9 +151,7 @@ fun SongItemWithWords(
             }
         }
         Divider(
-            color = Color.LightGray,
-            thickness = 1.dp,
-            modifier = Modifier.padding(top = 8.dp)
+            color = appTheme.dividerColor, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp)
         )
     }
 }

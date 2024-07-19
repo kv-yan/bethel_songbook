@@ -1,6 +1,7 @@
 package ru.betel.app.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import org.koin.dsl.module
@@ -21,6 +22,7 @@ import ru.betel.data.reopsitory.template.delete.DeleteTemplateFromFirebaseImpl
 import ru.betel.data.reopsitory.template.get.GetTemplatesFromFirebaseImpl
 import ru.betel.data.reopsitory.template.get.GetTemplatesFromLocalImpl
 import ru.betel.data.reopsitory.template.set.SaveTemplateToLocalImpl
+import ru.betel.data.reopsitory.theme.ThemeRepositoryImpl
 import ru.betel.data.share.ShareRepoImpl
 import ru.betel.domain.dao.FavoriteSongsDao
 import ru.betel.domain.dao.SongDao
@@ -43,6 +45,7 @@ import ru.betel.domain.repository.template.delete.DeleteTemplateFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromFirebase
 import ru.betel.domain.repository.template.get.GetTemplatesFromLocal
 import ru.betel.domain.repository.template.set.local.SaveTemplateToLocal
+import ru.betel.domain.repository.theme.ThemeRepository
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 
 
@@ -134,5 +137,9 @@ val dataModule = module {
 
     single<NotificationRepository> {
         NotificationRepositoryImpl(context = get<Context>())
+    }
+
+    single<ThemeRepository> {
+        ThemeRepositoryImpl(sharedPreferences = get<SharedPreferences>())
     }
 }

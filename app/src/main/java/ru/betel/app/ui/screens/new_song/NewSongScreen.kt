@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarTextColor
 import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
@@ -44,9 +43,9 @@ import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
-import ru.betel.domain.model.ui.NewSongFieldState
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.ActionBarState
+import ru.betel.domain.model.ui.NewSongFieldState
 import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.SongsCategory
 
@@ -62,6 +61,7 @@ fun NewSongScreen(
 ) {
     val newSongFieldState = remember { mutableStateOf(NewSongFieldState.INVALID_CATEGORY) }
     val isShowingSaveDialog = remember { mutableStateOf(false) }
+    val appTheme = settingViewModel.appTheme.value
 
     Box(modifier = Modifier.fillMaxSize()) {
         MainContent(
@@ -82,20 +82,20 @@ fun NewSongScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(newSongFieldState.value.bgColor, RoundedCornerShape(8.dp))
+                    .background(appTheme.primaryButtonColor, RoundedCornerShape(8.dp))
                     .padding(16.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
                     painter = painterResource(if (newSongFieldState.value == NewSongFieldState.DONE) R.drawable.ic_done else R.drawable.ic_error),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = appTheme.primaryIconColor,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = newSongFieldState.value.msg,
                     style = MaterialTheme.typography.subtitle1,
-                    color = actionBarTextColor,
+                    color = appTheme.primaryIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -115,6 +115,8 @@ private fun MainContent(
     newSongFieldState: MutableState<NewSongFieldState>,
 
     ) {
+
+    val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val songTonality = remember { mutableStateOf("") }
     val songTemp = remember { mutableStateOf("") }
@@ -134,7 +136,7 @@ private fun MainContent(
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(appTheme.screenBackgroundColor)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 12.dp, vertical = 12.dp)
     ) {
@@ -146,7 +148,7 @@ private fun MainContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CategoryDropDownMenuWithCheckBox(
+                CategoryDropDownMenuWithCheckBox(appTheme=appTheme,
                     selectedCategory = selectedCategory, categories = listOf(
                         SongsCategory.GLORIFYING,
                         SongsCategory.WORSHIP,
@@ -157,14 +159,17 @@ private fun MainContent(
             }
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row {
-                TonalityDropDownMenu(songTonality, modifier = Modifier.fillMaxSize(0.5f))
+            Row(modifier = Modifier.height(38.dp)) {
+                TonalityDropDownMenu(appTheme = appTheme, songTonality, modifier = Modifier.fillMaxWidth(0.5f))
                 Spacer(modifier = Modifier.width(6.dp))
                 MyTextFields(
+                    appTheme = appTheme,
                     placeholder = "Տեմպ",
                     imeAction = ImeAction.Next,
                     fieldText = songTemp,
-                    modifier = Modifier.fillMaxWidth(),
+
+                    modifier = Modifier
+                        .fillMaxWidth().fillMaxHeight(),
                     textType = KeyboardType.Number
                 )
             }
@@ -180,6 +185,7 @@ private fun MainContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         MyTextFields(
+            appTheme = appTheme,
             placeholder = "Վերնագիր",
             fieldText = songTitle,
             imeAction = ImeAction.Next,
@@ -191,6 +197,7 @@ private fun MainContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         MyTextFields(
+            appTheme = appTheme,
             placeholder = "Տեքստ",
             fieldText = songWords,
             align = Alignment.Top,
@@ -205,13 +212,13 @@ private fun MainContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = songDividerColor)
+                .background(color = appTheme.dividerColor)
         )
-        SaveButton {
+        SaveButton(appTheme = appTheme) {
             val currentSong = Song(
                 "",
                 title = songTitle.value,
-                tonality = songTonality.value,/* temp =*/
+                tonality = songTonality.value,
                 words = songWords.value,
                 temp = songTemp.value,
                 isGlorifyingSong = isGlorifying.value,
@@ -231,8 +238,8 @@ private fun MainContent(
                     songIsFromSongbookSong = isGlorifying
                 )
             }, onSave = {
-            songViewModel.saveSongToFirebase(currentSong)
-            navController.navigate(Screens.HOME_SCREEN.route)
+                songViewModel.saveSongToFirebase(currentSong)
+                navController.navigate(Screens.HOME_SCREEN.route)
             })
         }
     }
@@ -254,7 +261,7 @@ fun savingLogic(
     } else if (newSong.tonality.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_TONALITY
         Log.e(TAG, "savingLogic: INVALID_TONALITY")
-    } else if ( (newSong.temp.isEmpty()) || newSong.temp.toInt() == 0 || newSong.temp.toInt() < 0) {
+    } else if ((newSong.temp.isEmpty()) || newSong.temp.toInt() == 0 || newSong.temp.toInt() < 0) {
         newSongFieldState.value = NewSongFieldState.INVALID_TEMP
         Log.e(TAG, "savingLogic: INVALID_TEMP")
     } else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {

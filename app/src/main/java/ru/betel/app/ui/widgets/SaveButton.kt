@@ -1,7 +1,6 @@
 package ru.betel.app.ui.widgets
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
 import ru.betel.app.ui.theme.actionBarColor
+import ru.betel.domain.model.ui.AppTheme
 
 @Composable
 fun SaveButton(
@@ -39,8 +39,7 @@ fun SaveButton(
             colors = ButtonDefaults.buttonColors(containerColor = btnColor)
         ) {
             Text(
-                text = text,
-                style = TextStyle(
+                text = text, style = TextStyle(
                     fontSize = fontSize,
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
@@ -53,7 +52,9 @@ fun SaveButton(
 }
 
 @Composable
-fun SaveButton(text: String = "Պահպանել",onClick: () -> Unit) {
+fun SaveButton(
+    appTheme: AppTheme = AppTheme.DARK, text: String = "Պահպանել", onClick: () -> Unit
+) {
     Box {
         Button(
             onClick = { onClick() },
@@ -61,11 +62,10 @@ fun SaveButton(text: String = "Պահպանել",onClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = actionBarColor)
+            colors = ButtonDefaults.buttonColors(containerColor = appTheme.primaryButtonColor)
         ) {
             Text(
-                text = text,
-                style = TextStyle(
+                text = text, style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),

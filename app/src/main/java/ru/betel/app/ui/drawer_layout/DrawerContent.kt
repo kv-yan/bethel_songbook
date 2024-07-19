@@ -26,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,15 +38,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.betel.app.R
 import ru.betel.app.ui.items.menu.DrawerMenuItem
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.theme.dividerColor
-import ru.betel.app.ui.theme.drawerLayoutSecondaryColor
+import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.MenuItem
 import ru.betel.domain.model.ui.Screens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
+    appTheme: AppTheme,
     scope: CoroutineScope,
     drawerState: DrawerState,
     navController: NavController,
@@ -97,38 +96,40 @@ fun DrawerContent(
     Scaffold(
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight(), contentColor = Color.White
+            .fillMaxHeight(), contentColor = appTheme.screenBackgroundColor
     ) {
         Column(
             modifier = Modifier
+                .background(appTheme.screenBackgroundColor)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .background(Color.White)
         ) {
             // Image part
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(drawerLayoutSecondaryColor),
+                    .background(appTheme.drawerIconBackgroundColor),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(modifier = Modifier.padding(20.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.des_1),
                         contentDescription = null,
-                        tint = actionBarColor,
+                        tint = appTheme.drawerIconColor,
                         modifier = Modifier.size(80.dp)
                     )
                     Column(modifier = Modifier.padding(start = 11.dp, top = 20.dp)) {
                         Text(
-                            text = "Բեթհել Մրգաշատ",
+                            text = "Բեթել Մրգաշատ",
                             fontSize = 12.sp,
                             modifier = Modifier.padding(bottom = 4.dp),
-                            fontFamily = FontFamily(Font(R.font.mardoto_medium))
+                            fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                            color = appTheme.secondaryTextColor
                         )
                         Text(
                             text = "2023",
                             fontSize = 12.sp,
+                            color = appTheme.secondaryTextColor,
                             fontFamily = FontFamily(Font(R.font.mardoto_medium))
                         )
                         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -136,6 +137,7 @@ fun DrawerContent(
                             Text(
                                 text = "Դուք ադմին էք",
                                 fontSize = 11.sp,
+                                color = appTheme.secondaryTextColor,
                                 modifier = Modifier.padding(bottom = 4.dp),
                                 fontFamily = FontFamily(Font(R.font.mardoto_medium))
                             )
@@ -148,11 +150,13 @@ fun DrawerContent(
             // Menu part
             LazyColumn(
                 modifier = Modifier
+                    .fillMaxSize()
+                    .background(appTheme.screenBackgroundColor)
                     .padding(top = 11.dp)
                     .heightIn(min = 50.dp, max = 200.dp),
             ) {
                 itemsIndexed(models.value) { index, item ->
-                    DrawerMenuItem(item = item) {
+                    DrawerMenuItem(item = item, appTheme) {
                         scope.launch { drawerState.close() }
                         models.value.forEach { it.isSelected.value = false }
                         item.isSelected.value = true
@@ -162,7 +166,9 @@ fun DrawerContent(
             }
             Box(
                 modifier = Modifier
+                    .background(appTheme.screenBackgroundColor)
                     .height(400.dp)
+                    .fillMaxHeight()
                     .padding(bottom = 24.dp),
                 contentAlignment = Alignment.BottomStart
             ) {
@@ -175,7 +181,7 @@ fun DrawerContent(
                             .background(color = dividerColor)
                     )
                     DrawerMenuItem(
-                        item = loginItem
+                        item = loginItem, appTheme
                     ) {
                         scope.launch {
                             drawerState.close()

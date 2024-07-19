@@ -1,6 +1,7 @@
 package ru.betel.app.ui.widgets
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -22,11 +23,13 @@ import org.burnoutcrew.reorderable.reorderable
 import ru.betel.app.ui.items.song.SongItemWithDeleteBtn
 import ru.betel.data.extensions.toSnapshotStateList
 import ru.betel.domain.model.Song
+import ru.betel.domain.model.ui.AppTheme
 
 private const val TAG = "VARDANYAN"
 
 @Composable
 fun LazyColumnForAddNewTemplate(
+    appTheme: AppTheme,
     songList: SnapshotStateList<Song>,
     tonalityLongPres: (Song) -> Unit,
 ) {
@@ -50,6 +53,7 @@ fun LazyColumnForAddNewTemplate(
     LazyColumn(
         state = state.listState,
         modifier = Modifier
+            .background(appTheme.fieldBackgroundColor)
             .reorderable(state)
             .detectReorderAfterLongPress(state)
             .fillMaxWidth()
@@ -62,7 +66,8 @@ fun LazyColumnForAddNewTemplate(
                 Box(
                     modifier = Modifier.shadow(elevation.value)
                 ) {
-                    SongItemWithDeleteBtn(item = song,
+                    SongItemWithDeleteBtn(appTheme = appTheme,
+                        item = song,
                         isLastItem = (data.size - 1 == index),
                         index = data.indexOf(song) + 1,
                         onDeleteItemClick = { selectedItem ->
