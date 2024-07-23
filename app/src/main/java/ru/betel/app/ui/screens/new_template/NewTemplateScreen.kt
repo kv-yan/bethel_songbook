@@ -106,13 +106,13 @@ fun NewTemplateScreen(
                 Icon(
                     painter = painterResource(if (templateFieldState.value == NewTemplateFieldState.DONE) R.drawable.ic_done else R.drawable.ic_error),
                     contentDescription = null,
-                    tint = appTheme.primaryIconColor,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = templateFieldState.value.msg,
-                    color = appTheme.primaryIconColor,
+                    color = appTheme.actionBarIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

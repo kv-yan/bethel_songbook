@@ -88,14 +88,14 @@ fun NewSongScreen(
                 Icon(
                     painter = painterResource(if (newSongFieldState.value == NewSongFieldState.DONE) R.drawable.ic_done else R.drawable.ic_error),
                     contentDescription = null,
-                    tint = appTheme.primaryIconColor,
+                    tint = appTheme.actionBarIconColor,
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = newSongFieldState.value.msg,
                     style = MaterialTheme.typography.subtitle1,
-                    color = appTheme.primaryIconColor,
+                    color = appTheme.actionBarIconColor,
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -148,8 +148,8 @@ private fun MainContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CategoryDropDownMenuWithCheckBox(appTheme=appTheme,
-                    selectedCategory = selectedCategory, categories = listOf(
+                CategoryDropDownMenuWithCheckBox(
+                    appTheme = appTheme, selectedCategory = selectedCategory, categories = listOf(
                         SongsCategory.GLORIFYING,
                         SongsCategory.WORSHIP,
                         SongsCategory.GIFT,
@@ -160,7 +160,9 @@ private fun MainContent(
             Spacer(modifier = Modifier.height(10.dp))
 
             Row(modifier = Modifier.height(38.dp)) {
-                TonalityDropDownMenu(appTheme = appTheme, songTonality, modifier = Modifier.fillMaxWidth(0.5f))
+                TonalityDropDownMenu(
+                    appTheme = appTheme, songTonality, modifier = Modifier.fillMaxWidth(0.5f)
+                )
                 Spacer(modifier = Modifier.width(6.dp))
                 MyTextFields(
                     appTheme = appTheme,
@@ -169,7 +171,8 @@ private fun MainContent(
                     fieldText = songTemp,
 
                     modifier = Modifier
-                        .fillMaxWidth().fillMaxHeight(),
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
                     textType = KeyboardType.Number
                 )
             }
