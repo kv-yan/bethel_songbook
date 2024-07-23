@@ -53,7 +53,7 @@ fun SaveButton(
 
 @Composable
 fun SaveButton(
-    appTheme: AppTheme = AppTheme.DARK, text: String = "Պահպանել", onClick: () -> Unit
+    appTheme: AppTheme, text: String = "Պահպանել", onClick: () -> Unit
 ) {
     Box {
         Button(

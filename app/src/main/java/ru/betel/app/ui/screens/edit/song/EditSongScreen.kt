@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -22,12 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.dropdown_menu.CategoryDropDownMenuWithCheckBox
@@ -48,6 +47,8 @@ fun EditSongScreen(
     settingViewModel: SettingViewModel,
     editViewModel: EditViewModel
 ) {
+    val appTheme = settingViewModel.appTheme.value
+
     val currentSong by editViewModel.currentSong.collectAsState()
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val tonality = remember { mutableStateOf(currentSong.tonality) }
@@ -67,7 +68,7 @@ fun EditSongScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(appTheme.screenBackgroundColor)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 12.dp, vertical = 12.dp)
     ) {
@@ -96,12 +97,11 @@ fun EditSongScreen(
 
             Row {
                 TonalityDropDownMenu(
-                    appTheme = settingViewModel.appTheme.value,
-                    tonality,
-                    modifier = Modifier.fillMaxSize(0.5f)
+                    appTheme = appTheme, tonality, modifier = Modifier.fillMaxSize(0.5f)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 MyTextFields(
+                    appTheme = appTheme,
                     placeholder = "Տեմպ",
                     imeAction = ImeAction.Next,
                     fieldText = temp,
@@ -112,15 +112,12 @@ fun EditSongScreen(
         }
         Spacer(modifier = Modifier.height(10.dp))
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(color = songDividerColor)
-        )
+        Divider(modifier = Modifier.fillMaxWidth(), color = appTheme.dividerColor, thickness = 1.dp)
+
         Spacer(modifier = Modifier.height(12.dp))
 
         MyTextFields(
+            appTheme = appTheme,
             placeholder = "Վերնագիր",
             fieldText = title,
             imeAction = ImeAction.Next,
@@ -132,6 +129,7 @@ fun EditSongScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         MyTextFields(
+            appTheme = appTheme,
             placeholder = "Տեքստ",
             fieldText = words,
             imeAction = ImeAction.Default,
@@ -142,13 +140,10 @@ fun EditSongScreen(
         )
 
         Spacer(modifier = Modifier.height(12.dp))
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(color = songDividerColor)
-        )
-        SaveButton {
+
+        Divider(modifier = Modifier.fillMaxWidth(), color = appTheme.dividerColor, thickness = 1.dp)
+
+        SaveButton(appTheme = appTheme) {
             val updatedSong = currentSong.copy(
                 title = title.value,
                 tonality = tonality.value,

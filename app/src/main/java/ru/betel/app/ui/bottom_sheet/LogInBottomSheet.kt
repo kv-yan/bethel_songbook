@@ -98,7 +98,7 @@ fun LogInBottomSheet(
                                 onAppRestart()
                             })
                     } else {
-                        TextSizeEditingBottomSheetContent(
+                        SettingsBottomSheetContent(
                             modes = settingsViewModel.modes, settingsViewModel
                         )
                     }
@@ -191,7 +191,8 @@ fun LoginBottomSheetContent(
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        SaveButton(appTheme = appTheme,
+        SaveButton(
+            appTheme = appTheme,
             text = "Մուտք",
             onClick = {
                 if (loginText.value.isNotEmpty() && passwordText.value.isNotEmpty()) {

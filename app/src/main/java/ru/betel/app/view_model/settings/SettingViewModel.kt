@@ -3,7 +3,6 @@ package ru.betel.app.view_model.settings
 import android.content.SharedPreferences
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,11 +15,11 @@ import ru.betel.app.ui.theme.textFieldItemDefaultTextSize
 import ru.betel.data.operators.plus
 import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
-import ru.betel.domain.model.ui.ThemeMode
 import ru.betel.domain.useCase.auth.CheckUserLoginStatusUseCase
 import ru.betel.domain.useCase.auth.LogInUseCase
 import ru.betel.domain.useCase.auth.LogOutUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
+import ru.betel.domain.useCase.theme.GetThemeListUseCase
 import ru.betel.domain.useCase.theme.GetThemeUseCase
 import ru.betel.domain.useCase.theme.SetThemeUseCase
 
@@ -31,13 +30,17 @@ class SettingViewModel(
     private val checkUserLoginStatusUseCase: CheckUserLoginStatusUseCase,
     getNetworkStateUseCase: GetNetworkStateUseCase,
     private val getThemeUseCase: GetThemeUseCase,
-    private val setThemeUseCase: SetThemeUseCase
+    private val setThemeUseCase: SetThemeUseCase,
+    private val getThemeListUseCase: GetThemeListUseCase
 ) : ViewModel() {
 
     private val _appTheme: MutableState<AppTheme> = getThemeMode()
     val appTheme = _appTheme
 
     private fun getThemeMode(): MutableState<AppTheme> {
+
+        val mode = getThemeUseCase.execute()
+
         return mutableStateOf(getThemeUseCase.execute())
     }
 
@@ -46,7 +49,7 @@ class SettingViewModel(
         _appTheme.value = themeMode
     }
 
-    val modes = mutableStateListOf(ThemeMode.Light, ThemeMode.LightGray, ThemeMode.DarkGray)
+    val modes = getThemeListUseCase.execute()
     var checkUserLoginStatus = mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
     private var additionTextSize = mutableFloatStateOf(sharedPerf.getFloat("textSize", 0f))
 

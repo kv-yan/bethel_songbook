@@ -48,6 +48,7 @@ import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
+import ru.betel.domain.useCase.theme.GetThemeListUseCase
 import ru.betel.domain.useCase.theme.GetThemeUseCase
 import ru.betel.domain.useCase.theme.SetThemeUseCase
 
@@ -172,5 +173,9 @@ val domainModule = module {
 
     single<SetThemeUseCase> {
         SetThemeUseCase(appThemeRepository = get<ThemeRepository>())
+    }
+
+    single<GetThemeListUseCase> {
+        GetThemeListUseCase(appThemeRepository = get<ThemeRepository>())
     }
 }

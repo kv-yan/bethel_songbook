@@ -10,13 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import ru.betel.domain.model.ui.AppTheme
 
 @Composable
 fun TextBtnForChangeTextSize(
+    appTheme: AppTheme,
     modifier: Modifier = Modifier,
     content: @Composable (BoxScope) -> Unit,
 ) {
-    Surface(color = Color.Gray, shape = RoundedCornerShape(12.dp)) {
+    Surface(color = appTheme.primaryButtonColor, shape = RoundedCornerShape(12.dp)) {
         Box(
             modifier = modifier.height(40.dp),
             contentAlignment = Alignment.Center,

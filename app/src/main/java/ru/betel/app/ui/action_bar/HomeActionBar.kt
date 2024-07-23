@@ -152,7 +152,7 @@ fun HomeActionBar(
         SearchAppBarState.CLOSED -> {
             ActionBarContent(
                 navController = navController,
-                appTheme= appTheme,
+                appTheme = appTheme,
                 settingViewModel = settingViewModel,
                 onMenuIconClick = { onMenuIconClick() },
                 onSettingsBtnClick = {
@@ -171,7 +171,8 @@ fun HomeActionBar(
                     .background(color = appTheme.actionBarColor)
                     .padding(horizontal = 6.dp, vertical = 6.dp)
             ) {
-                SearchTopAppBar(appTheme, text = songViewModel.searchAppBarText,
+                SearchTopAppBar(appTheme,
+                    text = songViewModel.searchAppBarText,
                     textSize = textSize,
                     onTextChange = { text ->
                         songViewModel.searchAppBarText.value = text

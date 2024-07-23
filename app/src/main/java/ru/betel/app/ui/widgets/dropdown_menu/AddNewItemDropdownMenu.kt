@@ -36,5 +36,4 @@ fun AddNewItemDropdownMenu(expanded: MutableState<Boolean>, navController: NavCo
             ) { navController.navigate(Screens.NEW_TEMPLATE_SCREEN.route) }
         }
     }
-
 }

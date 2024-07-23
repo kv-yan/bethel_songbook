@@ -3,35 +3,41 @@ package ru.betel.app.ui.items.theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonColors
 import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.betel.app.ui.theme.actionBarColor
+import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.domain.model.ui.ThemeMode
 
 @Composable
-fun AppThemeItem(mode: ThemeMode, onItemClick: () -> Unit) {
+fun AppThemeItem(mode: ThemeMode, modifier: Modifier, onItemClick: () -> Unit) {
+    val appTheme = mode.mode
     Surface(
-        elevation = 2.dp, modifier = Modifier
+        elevation = 4.dp,
+        modifier = modifier
             .padding(15.dp)
             .clickable {
                 onItemClick()
-            }, shape = RoundedCornerShape(12.dp), color = mode.bgColor
+            },
+        shape = RoundedCornerShape(12.dp),
+        color = appTheme.screenBackgroundColor
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -40,13 +46,16 @@ fun AppThemeItem(mode: ThemeMode, onItemClick: () -> Unit) {
         ) {
             Column {
                 val startSize = 70.dp
-                Spacer(modifier = Modifier
-                    .height(15.dp)
-                    .background(mode.bgColor))
+                Spacer(
+                    modifier = Modifier
+                        .height(15.dp)
+                        .background(appTheme.screenBackgroundColor)
+                )
                 Divider(
                     modifier = Modifier
                         .height(3.dp)
-                        .width(startSize), color = mode.textColor
+                        .width(startSize),
+                    color = appTheme.primaryTextColor
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -54,7 +63,7 @@ fun AppThemeItem(mode: ThemeMode, onItemClick: () -> Unit) {
                     modifier = Modifier
                         .height(3.dp)
                         .width(startSize - 20.dp),
-                    color = mode.textColor
+                    color = appTheme.primaryTextColor
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -62,16 +71,57 @@ fun AppThemeItem(mode: ThemeMode, onItemClick: () -> Unit) {
                     modifier = Modifier
                         .height(3.dp)
                         .width(startSize - 40.dp),
-                    color = mode.textColor
+                    color = appTheme.primaryTextColor
                 )
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
             RadioButton(
-                selected = mode.isSelected,
+                selected = mode.isSelected.value,
                 onClick = { onItemClick() },
-                colors = RadioButtonDefaults.colors(selectedColor = actionBarColor)
+                colors = RadioButtonDefaults.colors(selectedColor = appTheme.selectedBoxColor, unselectedColor = appTheme.unselectedBoxColor)
             )
+        }
+    }
+}
+
+
+@Composable
+fun ThemeSelector(modes: List<ThemeMode>, settingViewModel: SettingViewModel) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+    ) {
+        val theme1 = modes[0]
+        val theme2 = modes[1]
+
+        AppThemeItem(
+            mode = theme1,
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)
+                .fillMaxWidth(0.4f)
+        ) {
+            theme1.isSelected.value = true
+            modes.forEach {
+                it.isSelected.value = theme1 == it
+            }
+            settingViewModel.setTheme(0,theme1.mode)
+        }
+
+        AppThemeItem(
+            mode = theme2,
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)
+                .fillMaxWidth(0.4f)
+        ) {
+            theme2.isSelected.value = true
+            modes.forEach {
+                it.isSelected.value = theme2 == it
+            }
+            settingViewModel.setTheme(1,theme2.mode)
         }
     }
 }

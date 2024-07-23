@@ -47,7 +47,7 @@ fun SongCategoryHeader(appTheme: AppTheme,header: String) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategorizedLazyColumn(
-    appTheme: AppTheme = AppTheme.GRAY,
+    appTheme: AppTheme ,
     categories: List<SongCategory>,
     textSize: SongbookTextSize,
     onEditClick: (Song) -> Unit,
@@ -55,7 +55,7 @@ fun CategorizedLazyColumn(
     onDeleteClick: (Song) -> Unit,
     onItemClick: (Song) -> Unit
 ) {
-    LazyColumn(Modifier.fillMaxSize().background(appTheme.screenBackgroundColor)) {
+    LazyColumn(Modifier.fillMaxSize()) {
         categories.forEach { category ->
             stickyHeader {
                 Surface(

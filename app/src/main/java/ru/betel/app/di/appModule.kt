@@ -36,6 +36,7 @@ import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateToLocalUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
+import ru.betel.domain.useCase.theme.GetThemeListUseCase
 import ru.betel.domain.useCase.theme.GetThemeUseCase
 import ru.betel.domain.useCase.theme.SetThemeUseCase
 
@@ -87,7 +88,8 @@ val appModule = module {
             checkUserLoginStatusUseCase = get<CheckUserLoginStatusUseCase>(),
             getNetworkStateUseCase = get<GetNetworkStateUseCase>(),
             getThemeUseCase = get<GetThemeUseCase>(),
-            setThemeUseCase = get<SetThemeUseCase>()
+            setThemeUseCase = get<SetThemeUseCase>(),
+            getThemeListUseCase = get<GetThemeListUseCase>()
         )
     }
 

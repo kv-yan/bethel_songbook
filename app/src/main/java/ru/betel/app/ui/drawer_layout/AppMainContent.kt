@@ -47,11 +47,15 @@ fun AppMainContent(
         mutableStateOf(true)
     }
     val coroutineScope = rememberCoroutineScope()
-    Column(Modifier.fillMaxSize().background(settingViewModel.appTheme.value.backgroundColor)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(settingViewModel.appTheme.value.backgroundColor)
+    ) {
 
         NavHost(
             navController = navController,
-            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
+            startDestination = Screens.HOME_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {
@@ -147,7 +151,7 @@ fun AppMainContent(
                     songViewModel = songViewModel,
                     templateViewModel = templateViewModel,
                     settingViewModel = settingViewModel,
-                    editViewModel =editViewModel
+                    editViewModel = editViewModel
                 )
             }
         }

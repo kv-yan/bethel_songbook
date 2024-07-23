@@ -49,20 +49,16 @@ fun FavoriteSongItemWithWords(
     onRemoveFavSong: (Song) -> Unit,
 ) {
     val isShowAdditionBtn = remember { mutableStateOf(false) }
-    val backgroundColor =
-        remember { mutableStateOf(if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor) }
     val horizontalScrollState = rememberScrollState()
     Column(modifier = Modifier
         .pointerInput(Unit) {
             detectTapGestures(onLongPress = {
                 isShowAdditionBtn.value = !isShowAdditionBtn.value
-                backgroundColor.value =
-                    if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor
             }, onTap = {
                 onItemClick()
             })
         }
-        .background(color = backgroundColor.value)) {
+        .background(color = if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,

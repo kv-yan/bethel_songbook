@@ -42,7 +42,7 @@ import ru.betel.domain.model.ui.AppTheme
 
 @Composable
 fun MyTextFields(
-    appTheme: AppTheme = AppTheme.DARK,
+    appTheme: AppTheme ,
     placeholder: String,
     modifier: Modifier = Modifier,
     fieldText: MutableState<String>,

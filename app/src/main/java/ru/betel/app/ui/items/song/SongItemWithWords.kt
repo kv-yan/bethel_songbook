@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -58,8 +57,7 @@ fun SongItemWithWords(
     val context = LocalContext.current
     val networkUtils = remember { NetworkUtilsImpl(context) }
     val isShowAdditionBtn = remember { mutableStateOf(false) }
-    val backgroundColor =
-        remember { derivedStateOf { if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor } }
+
     val horizontalScrollState = rememberScrollState()
     val isConnected = remember { networkUtils.isConnectedNetwork() }
 
@@ -71,7 +69,7 @@ fun SongItemWithWords(
                 }
             }, onTap = { onItemClick() })
         }
-        .background(color = backgroundColor.value)) {
+        .background(color = if (isShowAdditionBtn.value) appTheme.fieldBackgroundColor else appTheme.screenBackgroundColor)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
