@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.betel.data.extensions.toImmutableAddSongList
 import ru.betel.data.extensions.toSongTemplate
@@ -50,6 +49,7 @@ class TemplateViewModel(
     private val shareTemplateUseCase: ShareTemplateUseCase,
     private val sendNotificationToAllUsersUseCase: SendNotificationToAllUsersUseCase
 ) : ViewModel() {
+    val isOpeningAllTemplate = mutableStateOf(false)
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
         viewModelScope.launch {
             getTemplatesFromLocalUseCase.execute().collect {
@@ -65,7 +65,7 @@ class TemplateViewModel(
     val templateSelectedType = mutableStateOf(TemplateType.ALL)
     val createdNewTemplate = mutableStateOf<SongTemplate?>(null)
 
-    val singleTemplate = MutableStateFlow(
+    val singleTemplate = mutableStateOf<SongTemplate>(
         SongTemplate(
             id = "Error",
             createDate = "Error",
@@ -339,6 +339,7 @@ class TemplateViewModel(
         tempGlorifyingSongs.value?.clear()
         tempWorshipSongs.value?.clear()
         tempGiftSongs.value?.clear()
+        tempSingleModeSongs.value?.clear()
 
         tempPerformerName.value = ""
         tempWeekday.value = ""

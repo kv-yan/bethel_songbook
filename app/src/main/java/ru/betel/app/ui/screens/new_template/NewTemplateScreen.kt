@@ -65,6 +65,7 @@ import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.NewTemplateFieldState
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewTemplateScreen(
@@ -310,27 +311,31 @@ private fun MainContent(
                             templateViewModel.createdNewTemplate.value = createdTemplate
                             if (FirebaseAuth.getInstance().currentUser != null) {
                                 isShowingSaveModeDialog.value = true
+
                             } else {
                                 templateViewModel.saveTemplateToLocalStorage(createdTemplate)
                                 isShowingSaveStateDialog.value = true
                                 navController.popBackStack()
+                                templateViewModel.cleanFields()
                             }
                         }
                     }
 
                     CheckTemplatePropertiesDialog(
-                        isShowingSaveModeDialog, templateViewModel
+                        isShowDialog = isShowingSaveModeDialog, viewModel = templateViewModel
                     ) { mode, createdTemplate, isSendingNotification ->
                         when (mode) {
                             TemplateSaveMode.LOCAL -> {
                                 templateViewModel.saveTemplateToLocalStorage(createdTemplate)
+                                templateViewModel.cleanFields()
                             }
 
                             TemplateSaveMode.SERVER -> {
                                 templateViewModel.saveTemplateToFirebase(createdTemplate)
                                 if (isSendingNotification) {
-                                    // TODO: sent notification
+                                    templateViewModel.sendNotification(createdTemplate)
                                 }
+                                templateViewModel.cleanFields()
                             }
                         }
                         isShowingSaveModeDialog.value = false
@@ -371,6 +376,7 @@ private fun MainContent(
             }
         })
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

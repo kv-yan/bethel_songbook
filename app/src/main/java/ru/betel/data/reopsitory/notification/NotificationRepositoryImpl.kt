@@ -8,24 +8,25 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 import ru.betel.data.extensions.getNotificationBody
 import ru.betel.domain.constants.serverKey
-import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.repository.notification.NotificationRepository
 import java.io.IOException
-
 
 
 class NotificationRepositoryImpl(private val context: Context) : NotificationRepository {
     private val TAG = "ERROR"
 
     override suspend fun sendNotification(template: SongTemplate) {
-        val title = "${template.performerName}ը ավելացրել է նոր ցուցակ․"
+        val title = "${template.performerName}ն ավելացրել է նոր ցուցակ․"
         val body = template.getNotificationBody()
-        val topic = "new_template"
+//        val topic = "new_template"
+        val topic = "test"
+        val sound = "demo_sound"
 
         val client = OkHttpClient()
         val json = JSONObject().apply {
@@ -39,7 +40,7 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
             })
         }
 
-        val requestBody = RequestBody.create("application/json; charset=utf-8".toMediaType(), json.toString())
+        val requestBody = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
         val request = Request.Builder().url("https://fcm.googleapis.com/fcm/send").post(requestBody)
             .addHeader("Authorization", "key=$serverKey")
             .addHeader("Content-Type", "application/json").build()
@@ -59,33 +60,5 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
                 }
             }
         })
-    }
-
-    private fun SongTemplate.toJson(): JSONObject {
-        return JSONObject().apply {
-            put("id", id)
-            put("createDate", createDate)
-            put("performerName", performerName)
-            put("weekday", weekday)
-            put("isSingleMode", isSingleMode)
-            put("glorifyingSong", glorifyingSong.map { it.toJson() })
-            put("worshipSong", worshipSong.map { it.toJson() })
-            put("giftSong", giftSong.map { it.toJson() })
-            put("singleModeSongs", singleModeSongs.map { it.toJson() })
-        }
-    }
-
-    private fun Song.toJson(): JSONObject {
-        return JSONObject().apply {
-            put("id", id)
-            put("title", title)
-            put("tonality", tonality)
-            put("words", words)
-            put("temp", temp)
-            put("isGlorifyingSong", isGlorifyingSong)
-            put("isWorshipSong", isWorshipSong)
-            put("isGiftSong", isGiftSong)
-            put("isFromSongbookSong", isFromSongbookSong)
-        }
     }
 }

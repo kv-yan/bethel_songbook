@@ -43,6 +43,7 @@ fun SingleTemplateActionBar(
     onShareBtnClick: () -> Unit,
     onDeleteBtnClick: (SongTemplate) -> Unit,
     onNotificationBtnClick: (SongTemplate) -> Unit,
+    onUploadBtnClick: (SongTemplate) -> Unit,
 ) {
     val appTheme = settingViewModel.appTheme.value
 
@@ -108,7 +109,34 @@ fun SingleTemplateActionBar(
                         modifier = Modifier.size(16.dp)
                     )
                 }
+
+
                 if (FirebaseAuth.getInstance().currentUser != null) {
+                    var templateId = null as Int?
+                    try {
+                        templateId = templateViewModel.singleTemplate.value.id.toInt()
+
+                    }catch (ex : NumberFormatException){
+                        ex.printStackTrace()
+                    }
+                    if (templateId != null) {
+                        if (templateId >=  0) {
+                            Spacer(modifier = Modifier.width(20.dp))
+                            IconButton(
+                                onClick = { onUploadBtnClick(templateViewModel.singleTemplate.value) }, modifier = Modifier.size(16.dp)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = "image description",
+                                    tint = appTheme.actionBarIconColor,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    }
+
+
+
                     Spacer(modifier = Modifier.width(20.dp))
                     IconButton(
                         onClick = {

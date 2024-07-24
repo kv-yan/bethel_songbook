@@ -44,7 +44,7 @@ fun SingleTemplateScreen(
     settingViewModel: SettingViewModel,
 ) {
     val fontSize = settingViewModel.songbookTextSize.textFieldItemDefaultTextSize
-    val template by templateViewModel.singleTemplate.collectAsState()
+    val template by templateViewModel.singleTemplate
     actionBarState.value = ActionBarState.SINGLE_TEMPLATE_SCREEN
     val rememberScrollState = rememberScrollState()
     val appTheme = settingViewModel.appTheme.value

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,7 +42,8 @@ import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
 @Composable
-fun SongTemplateColumItem(
+fun TemplateColumItem(
+    isOpening: MutableState<Boolean>,
     appTheme: AppTheme,
     template: SongTemplate,
     textSize: SongbookTextSize,
@@ -102,7 +104,7 @@ fun SongTemplateColumItem(
                     }
                 }
             }
-            AnimatedVisibility(visible = isShowingTemplateDetails) {
+            AnimatedVisibility(visible = (isShowingTemplateDetails || isOpening.value)) {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(1.dp))
                     Divider(color = songDividerColor, thickness = 1.dp)

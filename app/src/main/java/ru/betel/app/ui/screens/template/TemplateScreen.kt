@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import ru.betel.app.ui.items.template.SongTemplateColumItem
+import ru.betel.app.ui.items.template.TemplateColumItem
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -77,7 +77,8 @@ fun TemplateScreen(
                     ) {
                         item { Spacer(modifier = Modifier.height(16.dp)) }
                         items(itemsList, key = { it.id }) { template ->
-                            SongTemplateColumItem(
+                            TemplateColumItem(
+                                isOpening = viewModel.isOpeningAllTemplate,
                                 appTheme= appTheme,
                                 template = template,
                                 textSize = settingViewModel.songbookTextSize

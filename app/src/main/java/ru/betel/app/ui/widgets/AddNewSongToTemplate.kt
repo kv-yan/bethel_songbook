@@ -1,5 +1,6 @@
 package ru.betel.app.ui.widgets
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -53,11 +53,11 @@ fun AddNewSongToTemplate(
         )
     }
 
-    Surface(
-        color = appTheme.fieldBackgroundColor,
+    Surface(color = appTheme.fieldBackgroundColor,
         shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.padding(horizontal = 12.dp)
-    ) {
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .clickable { onAddItemClick() }) {
         Column(Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier.padding(start = 10.dp),
@@ -82,14 +82,16 @@ fun AddNewSongToTemplate(
                 }
             }
             Surface(
-                color = appTheme.screenBackgroundColor, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(
+                color = appTheme.screenBackgroundColor,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(
                     start = 10.dp,
                     end = 10.dp,
                     bottom = if (categorySongs?.isEmpty() == true) 0.dp else 12.dp
                 )
             ) {
                 if (categorySongs != null) {
-                    LazyColumnForAddNewTemplate(songList = categorySongs, appTheme=appTheme) {
+                    LazyColumnForAddNewTemplate(songList = categorySongs, appTheme = appTheme) {
                         selectedSong.value = it
                         isShowEditTonalityTempDialog.value = true
                     }

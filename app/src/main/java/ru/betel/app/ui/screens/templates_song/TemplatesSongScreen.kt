@@ -36,7 +36,7 @@ fun TemplatesSongScreen(
     scope: CoroutineScope
 ) {
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
-    val template by templateViewModel.singleTemplate.collectAsState()
+    val template by templateViewModel.singleTemplate
     val clickedSong by songViewModel.selectedSong.collectAsState()
     val appTheme by settingViewModel.appTheme
 

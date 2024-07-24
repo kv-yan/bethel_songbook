@@ -27,7 +27,6 @@ import org.koin.androidx.compose.get
 import ru.betel.app.request.RequestNotificationPermission
 import ru.betel.app.ui.bottom_sheet.LogInBottomSheet
 import ru.betel.app.ui.screens.splash.SplashScreen
-import ru.betel.app.ui.theme.topOfActionBarColor
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
@@ -39,6 +38,7 @@ import kotlin.system.exitProcess
 
 class MainActivity : ComponentActivity() {
     private val TAG = "NOTIFICATION"
+
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,12 +71,9 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(templateUiState, isEndedSplashScreen) {
-                Log.e(TAG, "onCreate: ********* FROM NOTIFICATION *********", )
-                Log.e(TAG, "onCreate: isEndedSplashScreen && templateUiState.isNotEmpty() :: ${isEndedSplashScreen && templateUiState.isNotEmpty()}", )
-                Log.e(TAG, "onCreate: intent.extras?.getString(\"template_id\") :: ${intent.extras?.get("template_id")}", )
                 if (isEndedSplashScreen && templateUiState.isNotEmpty()) {
                     intent.extras?.get("template_id")?.let { id ->
-                        Log.e(TAG, "onCreate: ********* id :: $id", )
+                        Log.e(TAG, "onCreate: ********* id :: $id")
                         templateViewModel.templateUiState.value.forEach { template ->
                             if (template.id == id) {
                                 templateViewModel.singleTemplate.value = template
@@ -90,7 +87,8 @@ class MainActivity : ComponentActivity() {
             if (isEndedSplashScreen) {
                 SideEffect {
                     systemUiController.setSystemBarsColor(
-                        color = settingsViewModel.appTheme.value.actionStatusBarColor, darkIcons = false
+                        color = settingsViewModel.appTheme.value.actionStatusBarColor,
+                        darkIcons = false
                     )
                     WindowCompat.setDecorFitsSystemWindows(window, true)
                 }
@@ -134,11 +132,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun subscribeNotificationTopic() {
-        FirebaseMessaging.getInstance().subscribeToTopic("new_template")
+        // in main activity
+//        FirebaseMessaging.getInstance().subscribeToTopic("new_template")
+        FirebaseMessaging.getInstance().subscribeToTopic("test")
             .addOnCompleteListener { task ->
-                var msg = "Done"
                 if (!task.isSuccessful) {
-                    msg = "Failed"
                 }
             }
     }

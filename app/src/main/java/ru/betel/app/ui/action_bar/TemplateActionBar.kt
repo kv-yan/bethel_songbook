@@ -1,8 +1,10 @@
 package ru.betel.app.ui.action_bar
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,11 +28,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.koin.androidx.compose.get
 import ru.betel.app.R
+import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SearchTopAppBar
 import ru.betel.app.ui.widgets.dropdown_menu.AddNewItemDropdownMenu
 import ru.betel.app.ui.widgets.dropdown_menu.TemplateDropdownMenu
@@ -175,14 +179,56 @@ fun TemplateActionBar(
     val appTheme = settingViewModel.appTheme.value
     when (searchAppBarState.value) {
         SearchAppBarState.CLOSED -> {
-            ActionBarContent(navController = navController,
-                templateViewModel = templateViewModel,
-                settingViewModel = settingViewModel,
-                onSearchClicked = {
-                    searchAppBarState.value = SearchAppBarState.OPENED
-                },
-                onMenuIconClick = { onMenuIconClick() },
-                onSettingsBtnClick = { onSettingsBtnClick() })
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = appTheme.screenBackgroundColor),
+                verticalArrangement = Arrangement.Center
+            ) {
+                ActionBarContent(navController = navController,
+                    templateViewModel = templateViewModel,
+                    settingViewModel = settingViewModel,
+                    onSearchClicked = {
+                        searchAppBarState.value = SearchAppBarState.OPENED
+                    },
+                    onMenuIconClick = { onMenuIconClick() },
+                    onSettingsBtnClick = { onSettingsBtnClick() })
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.padding(horizontal = 11.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val textFieldState = remember {
+                        mutableStateOf("")
+                    }
+                    MyTextFields(appTheme = appTheme,
+                        placeholder = "Առաջնորդի անուն",
+                        fieldText = textFieldState,
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_search),
+                                contentDescription = null,
+                                tint = appTheme.primaryTextColor,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        })
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(text = if (templateViewModel.isOpeningAllTemplate.value) "Փակել" else "բացել",
+                        textAlign = TextAlign.Center,
+                        color = appTheme.primaryTextColor,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                templateViewModel.isOpeningAllTemplate.value =
+                                    !templateViewModel.isOpeningAllTemplate.value
+                            })
+                }
+                Spacer(modifier = Modifier.height(6.dp))
+            }
         }
 
         else -> {

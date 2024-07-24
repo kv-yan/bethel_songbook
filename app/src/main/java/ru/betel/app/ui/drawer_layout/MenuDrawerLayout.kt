@@ -25,6 +25,7 @@ import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
 import ru.betel.app.ui.widgets.pop_up.SendNotificationDialog
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
+import ru.betel.app.ui.widgets.pop_up.UploadLocalTemplateToServerDialog
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
@@ -57,6 +58,7 @@ fun MenuDrawerLayout(
     val scope = rememberCoroutineScope()
     val deleteSongDialogState = remember { mutableStateOf(false) }
     val sendNotificationDialogState = remember { mutableStateOf(false) }
+    val uploadDialogState = remember { mutableStateOf(false) }
     val deleteTemplateDialogState = remember { mutableStateOf(false) }
     val songState =
         remember { mutableStateOf<Song>(Song("", "", "", "", "", false, false, false, false)) }
@@ -81,6 +83,14 @@ fun MenuDrawerLayout(
             templateViewModel.sendNotification(it)
             sendNotificationDialogState.value = false
         })
+
+    UploadLocalTemplateToServerDialog(
+        showDialog = uploadDialogState,
+        template = templateState,
+    ) { template ->
+        templateViewModel.saveTemplateToFirebase(template)
+        uploadDialogState.value = false
+    }
     val saveMode = mutableStateOf<TemplateSaveMode>(
         try {
             templateState.value.id.toInt()
@@ -211,6 +221,10 @@ fun MenuDrawerLayout(
                     },
                     onNotificationBtnClick = {
                         sendNotificationDialogState.value = true
+                        templateState.value = it
+                    },
+                    onUploadBtnClick = {
+                        uploadDialogState.value = true
                         templateState.value = it
                     })
             }
