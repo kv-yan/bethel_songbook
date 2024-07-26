@@ -74,13 +74,13 @@ fun CategoryScreen(
             LoadingScreen(appTheme)
         } else if (sortedSongs.value.isNotEmpty()) {
             // showing all songs
-            SongsList(
-                appTheme = appTheme,
+            SongsList(appTheme = appTheme,
                 songs = sortedSongs.value,
                 isEnableLongPress = false,
                 songbookTextSize = settingViewModel.songbookTextSize,
                 onEditClick = {},
                 onShareClick = {},
+                onFavoriteClick = {_,_ ->},
                 onDeleteClick = {}) { song ->
                 viewModel.selectedSong.value = song
                 navController.navigate(Screens.SINGLE_SONG_SCREEN.route)

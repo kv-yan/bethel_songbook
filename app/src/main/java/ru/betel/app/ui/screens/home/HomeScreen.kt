@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -113,6 +114,8 @@ private fun MainContent(
         }
     }
 
+    val favoriteSongs = viewModel.favoriteSongs.observeAsState(initial = emptyList())
+
     SwipeRefresh(
         modifier = Modifier
             .fillMaxSize()
@@ -135,10 +138,10 @@ private fun MainContent(
                     SongCategory(items = it.value, charName = it.key.toString())
                 }
 
-                CategorizedLazyColumn(
-                    appTheme = appTheme,
+                CategorizedLazyColumn(appTheme = appTheme,
                     categories = songsList,
                     textSize = settingViewModel.songbookTextSize,
+                    favoriteSongs = favoriteSongs.value,
                     onEditClick = {
                         editViewModel.currentSong.value = it
                         navController.navigate(Screens.EDIT_SONG_SCREEN.route)
@@ -149,6 +152,14 @@ private fun MainContent(
                     onDeleteClick = {
                         isDeletingSong.value = true
                         deletingSong.value = it
+                    },
+                    onFavoriteClick = { song, isAdded ->
+                        if (isAdded) {
+                            viewModel.deleteFavoriteSongs(song)
+                        } else {
+                            viewModel.insertFavoriteSongs(song)
+                        }
+
                     }) { song ->
                     viewModel.selectedSong.value = song
                     navController.navigate(Screens.SINGLE_SONG_SCREEN.route)

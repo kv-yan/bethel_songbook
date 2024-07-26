@@ -43,9 +43,6 @@ fun AppMainContent(
     settingViewModel: SettingViewModel,
     editViewModel: EditViewModel
 ) {
-    val isFrom = remember {
-        mutableStateOf(true)
-    }
     val coroutineScope = rememberCoroutineScope()
     Column(
         Modifier
@@ -55,7 +52,7 @@ fun AppMainContent(
 
         NavHost(
             navController = navController,
-            startDestination = Screens.TEMPLATE_SCREEN.route,
+            startDestination = Screens.HOME_SCREEN.route,
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screens.HOME_SCREEN.route) {

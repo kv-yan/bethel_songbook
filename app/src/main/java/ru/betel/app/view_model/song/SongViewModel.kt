@@ -149,6 +149,12 @@ class SongViewModel(
         }
     }
 
+    fun insertFavoriteSongs(song: Song) {
+        viewModelScope.launch(Dispatchers.IO) {
+            insertFavoriteSongsUseCase.execute(song.toInsertFavoriteEntity())
+        }
+    }
+
     fun deleteFavoriteSongs(item: Song) {
         viewModelScope.launch(Dispatchers.IO) {
             val deletingItem = favoriteSongs.value?.filter {

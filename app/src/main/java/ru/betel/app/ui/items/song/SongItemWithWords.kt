@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
+import ru.betel.app.ui.action_bar.isSongInFavorites
 import ru.betel.data.extensions.getWordsFirst2Lines
 import ru.betel.data.reopsitory.network.NetworkUtilsImpl
 import ru.betel.domain.model.Song
@@ -48,10 +49,12 @@ fun SongItemWithWords(
     isEnableLongPress: Boolean = true,
     appTheme: AppTheme,
     item: Song,
+    favoriteSongs: List<Song>,
     textSize: SongbookTextSize,
     onEditClick: (Song) -> Unit,
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
+    onFavoriteClick: (Song , Boolean) -> Unit,
     onItemClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -60,6 +63,8 @@ fun SongItemWithWords(
 
     val horizontalScrollState = rememberScrollState()
     val isConnected = remember { networkUtils.isConnectedNetwork() }
+
+    val bookmarkIconState = isSongInFavorites(item, favoriteSongs)
 
     Column(modifier = Modifier
         .pointerInput(Unit) {
@@ -132,10 +137,11 @@ fun SongItemWithWords(
                         }
                         Spacer(modifier = Modifier.width(6.dp))
                         IconButton(
-                            onClick = {  }, modifier = Modifier.size(20.dp, 20.dp)
+                            onClick = { onFavoriteClick(item , bookmarkIconState) },
+                            modifier = Modifier.size(20.dp, 20.dp)
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_add_bookmark),
+                                painter = painterResource(id = if (bookmarkIconState) R.drawable.ic_remove_bookmark else R.drawable.ic_add_bookmark),
                                 contentDescription = null,
                                 tint = appTheme.primaryIconColor,
                                 modifier = Modifier.size(15.dp, 20.dp)

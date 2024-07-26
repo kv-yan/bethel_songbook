@@ -21,16 +21,20 @@ fun SongsList(
     onEditClick: (Song) -> Unit,
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
+    onFavoriteClick: (Song, Boolean) -> Unit,
     onSongSelected: (Song) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(songs) { song ->
-                SongItemWithWords(isEnableLongPress,
+                SongItemWithWords(
+                    isEnableLongPress = isEnableLongPress,
                     appTheme = appTheme,
-                    song,
-                    songbookTextSize,
+                    item = song,
+                    favoriteSongs = emptyList(),
+                    textSize = songbookTextSize,
                     onEditClick = { onEditClick(song) },
+                    onFavoriteClick = { _, _ -> },
                     onShareClick = { onShareClick(song) },
                     onDeleteClick = { onDeleteClick(song) }) { onSongSelected(song) }
             }

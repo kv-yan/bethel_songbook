@@ -1,7 +1,6 @@
 package ru.betel.app.ui.widgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,17 +27,15 @@ import ru.betel.domain.model.ui.SongbookTextSize
 
 
 @Composable
-fun SongCategoryHeader(appTheme: AppTheme,header: String) {
+fun SongCategoryHeader(appTheme: AppTheme, header: String) {
     Text(
-        text = header,
-        style = TextStyle(
+        text = header, style = TextStyle(
             fontSize = 16.sp,
             lineHeight = 20.sp,
             fontFamily = FontFamily(Font(R.font.mardoto_regular)),
             fontWeight = FontWeight.W700,
             color = appTheme.secondaryTextColor,
-        ),
-        modifier = Modifier
+        ), modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, top = 12.dp, bottom = 12.dp)
     )
@@ -47,12 +44,14 @@ fun SongCategoryHeader(appTheme: AppTheme,header: String) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategorizedLazyColumn(
-    appTheme: AppTheme ,
+    appTheme: AppTheme,
     categories: List<SongCategory>,
     textSize: SongbookTextSize,
+    favoriteSongs: List<Song>,
     onEditClick: (Song) -> Unit,
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
+    onFavoriteClick: (Song, Boolean) -> Unit,
     onItemClick: (Song) -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
@@ -63,23 +62,23 @@ fun CategorizedLazyColumn(
                     elevation = 3.dp,
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
-                    SongCategoryHeader(appTheme = appTheme,header = category.charName)
+                    SongCategoryHeader(appTheme = appTheme, header = category.charName)
                 }
             }
 
             items(category.items, key = { it.id }) { song ->
-                SongItemWithWords(
-                    isEnableLongPress = true,
+                SongItemWithWords(isEnableLongPress = true,
                     appTheme = appTheme,
                     item = song,
                     textSize = textSize,
+                    favoriteSongs = favoriteSongs,
                     onEditClick = onEditClick,
                     onShareClick = onShareClick,
+                    onFavoriteClick = onFavoriteClick,
                     onDeleteClick = onDeleteClick,
                     onItemClick = {
                         onItemClick(song)
-                    }
-                )
+                    })
             }
         }
     }
