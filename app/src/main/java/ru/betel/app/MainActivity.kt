@@ -1,10 +1,20 @@
 package ru.betel.app
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -25,6 +35,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.get
 import ru.betel.app.request.RequestNotificationPermission
+import ru.betel.app.service.scheduleWeeklyNotification
 import ru.betel.app.ui.bottom_sheet.LogInBottomSheet
 import ru.betel.app.ui.screens.splash.SplashScreen
 import ru.betel.app.view_model.edit.EditViewModel
@@ -35,19 +46,23 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import kotlin.system.exitProcess
 
-
 class MainActivity : ComponentActivity() {
-    private val TAG = "NOTIFICATION"
+    companion object {
+        private const val REQUEST_CODE_OVERLAY_PERMISSION = 1001
+        private val TAG = "NOTIFICATION"
+    }
+
+    private var overlayView: View? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        scheduleWeeklyNotification(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         subscribeNotificationTopic()
-
         setContent {
+            requestPermission()
             RequestNotificationPermission()
 
             val songViewModel: SongViewModel = get()
@@ -80,6 +95,13 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
                                 actionBarState.value = ActionBarState.SINGLE_TEMPLATE_SCREEN
                             }
+                        }
+                    }
+
+                    intent.extras?.get("is_new_template").let {
+                        if (it == true) {
+                            navController.navigate(Screens.NEW_TEMPLATE_SCREEN.route)
+                            actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
                         }
                     }
                 }
@@ -132,12 +154,75 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun subscribeNotificationTopic() {
-        // in main activity
 //        FirebaseMessaging.getInstance().subscribeToTopic("new_template")
-        FirebaseMessaging.getInstance().subscribeToTopic("test")
-            .addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                }
+        FirebaseMessaging.getInstance().subscribeToTopic("test").addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
             }
+        }
+    }
+
+    private fun requestPermission() {
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
+        } else {
+//            showOverlay()
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+            if (Settings.canDrawOverlays(this)) {
+                showOverlay()
+            } else {
+            }
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showOverlay() {
+        if (overlayView != null) return
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val layoutParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
+
+        layoutParams.gravity = Gravity.CENTER
+
+        val view = LayoutInflater.from(this).inflate(R.layout.reminder_layout, null)
+        overlayView = view
+
+        view.findViewById<Button>(R.id.button_open).setOnClickListener {
+            windowManager.removeView(view)
+        }
+
+        view.findViewById<TextView>(R.id.button_close).setOnClickListener {
+            windowManager.removeView(view)
+        }
+
+        windowManager.addView(view, layoutParams)
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (overlayView != null) {
+            windowManager.removeView(overlayView)
+            overlayView = null
+        } else {
+            super.onBackPressed()
+        }
     }
 }
+
+

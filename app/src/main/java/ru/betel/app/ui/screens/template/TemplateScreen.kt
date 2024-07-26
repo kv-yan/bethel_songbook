@@ -13,13 +13,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import ru.betel.app.ui.items.template.TemplateColumItem
+import ru.betel.app.ui.items.template.TemplateColumnItem
+import ru.betel.app.ui.items.template.TemplateDetailsState
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.ui.widgets.loading_anim.LoadingScreen
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -40,15 +43,25 @@ fun TemplateScreen(
     val templates by viewModel.templateUiState
     val localTemplate by viewModel.localTemplateState.observeAsState(mutableListOf())
     val searchQuery by viewModel.searchQuery
+    val performerNameFilter by viewModel.performerNameFilter
 
     val isLoading = false
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+    val detailsState = remember {
+        mutableStateOf(TemplateDetailsState.Closed)
+    }
+    detailsState.value = if (viewModel.isOpeningAllTemplate.value) {
+        TemplateDetailsState.Opened
+    } else {
+        TemplateDetailsState.Closed
+    }
 
     if (templates.isEmpty()) {
         LaunchedEffect(key1 = null) { viewModel.loadTemplate() }
     }
 
     val filteredTemplates = viewModel.searchTemplates(searchQuery)
+        .filter { it.performerName.contains(performerNameFilter, ignoreCase = true) }
 
     SwipeRefresh(
         modifier = Modifier
@@ -63,25 +76,28 @@ fun TemplateScreen(
                 if (viewModel.templateSelectedType.value == TemplateType.ALL) filteredTemplates else localTemplate
 
             when {
-                itemsList.isEmpty() && searchQuery.isEmpty() -> {
+                itemsList.isEmpty() && searchQuery.isEmpty() && performerNameFilter.isEmpty() -> {
                     LoadingScreen(appTheme)
                 }
 
-                itemsList.isEmpty() && searchQuery.isNotEmpty() -> {
+                itemsList.isEmpty() && (searchQuery.isNotEmpty() || performerNameFilter.isNotEmpty()) -> {
                     NothingFoundScreen(appTheme)
                 }
 
                 else -> {
                     LazyColumn(
-                        Modifier.fillMaxSize().background(appTheme.screenBackgroundColor)
+                        Modifier
+                            .fillMaxSize()
+                            .background(appTheme.screenBackgroundColor)
                     ) {
                         item { Spacer(modifier = Modifier.height(16.dp)) }
                         items(itemsList, key = { it.id }) { template ->
-                            TemplateColumItem(
-                                isOpening = viewModel.isOpeningAllTemplate,
-                                appTheme= appTheme,
+                            TemplateColumnItem(
+                                detailsState = detailsState,
+                                appTheme = appTheme,
                                 template = template,
-                                textSize = settingViewModel.songbookTextSize
+                                textSize = settingViewModel.songbookTextSize,
+                                searchQuery = viewModel.searchQuery.value,
                             ) {
                                 viewModel.singleTemplate.value = template
                                 navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)

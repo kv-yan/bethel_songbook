@@ -3,9 +3,11 @@ package ru.betel.app.ui.widgets
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,7 +44,7 @@ import ru.betel.domain.model.ui.AppTheme
 
 @Composable
 fun MyTextFields(
-    appTheme: AppTheme ,
+    appTheme: AppTheme,
     placeholder: String,
     modifier: Modifier = Modifier,
     fieldText: MutableState<String>,
@@ -88,7 +90,10 @@ fun MyTextFields(
                 cursorBrush = SolidColor(appTheme.primaryTextColor),
                 decorationBox = { innerTextField ->
                     Row(modifier, verticalAlignment = align) {
-                        if (leadingIcon != null) leadingIcon()
+                        if (leadingIcon != null) {
+                            leadingIcon()
+                            Spacer(Modifier.width(8.dp))
+                        }
 
                         Box(Modifier.weight(1f)) {
                             if (text.isEmpty()) {
@@ -109,7 +114,6 @@ fun MyTextFields(
                 ),
                 visualTransformation = if (textType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None
             )
-
         }
     }
 }

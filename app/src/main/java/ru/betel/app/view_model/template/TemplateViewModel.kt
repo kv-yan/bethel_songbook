@@ -64,8 +64,9 @@ class TemplateViewModel(
 
     val templateSelectedType = mutableStateOf(TemplateType.ALL)
     val createdNewTemplate = mutableStateOf<SongTemplate?>(null)
+    val performerNameFilter = mutableStateOf("")
 
-    val singleTemplate = mutableStateOf<SongTemplate>(
+    val singleTemplate = mutableStateOf(
         SongTemplate(
             id = "Error",
             createDate = "Error",
@@ -363,7 +364,7 @@ class TemplateViewModel(
 
     private fun normalizeText(text: String): String {
         return Normalizer.normalize(text, Normalizer.Form.NFD).replace("[\\p{M}]".toRegex(), "")
-            .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9\\s]+".toRegex(), "")
+            .replace("[&\\/`՝#,+()$~%.'\":*?<>{}br0-9]+".toRegex(), "")
             .lowercase(Locale.getDefault())
     }
 

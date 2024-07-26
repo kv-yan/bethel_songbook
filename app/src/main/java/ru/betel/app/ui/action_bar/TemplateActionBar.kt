@@ -1,7 +1,6 @@
 package ru.betel.app.ui.action_bar
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -205,8 +203,8 @@ fun TemplateActionBar(
                     }
                     MyTextFields(appTheme = appTheme,
                         placeholder = "Առաջնորդի անուն",
-                        fieldText = textFieldState,
-                        modifier = Modifier.fillMaxWidth(0.85f),
+                        fieldText = templateViewModel.performerNameFilter,
+                        modifier = Modifier.fillMaxWidth(0.8f),
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search),
@@ -217,15 +215,24 @@ fun TemplateActionBar(
                         })
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    Text(text = if (templateViewModel.isOpeningAllTemplate.value) "Փակել" else "բացել",
-                        textAlign = TextAlign.Center,
-                        color = appTheme.primaryTextColor,
+                    Box(
+                        contentAlignment = Alignment.CenterEnd,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
-                                templateViewModel.isOpeningAllTemplate.value =
-                                    !templateViewModel.isOpeningAllTemplate.value
-                            })
+                            .padding(end = 10.dp)
+                    ) {
+                        IconButton(onClick = {
+                            templateViewModel.isOpeningAllTemplate.value =
+                                !templateViewModel.isOpeningAllTemplate.value
+
+                        }) {
+                            Icon(
+                                painter = painterResource(id = if (templateViewModel.isOpeningAllTemplate.value) R.drawable.ic_close_all else R.drawable.ic_open_all),
+                                contentDescription = null,
+                                tint = appTheme.primaryTextColor,
+                            )
+                        }
+                    }
                 }
                 Spacer(modifier = Modifier.height(6.dp))
             }

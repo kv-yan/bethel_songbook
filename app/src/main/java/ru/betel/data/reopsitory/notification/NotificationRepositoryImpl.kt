@@ -31,11 +31,10 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
         val client = OkHttpClient()
         val json = JSONObject().apply {
             put("to", "/topics/$topic")
-            put("notification", JSONObject().apply {
+            put("data", JSONObject().apply {
                 put("title", title)
                 put("body", body)
-            })
-            put("data", JSONObject().apply {
+                put("sound", sound)
                 put("template_id", template.id)
             })
         }

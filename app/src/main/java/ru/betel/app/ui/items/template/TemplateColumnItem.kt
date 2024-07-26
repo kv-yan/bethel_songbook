@@ -21,17 +21,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
@@ -41,28 +45,39 @@ import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 
+
+enum class TemplateDetailsState {
+    Closed, Opened
+}
+
 @Composable
-fun TemplateColumItem(
-    isOpening: MutableState<Boolean>,
+fun TemplateColumnItem(
+    detailsState: MutableState<TemplateDetailsState>,
     appTheme: AppTheme,
     template: SongTemplate,
+    searchQuery: String,
     textSize: SongbookTextSize,
-    onCLick: () -> Unit,
+    onClick: () -> Unit,
 ) {
-    var isShowingTemplateDetails by rememberSaveable { mutableStateOf(false) }
+    var isShowingTemplateDetails by remember { mutableStateOf(detailsState.value == TemplateDetailsState.Opened) }
+
+    LaunchedEffect(detailsState.value) {
+        isShowingTemplateDetails = (detailsState.value == TemplateDetailsState.Opened)
+    }
 
     Surface(
         color = appTheme.fieldBackgroundColor,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 5.dp)
-            .clickable { onCLick() },
+            .clickable { onClick() },
     ) {
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         ) {
+            // Header Row with performer name and date
             Row(
                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
             ) {
@@ -104,20 +119,47 @@ fun TemplateColumItem(
                     }
                 }
             }
-            AnimatedVisibility(visible = (isShowingTemplateDetails || isOpening.value)) {
+            AnimatedVisibility(visible = isShowingTemplateDetails) {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(1.dp))
                     Divider(color = songDividerColor, thickness = 1.dp)
                     Spacer(modifier = Modifier.height(1.dp))
+
+                    val songDetails = template.getSongsTitle()
+                    val styledText = buildAnnotatedString {
+                        if (searchQuery.isEmpty()) {
+                            append(songDetails)
+                        } else {
+                            val lowercasedDetails = songDetails.lowercase()
+                            val lowercasedQuery = searchQuery.lowercase()
+                            var startIndex = 0
+                            while (startIndex < lowercasedDetails.length) {
+                                val foundIndex =
+                                    lowercasedDetails.indexOf(lowercasedQuery, startIndex)
+                                if (foundIndex != -1) {
+                                    append(songDetails.substring(startIndex, foundIndex))
+                                    withStyle(style = SpanStyle(color = appTheme.primaryTextColor, fontWeight = FontWeight(500))) {
+                                        append(
+                                            songDetails.substring(
+                                                foundIndex, foundIndex + lowercasedQuery.length
+                                            )
+                                        )
+                                    }
+                                    startIndex = foundIndex + lowercasedQuery.length
+                                } else {
+                                    append(songDetails.substring(startIndex))
+                                    break
+                                }
+                            }
+                        }
+                    }
+
                     Text(
-                        text = template.getSongsTitle(),
-                        lineHeight = 24.sp,
-                        style = TextStyle(
+                        text = styledText, lineHeight = 24.sp, style = TextStyle(
                             fontSize = textSize.normalItemDefaultTextSize,
                             fontWeight = FontWeight(400),
                             color = appTheme.secondaryTextColor,
-                        ),
-                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                        ), modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

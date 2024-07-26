@@ -131,6 +131,17 @@ fun SongItemWithWords(
                             )
                         }
                         Spacer(modifier = Modifier.width(6.dp))
+                        IconButton(
+                            onClick = {  }, modifier = Modifier.size(20.dp, 20.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_add_bookmark),
+                                contentDescription = null,
+                                tint = appTheme.primaryIconColor,
+                                modifier = Modifier.size(15.dp, 20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(6.dp))
                         if (FirebaseAuth.getInstance().currentUser != null) {
                             IconButton(
                                 onClick = { onDeleteClick(item) },
