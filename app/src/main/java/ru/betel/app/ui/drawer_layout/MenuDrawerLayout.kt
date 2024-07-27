@@ -60,8 +60,21 @@ fun MenuDrawerLayout(
     val sendNotificationDialogState = remember { mutableStateOf(false) }
     val uploadDialogState = remember { mutableStateOf(false) }
     val deleteTemplateDialogState = remember { mutableStateOf(false) }
-    val songState =
-        remember { mutableStateOf<Song>(Song("", "", "", "", "", false, false, false, false)) }
+    val songState = remember {
+        mutableStateOf<Song>(
+            Song(
+                id = "",
+                title = "",
+                tonality = "",
+                words = "",
+                temp = "",
+                isFromSongbookSong = false,
+                isGlorifyingSong = false,
+                isWorshipSong = false,
+                isGiftSong = false
+            )
+        )
+    }
     val templateState = remember {
         mutableStateOf<SongTemplate>(
             SongTemplate(
@@ -77,7 +90,8 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    SendNotificationDialog(showDialog = sendNotificationDialogState,
+    SendNotificationDialog(
+        showDialog = sendNotificationDialogState,
         template = templateState,
         onConfirmationClick = {
             templateViewModel.sendNotification(it)

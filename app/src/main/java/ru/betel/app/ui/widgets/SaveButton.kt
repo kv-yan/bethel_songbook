@@ -53,16 +53,15 @@ fun SaveButton(
 
 @Composable
 fun SaveButton(
-    appTheme: AppTheme, text: String = "Պահպանել", onClick: () -> Unit
+    appTheme: AppTheme,btnColor: Color = appTheme.primaryButtonColor, text: String = "Պահպանել", modifier: Modifier = Modifier.fillMaxWidth(),  onClick: () -> Unit
 ) {
     Box {
         Button(
             onClick = { onClick() },
             shape = RoundedCornerShape(size = 8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = modifier
                 .padding(horizontal = 12.dp, vertical = 12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = appTheme.primaryButtonColor)
+            colors = ButtonDefaults.buttonColors(containerColor = btnColor)
         ) {
             Text(
                 text = text, style = TextStyle(
@@ -70,7 +69,7 @@ fun SaveButton(
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(500),
-                    color = Color(0xFFFFFFFF),
+                    color = appTheme.actionBarIconColor,
                 )
             )
         }

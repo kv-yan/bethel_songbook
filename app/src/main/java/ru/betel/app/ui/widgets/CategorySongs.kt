@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -20,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.fieldBg
 import ru.betel.app.ui.widgets.pop_up.EditSongTonAndTemp
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AppTheme
@@ -80,20 +78,28 @@ fun CategorySongs(
                 Spacer(modifier = Modifier.height(12.dp))
             }
             Surface(
-                color = appTheme.screenBackgroundColor, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(
+                color = appTheme.screenBackgroundColor,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(
                     start = 10.dp,
                     end = 10.dp,
                     bottom = if (categorySongs.isEmpty()) 0.dp else 12.dp
                 )
             ) {
-                LazyColumnForCategorySongs(appTheme = appTheme,songList = categorySongs, fontSize = fontSize) {
+                LazyColumnForCategorySongs(
+                    appTheme = appTheme, songList = categorySongs, fontSize = fontSize
+                ) {
                     onItemClick(it)
                 }
             }
         }
 
         if (isShowEditTonalityTempDialog.value) {
-            EditSongTonAndTemp(isShowEditTonalityTempDialog, mutableSongState = selectedSong)
+            EditSongTonAndTemp(
+                isShowDialog = isShowEditTonalityTempDialog,
+                songState = selectedSong,
+                appTheme = appTheme
+            ){}
         }
     }
 }

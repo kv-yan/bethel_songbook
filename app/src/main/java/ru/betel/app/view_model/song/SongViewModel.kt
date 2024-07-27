@@ -82,10 +82,8 @@ class SongViewModel(
 
     fun syncSongs() {
         viewModelScope.launch {
-            delay(30000 /*after half min */)
-            println("started sync songs")
+            delay(20000)
             syncSongFromFbToLocalStorageUseCase.execute()
-            println("ended sync logic")
         }
     }
 

@@ -6,6 +6,7 @@ data class Song(
     var tonality: String,
     var words: String,
     var temp: String,
+    var isUsingSoundTrack: Boolean = false,
     var isGlorifyingSong: Boolean,
     var isWorshipSong: Boolean,
     var isGiftSong: Boolean,

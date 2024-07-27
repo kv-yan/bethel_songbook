@@ -100,7 +100,17 @@ private fun MainContent(
     val isLoading = viewModel.isLoadingContainer
     val isDeletingSong = remember { mutableStateOf(false) }
     val deletingSong =
-        remember { mutableStateOf(Song("0", "0", "0", "0", "0", false, false, false, false)) }
+        remember { mutableStateOf(Song(
+            id = "0",
+            title = "0",
+            tonality = "0",
+            words = "0",
+            temp = "0",
+            isFromSongbookSong = false,
+            isGlorifyingSong = false,
+            isWorshipSong = false,
+            isGiftSong = false
+        )) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading.value)
 
     LaunchedEffect(key1 = allSongState) {

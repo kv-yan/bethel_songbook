@@ -151,6 +151,7 @@ fun MyTextFieldsForEditScreen(
                 fontSize = fontSize,
                 fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                 fontWeight = FontWeight(400),
+                textAlign = if (singleLine) TextAlign.Center else TextAlign.Start,
                 color = Color.Black,
             ),
             decorationBox = { innerTextField ->

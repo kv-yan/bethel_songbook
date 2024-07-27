@@ -35,7 +35,8 @@ import ru.betel.domain.model.ui.AppTheme
 @Composable
 fun SongItemWithDeleteBtn(
     appTheme: AppTheme,
-    item: Song, index: Int,
+    item: Song,
+    index: Int,
     isLastItem: Boolean,
     onDeleteItemClick: (item: Song) -> Unit,
     onTonalityTempItemLongPres: (item: Song) -> Unit,
@@ -76,7 +77,7 @@ fun SongItemWithDeleteBtn(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "${item.temp} | ${item.tonality}", style = TextStyle(
+                Text(text = if (item.isUsingSoundTrack) {"(ֆ)"} else "${item.temp} | ${item.tonality}", style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),

@@ -3,9 +3,12 @@ package ru.betel.app.ui.widgets
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -22,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
@@ -33,7 +37,7 @@ import ru.betel.domain.model.ui.AppTheme
 fun AddNewSongToTemplate(
     appTheme: AppTheme,
     categoryTitle: String,
-    categorySongs: SnapshotStateList<Song>?,
+    categorySongs: SnapshotStateList<Song>,
     onAddItemClick: () -> Unit,
 ) {
     val isShowEditTonalityTempDialog = remember { mutableStateOf(false) }
@@ -47,8 +51,8 @@ fun AddNewSongToTemplate(
                 isGlorifyingSong = false,
                 isWorshipSong = false,
                 isGiftSong = false,
-                isFromSongbookSong = false,
-                temp = "Error"
+                temp = "Error",
+                isFromSongbookSong = false
             )
         )
     }
@@ -81,27 +85,59 @@ fun AddNewSongToTemplate(
                     )
                 }
             }
+            if (categorySongs.isNotEmpty()) {
+                Row(
+                    modifier = Modifier.padding(
+                        start = 10.dp,
+                        end = 10.dp,
+                    )
+                ) {
+                    Text(
+                        text = "Վերնագիր",
+                        color = appTheme.secondaryTextColor,
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Տեմպ | Տոն",
+                        color = appTheme.secondaryTextColor,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+            }
             Surface(
                 color = appTheme.screenBackgroundColor,
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.padding(
                     start = 10.dp,
                     end = 10.dp,
-                    bottom = if (categorySongs?.isEmpty() == true) 0.dp else 12.dp
+                    bottom = if (categorySongs.isEmpty()) 0.dp else 12.dp
                 )
             ) {
-                if (categorySongs != null) {
-                    LazyColumnForAddNewTemplate(songList = categorySongs, appTheme = appTheme) {
-                        selectedSong.value = it
-                        isShowEditTonalityTempDialog.value = true
-                    }
+                LazyColumnForAddNewTemplate(songList = categorySongs, appTheme = appTheme) {
+                    selectedSong.value = it
+                    isShowEditTonalityTempDialog.value = true
                 }
             }
         }
 
         if (isShowEditTonalityTempDialog.value) {
-            EditSongTonAndTemp(isShowEditTonalityTempDialog, mutableSongState = selectedSong)
+            EditSongTonAndTemp(
+                isShowDialog = isShowEditTonalityTempDialog,
+                songState = selectedSong,
+                appTheme = appTheme
+            ) {
+                val index = categorySongs.indexOfFirst { it.id == selectedSong.value.id }
+                if (index != -1) {
+                    categorySongs[index] = it
+                }
+            }
         }
     }
 }
+
 

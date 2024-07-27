@@ -34,17 +34,20 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     var giftSong: List<Song>
                     var singleModeSongs: List<Song>
 
-                    if (isSingleMode){
-                        singleModeSongs = getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
+                    if (isSingleMode) {
+                        singleModeSongs =
+                            getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
                         glorifyingSong = listOf<Song>()
                         worshipSong = listOf<Song>()
                         giftSong = listOf<Song>()
-                    }
-                    else {
+                    } else {
                         singleModeSongs = listOf<Song>()
-                        glorifyingSong = getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
-                        worshipSong = getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
-                        giftSong = getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
+                        glorifyingSong =
+                            getListOfSongs(template["glorifyingSong"] as ArrayList<HashMap<Any, Any>>)
+                        worshipSong =
+                            getListOfSongs(template["worshipSong"] as ArrayList<HashMap<Any, Any>>)
+                        giftSong =
+                            getListOfSongs(template["giftSong"] as ArrayList<HashMap<Any, Any>>)
                     }
 
 
@@ -86,6 +89,11 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
             val isWorshipSong = item["worshipSong"] as Boolean
             val isGiftSong = item["giftSong"] as Boolean
             val isFromSongbookSong = item["fromSongbookSong"] as Boolean
+            val isUsingSoundTrack = try {
+                item["usingSoundTrack"] as Boolean
+            } catch (ex : NullPointerException){
+                false
+            }
             songList.add(
                 Song(
                     id = id,
@@ -96,7 +104,8 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     isGlorifyingSong = isGlorifyingSong,
                     isWorshipSong = isWorshipSong,
                     isGiftSong = isGiftSong,
-                    isFromSongbookSong = isFromSongbookSong
+                    isFromSongbookSong = isFromSongbookSong,
+                    isUsingSoundTrack = isUsingSoundTrack
                 )
             )
         }

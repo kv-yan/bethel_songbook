@@ -25,13 +25,14 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                     val isWorshipSong = song.getValue("worshipSong") as Boolean
                     val isGiftSong = song.getValue("giftSong") as Boolean
                     val isFromSongbookSong = song.getValue("fromSongbookSong") as Boolean
+                    val isUsingSoundTrack = song.getValue("usingSoundTrack") as Boolean
 
                     val title = song.getValue("title") as String
                     val tonality = song.getValue("tonality") as String
                     val words = song.getValue("words") as String
                     val temp = try {
                         song.getValue("temp") as Long
-                    } catch (e :Exception ){
+                    } catch (e: Exception) {
                         song.getValue("temp") as String
                     }
                     val id = item.key as String
@@ -45,7 +46,8 @@ class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase
                         isGlorifyingSong = isGlorifyingSong,
                         isWorshipSong = isWorshipSong,
                         isGiftSong = isGiftSong,
-                        isFromSongbookSong = isFromSongbookSong
+                        isFromSongbookSong = isFromSongbookSong,
+                        isUsingSoundTrack = isUsingSoundTrack
                     )
 
                     allSongList.add(songObj)

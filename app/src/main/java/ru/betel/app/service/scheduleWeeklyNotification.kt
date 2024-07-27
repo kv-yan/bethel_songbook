@@ -13,9 +13,9 @@ fun scheduleWeeklyNotification(context: Context) {
     val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
     val calendar = Calendar.getInstance().apply {
-        set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY)
-        set(Calendar.HOUR_OF_DAY, 17)
-        set(Calendar.MINUTE, 0)
+        set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY)
+        set(Calendar.HOUR_OF_DAY, 18)
+        set(Calendar.MINUTE, 50)
         set(Calendar.SECOND, 0)
 
         if (timeInMillis < System.currentTimeMillis()) {
