@@ -137,7 +137,6 @@ private fun MainContent(
 ) {
     val appTheme = settingViewModel.appTheme.value
 
-
     val isShowingDayDialog = remember { mutableStateOf(false) }
 
     val categoryState = remember { mutableStateOf(AddSongCategory.GLORIFYING) }

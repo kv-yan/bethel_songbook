@@ -24,11 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
+import ru.betel.app.ui.widgets.TempElement
 import ru.betel.app.ui.widgets.dropdown_menu.CategoryDropDownMenuWithCheckBox
 import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.view_model.edit.EditViewModel
@@ -52,7 +52,7 @@ fun EditSongScreen(
     val currentSong by editViewModel.currentSong.collectAsState()
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val tonality = remember { mutableStateOf(currentSong.tonality) }
-    val temp = remember { mutableStateOf(currentSong.temp) }
+    val temp = remember { mutableStateOf<Float>(currentSong.temp.toInt().toFloat()) }
     val title = remember { mutableStateOf(currentSong.title) }
     val words = remember { mutableStateOf(currentSong.words) }
 
@@ -100,14 +100,7 @@ fun EditSongScreen(
                     appTheme = appTheme, tonality, modifier = Modifier.fillMaxSize(0.5f)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                MyTextFields(
-                    appTheme = appTheme,
-                    placeholder = "Տեմպ",
-                    imeAction = ImeAction.Next,
-                    fieldText = temp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textType = KeyboardType.Number
-                )
+                TempElement(temp = temp, appTheme = appTheme)
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -148,7 +141,7 @@ fun EditSongScreen(
                 title = title.value,
                 tonality = tonality.value,
                 words = words.value,
-                temp = temp.value,
+                temp = temp.value.toInt().toString(),
                 isGlorifyingSong = isGlorifying.value,
                 isWorshipSong = isWorship.value,
                 isGiftSong = isGift.value,

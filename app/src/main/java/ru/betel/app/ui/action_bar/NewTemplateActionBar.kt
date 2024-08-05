@@ -2,6 +2,7 @@ package ru.betel.app.ui.action_bar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -65,8 +66,21 @@ fun NewTemplateActionBar(
                 )
             )
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TemplateModeTypeDropdownMenu(isSingleMode ,appTheme)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TemplateModeTypeDropdownMenu(isSingleMode, appTheme)
+
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_reset),
+                        tint = appTheme.actionBarIconColor,
+                        contentDescription = null
+                    )
+                }
+
             }
         }
     }

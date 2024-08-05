@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.SongbookTextSize
 import ru.betel.domain.model.ui.TrailingIconState
@@ -61,37 +60,40 @@ fun SearchTopAppBar(
             }
         },
         trailingIcon = {
-            IconButton(onClick = {
-                when (trailingIconState) {
-                    TrailingIconState.DELETE -> {
-                        println()
-                        trailingIconState = if (text.value.isNotEmpty()) {
-                            text.value = ""
-                            onTextChange("")
-                            TrailingIconState.CLOSE
-                        } else {
-                            onCloseClicked()
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            TrailingIconState.DELETE
+            if (text.value.isNotEmpty()) {
+                IconButton(onClick = {
+                    when (trailingIconState) {
+                        TrailingIconState.DELETE -> {
+                            println()
+                            trailingIconState = if (text.value.isNotEmpty()) {
+                                text.value = ""
+                                onTextChange("")
+                                TrailingIconState.CLOSE
+                            } else {
+                                onCloseClicked()
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                TrailingIconState.DELETE
+                            }
                         }
-                    }
 
-                    TrailingIconState.CLOSE -> {
-                        if (text.value.isNotEmpty()) {
-                            onTextChange("")
-                        } else {
-                            onCloseClicked()
-                            trailingIconState = TrailingIconState.DELETE
+                        TrailingIconState.CLOSE -> {
+                            if (text.value.isNotEmpty()) {
+                                onTextChange("")
+                            } else {
+                                onCloseClicked()
+                                trailingIconState = TrailingIconState.DELETE
+                            }
                         }
                     }
+                }) {
+
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
+                        tint = appTheme.actionBarColor,
+                        modifier = Modifier.size(12.dp)
+                    )
                 }
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = appTheme.actionBarColor,
-                    modifier = Modifier.size(12.dp)
-                )
             }
         })
 }

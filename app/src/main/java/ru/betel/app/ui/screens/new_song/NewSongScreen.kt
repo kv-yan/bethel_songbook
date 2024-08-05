@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,6 +36,7 @@ import ru.betel.app.R
 import ru.betel.app.ui.theme.songDividerColor
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
+import ru.betel.app.ui.widgets.TempElement
 import ru.betel.app.ui.widgets.dropdown_menu.CategoryDropDownMenuWithCheckBox
 import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.ui.widgets.snackbar.AppSnackbar
@@ -119,7 +118,7 @@ private fun MainContent(
     val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
     val songTonality = remember { mutableStateOf("") }
-    val songTemp = remember { mutableStateOf("") }
+    val songTemp = remember { mutableStateOf(0f) }
     val songTitle = remember { mutableStateOf("") }
     val songWords = remember { mutableStateOf("") }
 
@@ -164,17 +163,7 @@ private fun MainContent(
                     appTheme = appTheme, songTonality, modifier = Modifier.fillMaxWidth(0.5f)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                MyTextFields(
-                    appTheme = appTheme,
-                    placeholder = "Տեմպ",
-                    imeAction = ImeAction.Next,
-                    fieldText = songTemp,
-
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    textType = KeyboardType.Number
-                )
+                TempElement(temp = songTemp, appTheme = appTheme)
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -223,7 +212,7 @@ private fun MainContent(
                 title = songTitle.value,
                 tonality = songTonality.value,
                 words = songWords.value,
-                temp = songTemp.value,
+                temp = songTemp.value.toInt().toString(),
                 isGlorifyingSong = isGlorifying.value,
                 isWorshipSong = isWorship.value,
                 isGiftSong = isGift.value,
@@ -283,7 +272,7 @@ fun cleanFieldsValues(
     songTitle: MutableState<String>,
     songTonality: MutableState<String>,
     songWords: MutableState<String>,
-    songTemp: MutableState<String>,
+    songTemp: MutableState<Float>,
     songIsGlorifyingSong: MutableState<Boolean>,
     songIsWorshipSong: MutableState<Boolean>,
     songIsGiftSong: MutableState<Boolean>,
@@ -292,7 +281,7 @@ fun cleanFieldsValues(
     songTitle.value = ""
     songTonality.value = ""
     songWords.value = ""
-    songTemp.value = ""
+    songTemp.value = 0f
 
     songIsGlorifyingSong.value = false
     songIsWorshipSong.value = false

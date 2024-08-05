@@ -195,7 +195,7 @@ fun MyTextFields(
     align: Alignment.Vertical = Alignment.CenterVertically
 ) {
 
-    var text by rememberSaveable { mutableStateOf(fieldText.value) }
+//    var text by rememberSaveable { mutableStateOf(fieldText.value) }
 
     Surface(
         shape = shape, color = fieldBg
@@ -204,9 +204,9 @@ fun MyTextFields(
             Modifier.padding(vertical = 9.dp)
         ) {
             BasicTextField(
-                value = text,
+                value = fieldText.value,
                 onValueChange = {
-                    text = it
+                    fieldText.value = it
                     fieldText.value = it
                 },
                 singleLine = singleLine,
@@ -225,7 +225,7 @@ fun MyTextFields(
                         if (leadingIcon != null) leadingIcon()
 
                         Box(Modifier.weight(1f)) {
-                            if (text.isEmpty()) {
+                            if (fieldText.value.isEmpty()) {
                                 Text(
                                     placeholder,
                                     style = LocalTextStyle.current.copy(

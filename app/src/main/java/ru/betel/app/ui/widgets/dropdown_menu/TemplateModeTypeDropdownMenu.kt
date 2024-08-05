@@ -41,7 +41,7 @@ fun TemplateModeTypeDropdownMenu(isSingleMode: MutableState<Boolean>, appTheme: 
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = appTheme.actionBarColor,
-        modifier = Modifier.height(38.dp)
+        modifier = Modifier.height(38.dp).wrapContentWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +52,7 @@ fun TemplateModeTypeDropdownMenu(isSingleMode: MutableState<Boolean>, appTheme: 
             Text(
                 modifier = Modifier
                     .wrapContentWidth()
-                    .padding(horizontal = 6.dp),
+                    .padding(end = 6.dp),
                 text = if (isSingleMode.value) TemplateModeType.SingleMode.title else TemplateModeType.Categorised.title,
                 style = TextStyle(
                     fontSize = 13.sp,
