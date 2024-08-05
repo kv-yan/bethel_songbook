@@ -59,6 +59,7 @@ import ru.betel.domain.model.ui.AddSong
 import ru.betel.domain.model.ui.AddSongCategory
 import ru.betel.domain.model.ui.NewTemplateFieldState
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditTemplateScreen(
@@ -144,6 +145,7 @@ private fun MainContent(
     val tempGlorifyingSongs = editViewModel.tempGlorifyingSongs
     val tempWorshipSongs = editViewModel.tempWorshipSongs
     val tempGiftSongs = editViewModel.tempGiftSongs
+    val tempSingleModeSongs = editViewModel.tempGiftSongs
 
     val tempPerformerName = remember { mutableStateOf(currentTemplate.performerName) }
     val isSingleMode = remember { mutableStateOf(false) }
@@ -177,6 +179,10 @@ private fun MainContent(
         AddSongCategory.GIFT -> {
             templateViewModel.giftAddSong.observeAsState(initial = mutableListOf())
         }
+
+        AddSongCategory.SingleMode -> {
+            templateViewModel.giftAddSong.observeAsState(initial = mutableListOf())
+        }
     }
     var selectedCategoryForAddNewSong = when (selectedCategory.value) {
         AddSongCategory.GLORIFYING -> tempGlorifyingSongs
@@ -184,6 +190,7 @@ private fun MainContent(
         AddSongCategory.WORSHIP -> tempWorshipSongs
 
         AddSongCategory.GIFT -> tempGiftSongs
+        AddSongCategory.SingleMode -> tempSingleModeSongs
     }
     val bottomSheetAllSongsForGlorifyingCategory: State<MutableList<AddSong>> =
         templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf())
@@ -191,12 +198,15 @@ private fun MainContent(
         templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf())
     val bottomSheetAllSongsForGiftCategory: State<MutableList<AddSong>> =
         templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf())
+    val bottomSheetAllSongsForSingleCategory: State<MutableList<AddSong>> =
+        templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf())
     val bottomSheetFavoriteSong: State<MutableList<AddSong>> =
         templateViewModel.tempFavoriteAllAddSongs.observeAsState(mutableListOf())
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         AddSongCategory.GLORIFYING -> bottomSheetAllSongsForGlorifyingCategory
         AddSongCategory.WORSHIP -> bottomSheetAllSongsForWorshipCategory
         AddSongCategory.GIFT -> bottomSheetAllSongsForGiftCategory
+        AddSongCategory.SingleMode -> bottomSheetAllSongsForSingleCategory
     }
     val verticalScrollState = rememberScrollState()
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)

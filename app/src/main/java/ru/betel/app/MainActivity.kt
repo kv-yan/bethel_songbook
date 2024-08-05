@@ -1,20 +1,11 @@
 package ru.betel.app
 
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -62,7 +53,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         subscribeNotificationTopic()
         setContent {
-            requestPermission()
+//            requestPermission()
             RequestNotificationPermission()
 
             val songViewModel: SongViewModel = get()
@@ -161,57 +152,63 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
-        } else {
-//            showOverlay()
-        }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
-            if (Settings.canDrawOverlays(this)) {
-                showOverlay()
+    /*
+        private fun requestPermission() {
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")
+                )
+                startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
             } else {
+    //            showOverlay()
+            }
+
+        }
+    */
+
+    /*
+        @RequiresApi(Build.VERSION_CODES.O)
+        @Deprecated("Deprecated in Java")
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+                if (Settings.canDrawOverlays(this)) {
+                    showOverlay()
+                } else {
+                }
             }
         }
-    }
+    */
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun showOverlay() {
-        if (overlayView != null) return
-        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    /*
+        @RequiresApi(Build.VERSION_CODES.O)
+        private fun showOverlay() {
+            if (overlayView != null) return
+            val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        val layoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        )
+            val layoutParams = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+            )
 
-        layoutParams.gravity = Gravity.CENTER
+            layoutParams.gravity = Gravity.CENTER
 
-        val view = LayoutInflater.from(this).inflate(R.layout.reminder_layout, null)
-        overlayView = view
+            val view = LayoutInflater.from(this).inflate(R.layout.reminder_layout, null)
+            overlayView = view
 
-        view.findViewById<Button>(R.id.button_open).setOnClickListener {
-            windowManager.removeView(view)
+            view.findViewById<Button>(R.id.button_open).setOnClickListener {
+                windowManager.removeView(view)
+            }
+
+            view.findViewById<TextView>(R.id.button_close).setOnClickListener {
+                windowManager.removeView(view)
+            }
+
+            windowManager.addView(view, layoutParams)
         }
-
-        view.findViewById<TextView>(R.id.button_close).setOnClickListener {
-            windowManager.removeView(view)
-        }
-
-        windowManager.addView(view, layoutParams)
-    }
+    */
 
 
     @Deprecated("Deprecated in Java")

@@ -52,6 +52,7 @@ class EditViewModel(
     val tempGlorifyingSongs = mutableStateListOf<Song>()
     val tempWorshipSongs = mutableStateListOf<Song>()
     val tempGiftSongs = mutableStateListOf<Song>()
+    val tempSingleModeSongs = mutableStateListOf<Song>()
 
     private val tempPerformerName = mutableStateOf(currentTemplate.value.performerName)
     val tempWeekday = mutableStateOf("Շաբաթվա օր")

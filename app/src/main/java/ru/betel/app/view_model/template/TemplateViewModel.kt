@@ -249,6 +249,59 @@ class TemplateViewModel(
 
     }
 
+    fun checkFields(
+        templateFieldState: MutableState<NewTemplateFieldState>,
+        tempGlorifyingSongs: SnapshotStateList<Song>,
+        tempWorshipSongs: SnapshotStateList<Song>,
+        tempGiftSongs: SnapshotStateList<Song>,
+        tempSingleModeSongs: SnapshotStateList<Song>,
+    ): Result<Unit> {
+        return if (tempPerformerName.value.isNotEmpty()) {
+            if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
+                if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
+                    if (isSingleMode.value) {
+                        if (tempSingleModeSongs.isNotEmpty() == true) {
+                            templateFieldState.value = NewTemplateFieldState.DONE
+                            Result.success(Unit)
+                        } else {
+                            templateFieldState.value = NewTemplateFieldState.INVALID_SINGLE_MODE
+                            Result.failure(IllegalAccessError())
+                        }
+                    } else {
+                        if (tempGlorifyingSongs?.isNotEmpty() == true) {
+                            if (tempWorshipSongs?.isNotEmpty() == true) {
+                                if (tempGiftSongs?.isNotEmpty() == true) {
+                                    templateFieldState.value = NewTemplateFieldState.DONE
+                                    Result.success(Unit)
+                                } else {
+                                    templateFieldState.value = NewTemplateFieldState.INVALID_GIFT
+                                    Result.failure(IllegalAccessError())
+                                }
+                            } else {
+                                templateFieldState.value = NewTemplateFieldState.INVALID_WORSHIP
+                                Result.failure(IllegalAccessError())
+                            }
+                        } else {
+                            templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
+                            Result.failure(IllegalAccessError())
+                        }
+
+                    }
+                } else {
+                    templateFieldState.value = NewTemplateFieldState.INVALID_DAY
+                    Result.failure(IllegalAccessError())
+                }
+            } else {
+                templateFieldState.value = NewTemplateFieldState.INVALID_WEEKDAY
+                Result.failure(IllegalAccessError())
+            }
+        } else {
+            templateFieldState.value = NewTemplateFieldState.INVALID_NAME
+            Result.failure(IllegalAccessError())
+        }
+
+    }
+
     fun initCategorizedSongs() {
 //        tempGlorifyingSongs.value = mutableStateListOf()
 //        tempWorshipSongs.value = mutableStateListOf()

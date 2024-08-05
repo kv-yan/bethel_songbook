@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -128,34 +129,20 @@ fun EditSongTonAndTemp(
                                     isUsingSoundTrack.value = !isUsingSoundTrack.value
                                 }, verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Checkbox(checked = isUsingSoundTrack.value, onCheckedChange = {
+                            Checkbox(colors = CheckboxDefaults.colors(
+                                checkedColor = appTheme.primaryTextColor,
+                                checkmarkColor = appTheme.fieldBackgroundColor,
+                                uncheckedColor = appTheme.secondaryTextColor
+                            ), checked = isUsingSoundTrack.value, onCheckedChange = {
                                 isUsingSoundTrack.value = it
                             })
                             Text(text = "Երգել ֆոնոգրամայով", color = appTheme.primaryTextColor)
                         }
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+                        SaveButton(
+                            appTheme = appTheme,
                         ) {
-                            Row(modifier = Modifier.fillMaxWidth()) {
-
-                                SaveButton(
-                                    text = "Չեղարկել",
-                                    appTheme = appTheme,
-                                    btnColor = appTheme.secondaryTextColor,
-                                    modifier = Modifier.fillMaxWidth(0.5f)
-                                ) {
-                                    onDismiss()
-                                }
-
-                                SaveButton(
-                                    appTheme = appTheme,
-                                ) {
-                                    onSave()
-                                }
-
-                            }
+                            onSave()
                         }
 
                     }
