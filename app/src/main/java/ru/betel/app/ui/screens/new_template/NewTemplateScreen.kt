@@ -370,7 +370,9 @@ private fun MainContent(
 
                 Spacer(modifier = Modifier.height(12.dp))
                 SearchTopAppBar(text = songViewModel.searchAppBarText,
-                    onTextChange = {},
+                    onTextChange = {
+                        songViewModel.searchAppBarText.value = it
+                    },
                     onCloseClicked = {},
                     textSize = settingViewModel.songbookTextSize
                 )
@@ -414,7 +416,7 @@ fun CategorizedSongs(
             appTheme = appTheme, categoryTitle = "Փառաբանություն", categorySongs = it
         ) {
             selectedCategory.value = AddSongCategory.GLORIFYING
-            selectedCategoryForAddNewSong.addAll(it)
+//            selectedCategoryForAddNewSong.addAll(it)
             selectedCategoryBottomSheetAllSongs.value =
                 bottomSheetAllSongsForGlorifyingCategory.value
             scope.launch { bottomSheetState.show() }
@@ -428,7 +430,7 @@ fun CategorizedSongs(
             appTheme = appTheme, categoryTitle = "Երկրպագություն", categorySongs = it
         ) {
             selectedCategory.value = AddSongCategory.WORSHIP
-            selectedCategoryForAddNewSong.addAll(it)
+//            selectedCategoryForAddNewSong.addAll(it)
             selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForWorshipCategory.value
             scope.launch { bottomSheetState.show() }
         }
@@ -440,7 +442,7 @@ fun CategorizedSongs(
             appTheme = appTheme, categoryTitle = "Ընծա", categorySongs = it
         ) {
             selectedCategory.value = AddSongCategory.GIFT
-            selectedCategoryForAddNewSong.addAll(it)
+//            selectedCategoryForAddNewSong.addAll(it)
             selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForGiftCategory.value
             scope.launch { bottomSheetState.show() }
         }
@@ -467,9 +469,8 @@ fun SingleModeSongs(
             appTheme = appTheme, categoryTitle = "Առանձնացված", categorySongs = it
         ) {
             selectedCategory.value = AddSongCategory.SingleMode
-            selectedCategoryForAddNewSong.addAll(it)
-            selectedCategoryBottomSheetAllSongs.value =
-                bottomSheetAllSongsForSingleModeCategory.value
+//            selectedCategoryForAddNewSong.addAll(it)
+            selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForSingleModeCategory.value
             scope.launch { bottomSheetState.show() }
         }
     }

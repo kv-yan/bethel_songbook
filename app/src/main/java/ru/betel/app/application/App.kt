@@ -35,11 +35,18 @@ class App : Application() {
                 channelId, channelName, NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Channel Description"
-                setSound(soundUri, AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION).build())
+                setSound(
+                    soundUri,
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build()
+                )
             }
 
             val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.deleteNotificationChannel(channelId)
             notificationManager.createNotificationChannel(channel)
         }
-    }}
+    }
+}

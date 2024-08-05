@@ -21,7 +21,6 @@ import ru.betel.app.R;
 
 public class FirebaseNotificationReceiver extends FirebaseMessagingService {
     private static final String TAG = "NOTIFICATION";
-    private static final String DEFAULT_SOUND = "demo_sound";
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -50,26 +49,6 @@ public class FirebaseNotificationReceiver extends FirebaseMessagingService {
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(101, builder.build());
     }
-
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "bethel_firebase_notification_channel";
-            CharSequence channelName = "Channel Name";
-            Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.demo_sound);
-
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("Channel Description");
-            channel.setSound(soundUri, new AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    .build());
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
 
     @Override
     public void onNewToken(@NonNull String token) {

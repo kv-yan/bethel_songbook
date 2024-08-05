@@ -10,6 +10,7 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import ru.betel.app.MainActivity
 import ru.betel.app.R
 
@@ -18,16 +19,14 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "weekly_notification_channel"
+            val channelId = "bethel_firebase_notification_channel"
+            val channelName: CharSequence = "Channel Name"
             val soundUri = Uri.parse("android.resource://" + context.packageName + "/" + R.raw.demo_sound)
+
             val channel = NotificationChannel(
-                channelId,
-                "Weekly Notifications",
-                NotificationManager.IMPORTANCE_HIGH
+                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Channel for weekly notifications"
-                enableLights(true)
-                enableVibration(true)
+                description = "Channel Description"
                 setSound(
                     soundUri,
                     AudioAttributes.Builder()
@@ -36,6 +35,8 @@ class NotificationReceiver : BroadcastReceiver() {
                         .build()
                 )
             }
+
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
 

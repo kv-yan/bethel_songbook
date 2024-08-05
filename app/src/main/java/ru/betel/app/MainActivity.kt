@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
             val templateUiState by templateViewModel.templateUiState
 
             LaunchedEffect(isEndedSplashScreen) {
-                delay(2500)
+                delay(1600)
                 isEndedSplashScreen = true
             }
 

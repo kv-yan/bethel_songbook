@@ -27,6 +27,7 @@ import ru.betel.domain.model.ui.AppTheme
 
 private const val TAG = "VARDANYAN"
 
+/*
 @Composable
 fun LazyColumnForAddNewTemplate(
     appTheme: AppTheme,
@@ -79,3 +80,59 @@ fun LazyColumnForAddNewTemplate(
         }
     }
 }
+*/
+
+@Composable
+fun LazyColumnForAddNewTemplate(
+    appTheme: AppTheme,
+    songList: SnapshotStateList<Song>,
+    tonalityLongPres: (Song) -> Unit,
+) {
+    val originalSongList = remember { songList }
+
+    var data by remember { mutableStateOf(songList) }
+
+    val state = rememberReorderableLazyListState(onMove = { from, to ->
+        data = data.toMutableList().apply {
+            add(to.index, removeAt(from.index))
+        }.toSnapshotStateList()
+    }, onDragEnd = { startIndex, endIndex ->
+        if (startIndex == endIndex) {
+            data = originalSongList
+        } else {
+            songList.clear()
+            songList.addAll(data)
+        }
+    })
+
+    LazyColumn(
+        state = state.listState,
+        modifier = Modifier
+            .background(appTheme.screenBackgroundColor)
+            .reorderable(state)
+            .heightIn(min = 0.dp, max = 1300.dp)
+    ) {
+        itemsIndexed(data, key = { _, item -> item.id }) { index, item ->
+            ReorderableItem(state, key = item.id) { isDragging ->
+                val elevation by animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                Box(
+                    modifier = Modifier
+                        .shadow(elevation)
+                        .detectReorderAfterLongPress(state)
+                ) {
+                    SongItemWithDeleteBtn(
+                        appTheme = appTheme,
+                        item = item,
+                        index = index,
+                        isLastItem = index == data.size - 1,
+                        onDeleteItemClick = { selectedItem ->
+                            data.remove(selectedItem)
+                        },
+                        onTonalityTempItemLongPres = tonalityLongPres
+                    )
+                }
+            }
+        }
+    }
+}
+

@@ -1,5 +1,6 @@
 package ru.betel.app.ui.widgets
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,6 +62,7 @@ fun AddNewSongToTemplate(
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .padding(horizontal = 12.dp)
+            .background(color = appTheme.fieldBackgroundColor, shape = RoundedCornerShape(12.dp))
             .clickable { onAddItemClick() }) {
         Column(Modifier.fillMaxWidth()) {
             Row(

@@ -90,7 +90,7 @@ fun DrawerContent(
         isSelected = remember {
             mutableStateOf(false)
         },
-        screen = Screens.CATEGORY_SCREEN // TODO: bottom sheet
+        screen = Screens.CATEGORY_SCREEN
     )
 
     Scaffold(
