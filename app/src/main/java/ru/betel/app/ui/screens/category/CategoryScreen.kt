@@ -81,8 +81,10 @@ fun CategoryScreen(
                 onEditClick = {},
                 onShareClick = {},
                 onFavoriteClick = {_,_ ->},
-                onDeleteClick = {}) { song ->
+                onDeleteClick = {}) {song ,index ->
                 viewModel.selectedSong.value = song
+                viewModel.selectedSongIndex.value = index
+                viewModel.selectedSongList.value = sortedSongs.value
                 navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
             }
 

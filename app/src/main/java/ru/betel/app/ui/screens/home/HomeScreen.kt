@@ -99,18 +99,21 @@ private fun MainContent(
 
     val isLoading = viewModel.isLoadingContainer
     val isDeletingSong = remember { mutableStateOf(false) }
-    val deletingSong =
-        remember { mutableStateOf(Song(
-            id = "0",
-            title = "0",
-            tonality = "0",
-            words = "0",
-            temp = "0",
-            isFromSongbookSong = false,
-            isGlorifyingSong = false,
-            isWorshipSong = false,
-            isGiftSong = false
-        )) }
+    val deletingSong = remember {
+        mutableStateOf(
+            Song(
+                id = "0",
+                title = "0",
+                tonality = "0",
+                words = "0",
+                temp = "0",
+                isFromSongbookSong = false,
+                isGlorifyingSong = false,
+                isWorshipSong = false,
+                isGiftSong = false
+            )
+        )
+    }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading.value)
 
     LaunchedEffect(key1 = allSongState) {
@@ -144,12 +147,20 @@ private fun MainContent(
                     it.title.first()
                 }.toSortedMap()
 
-                val songsList = songs.map {
+                val categoryList = songs.map {
                     SongCategory(items = it.value, charName = it.key.toString())
                 }
 
+                val songList = mutableListOf<Song>()
+                categoryList.forEach {
+                    it.items.forEach { song ->
+                        songList.add(song)
+                    }
+                }
+
                 CategorizedLazyColumn(appTheme = appTheme,
-                    categories = songsList,
+                    songList = songList,
+                    categories = categoryList,
                     textSize = settingViewModel.songbookTextSize,
                     favoriteSongs = favoriteSongs.value,
                     onEditClick = {
@@ -170,8 +181,10 @@ private fun MainContent(
                             viewModel.insertFavoriteSongs(song)
                         }
 
-                    }) { song ->
+                    }) { song, index ->
                     viewModel.selectedSong.value = song
+                    viewModel.selectedSongIndex.value = index
+                    viewModel.selectedSongList.value = songList
                     navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
                 }
             }

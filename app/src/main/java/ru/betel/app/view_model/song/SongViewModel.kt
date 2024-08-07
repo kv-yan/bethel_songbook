@@ -1,7 +1,6 @@
 package ru.betel.app.view_model.song
 
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -44,6 +43,8 @@ class SongViewModel(
 ) : ViewModel() {
 
     val searchAppBarText = mutableStateOf("")
+    val selectedSongIndex = mutableStateOf<Int>(0)
+    val selectedSongList = mutableStateOf<List<Song>>(mutableListOf())
 
     var allSongState = getAllSongsUseCase.execute()
 
@@ -119,7 +120,7 @@ class SongViewModel(
 
     fun saveSongToFirebase(song: Song): Boolean {
         song.id = "Song"
-         return saveSongInFirebaseUseCase.execute(song)
+        return saveSongInFirebaseUseCase.execute(song)
     }
 
     fun shareSong(song: Song) {

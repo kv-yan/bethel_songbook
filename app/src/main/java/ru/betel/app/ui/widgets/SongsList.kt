@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.betel.app.ui.items.song.SongItemWithWords
@@ -22,13 +22,12 @@ fun SongsList(
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
     onFavoriteClick: (Song, Boolean) -> Unit,
-    onSongSelected: (Song) -> Unit,
+    onSongSelected: (Song, Int) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(songs) { song ->
-                SongItemWithWords(
-                    isEnableLongPress = isEnableLongPress,
+            itemsIndexed(songs) { index, song ->
+                SongItemWithWords(isEnableLongPress = isEnableLongPress,
                     appTheme = appTheme,
                     item = song,
                     favoriteSongs = emptyList(),
@@ -36,7 +35,7 @@ fun SongsList(
                     onEditClick = { onEditClick(song) },
                     onFavoriteClick = { _, _ -> },
                     onShareClick = { onShareClick(song) },
-                    onDeleteClick = { onDeleteClick(song) }) { onSongSelected(song) }
+                    onDeleteClick = { onDeleteClick(song) }) { onSongSelected(song, index) }
             }
         }
     }

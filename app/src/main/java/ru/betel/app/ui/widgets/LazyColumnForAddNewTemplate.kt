@@ -24,7 +24,7 @@ import ru.betel.data.extensions.toSnapshotStateList
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AppTheme
 
-private const val TAG = "VARDANYAN"
+const val TAG = "VARDANYAN"
 
 /*
 @Composable

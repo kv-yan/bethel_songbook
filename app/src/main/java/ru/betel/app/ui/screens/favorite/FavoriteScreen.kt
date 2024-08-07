@@ -2,6 +2,7 @@ package ru.betel.app.ui.screens.favorite
 
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -31,7 +31,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.FavoriteSongsList
 import ru.betel.app.ui.widgets.NothingFoundScreen
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -76,7 +75,9 @@ fun FavoriteScreen(
 
 
     SwipeRefresh(
-        modifier = Modifier.fillMaxSize().background(appTheme.screenBackgroundColor),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(appTheme.screenBackgroundColor),
         state = swipeRefreshState,
         onRefresh = viewModel::loadSong,
         refreshTriggerDistance = 40.dp,
@@ -84,7 +85,8 @@ fun FavoriteScreen(
         if (sortedSongs.value.isEmpty() && searchAppBarText.value.isEmpty()) {
             Row(
                 Modifier
-                    .fillMaxWidth().background(appTheme.screenBackgroundColor)
+                    .fillMaxWidth()
+                    .background(appTheme.screenBackgroundColor)
                     .padding(top = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
@@ -108,15 +110,18 @@ fun FavoriteScreen(
 
             }
         } else if (sortedSongs.value.isNotEmpty()) {
-
-            FavoriteSongsList(appTheme=appTheme,songs = sortedSongs.value,
-                settingViewModel.songbookTextSize,
-                onSongSelected = { song ->
+            FavoriteSongsList(appTheme = appTheme,
+                songs = sortedSongs.value,
+                songbookTextSize = settingViewModel.songbookTextSize,
+                onSongSelected = { song, index ->
                     viewModel.selectedSong.value = song
+                    viewModel.selectedSongIndex.value = index
+                    viewModel.selectedSongList.value = sortedSongs.value
                     navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
-                }) {
-                viewModel.deleteFavoriteSongs(it)
-            }
+                },
+                onRemoveFavSong = {
+                    viewModel.deleteFavoriteSongs(it)
+                })
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
             NothingFoundScreen(appTheme)
