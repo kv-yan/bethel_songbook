@@ -79,7 +79,6 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(templateUiState, isEndedSplashScreen) {
                 if (isEndedSplashScreen && templateUiState.isNotEmpty()) {
                     intent.extras?.get("template_id")?.let { id ->
-                        Log.e(TAG, "onCreate: ********* id :: $id")
                         templateViewModel.templateUiState.value.forEach { template ->
                             if (template.id == id) {
                                 templateViewModel.singleTemplate.value = template

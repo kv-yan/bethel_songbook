@@ -3,7 +3,6 @@ package ru.betel.app.ui.widgets
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -123,7 +122,7 @@ fun LazyColumnForAddNewTemplate(
                     SongItemWithDeleteBtn(
                         appTheme = appTheme,
                         item = item,
-                        index = index,
+                        index = index + 1,
                         isLastItem = index == data.size - 1,
                         onDeleteItemClick = { selectedItem ->
                             data.remove(selectedItem)

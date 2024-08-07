@@ -13,14 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import ru.betel.app.ui.action_bar.CategoryActionBar
-import ru.betel.app.ui.action_bar.FavoriteActionBar
-import ru.betel.app.ui.action_bar.HomeActionBar
-import ru.betel.app.ui.action_bar.NewSongActionBar
-import ru.betel.app.ui.action_bar.NewTemplateActionBar
-import ru.betel.app.ui.action_bar.SingleSongActionBar
-import ru.betel.app.ui.action_bar.SingleTemplateActionBar
-import ru.betel.app.ui.action_bar.TemplateActionBar
 import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
 import ru.betel.app.ui.widgets.pop_up.SendNotificationDialog
@@ -132,140 +124,15 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    Scaffold(topBar = {
-        when (actionBarState.value) {
-            ActionBarState.HOME_SCREEN -> {
-                HomeActionBar(navController = navController,
-                    searchAppBarState = searchAppBarState,
-                    songViewModel = songViewModel,
-                    settingViewModel = settingViewModel,
-                    textSize = textSize,
-                    appTheme = appTheme,
-                    onMenuIconClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    },
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    })
-            }
-
-            ActionBarState.TEMPLATE_SCREEN -> {
-                TemplateActionBar(navController = navController,
-                    searchAppBarState = searchAppBarState,
-                    textSize = textSize,
-                    templateViewModel = templateViewModel,
-                    settingViewModel = settingViewModel,
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    },
-                    onMenuIconClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    })
-            }
-
-            ActionBarState.CATEGORY_SCREEN -> {
-                CategoryActionBar(navController = navController,
-                    searchAppBarState = searchAppBarState,
-                    viewModel = songViewModel,
-                    settingViewModel = settingViewModel,
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    },
-                    textSize = textSize,
-                    onMenuIconClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    })
-
-            }
-
-            ActionBarState.FAVORITE_SCREEN -> {
-                FavoriteActionBar(navController = navController,
-                    searchAppBarState = searchAppBarState,
-                    songViewModel = songViewModel,
-                    settingViewModel = settingViewModel,
-                    textSize = textSize,
-                    onMenuIconClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    },
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    })
-
-            }
-
-            ActionBarState.SINGLE_SONG_SCREEN -> {
-                SingleSongActionBar(navController = navController,
-                    settingViewModel = settingViewModel,
-                    songViewModel = songViewModel,
-                    editViewModel = editViewModel,
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    },
-                    onShareBtnClick = {
-                        songViewModel.shareSong(songViewModel.selectedSong.value)
-                    },
-                    onDeleteBtnClick = {
-                        songState.value = it
-                        deleteSongDialogState.value = true
-                    })
-            }
-
-            ActionBarState.SINGLE_TEMPLATE_SCREEN -> {
-                SingleTemplateActionBar(navController = navController,
-                    settingViewModel = settingViewModel,
-                    editViewModel = editViewModel,
-                    templateViewModel = templateViewModel,
-                    onSettingsBtnClick = {
-                        onSettingsBtnClick()
-                    },
-                    onShareBtnClick = {
-                        templateViewModel.shareTemplate(templateViewModel.singleTemplate.value)
-                    },
-                    onDeleteBtnClick = {
-                        templateState.value = it
-                        deleteTemplateDialogState.value = true
-                    },
-                    onNotificationBtnClick = {
-                        sendNotificationDialogState.value = true
-                        templateState.value = it
-                    },
-                    onUploadBtnClick = {
-                        uploadDialogState.value = true
-                        templateState.value = it
-                    })
-            }
-
-            ActionBarState.NEW_SONG_SCREEN -> {
-                NewSongActionBar(navController = navController, appTheme)
-            }
-
-            ActionBarState.NEW_TEMPLATE_SCREEN -> {
-                NewTemplateActionBar(
-                    navController = navController,
-                    editViewModel = editViewModel,
-                    templateViewModel = templateViewModel,
-                    appTheme = appTheme
-                )
-            }
-        }
+    Scaffold(drawerContent = {
+        DrawerContent(scope = scope,
+            appTheme = appTheme,
+            drawerState = scaffoldState.drawerState,
+            navController = navController,
+            onLogInBtnClick = {
+                onLogInBtnClick()
+            })
     },
-        drawerContent = {
-            DrawerContent(scope = scope,
-                appTheme = appTheme,
-                drawerState = scaffoldState.drawerState,
-                navController = navController,
-                onLogInBtnClick = {
-                    onLogInBtnClick()
-                })
-        },
         drawerBackgroundColor = Color.White,
         drawerGesturesEnabled = true,
         drawerContentColor = Color.Black,
@@ -277,7 +144,22 @@ fun MenuDrawerLayout(
                 songViewModel = songViewModel,
                 templateViewModel = templateViewModel,
                 settingViewModel = settingViewModel,
-                editViewModel = editViewModel
+                editViewModel = editViewModel,
+                searchAppBarState = searchAppBarState,
+                templateState = templateState,
+                songState = songState,
+                deleteTemplateDialogState = deleteTemplateDialogState,
+                sendNotificationDialogState = sendNotificationDialogState,
+                uploadDialogState = uploadDialogState,
+                deleteSongDialogState = deleteSongDialogState,
+                onMenuBtnClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                },
+                onSettingsBtnClick = {
+                    onSettingsBtnClick()
+                },
             )
             it
         })

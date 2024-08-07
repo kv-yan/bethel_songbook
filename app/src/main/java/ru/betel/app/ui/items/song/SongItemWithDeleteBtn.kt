@@ -53,7 +53,7 @@ fun SongItemWithDeleteBtn(
             modifier = Modifier, verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$index.", style = TextStyle(
+                text = "${index}.", style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
