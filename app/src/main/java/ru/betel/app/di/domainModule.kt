@@ -40,6 +40,7 @@ import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
+import ru.betel.domain.useCase.song.update.UpdateSongFromTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
@@ -177,5 +178,9 @@ val domainModule = module {
 
     single<GetThemeListUseCase> {
         GetThemeListUseCase(appThemeRepository = get<ThemeRepository>())
+    }
+
+    single<UpdateSongFromTemplateInFirebaseUseCase> {
+        UpdateSongFromTemplateInFirebaseUseCase()
     }
 }

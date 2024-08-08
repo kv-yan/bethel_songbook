@@ -33,6 +33,7 @@ import ru.betel.app.ui.widgets.dropdown_menu.CategoryDropDownMenuWithCheckBox
 import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
+import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.SongsCategory
@@ -45,12 +46,19 @@ fun EditSongScreen(
     navController: NavController,
     actionBarState: MutableState<ActionBarState>,
     settingViewModel: SettingViewModel,
+    templateViewModel: TemplateViewModel,
     editViewModel: EditViewModel
 ) {
     val appTheme = settingViewModel.appTheme.value
 
     val currentSong by editViewModel.currentSong.collectAsState()
     actionBarState.value = ActionBarState.NEW_SONG_SCREEN
+
+    val isEditingSongFromTemplate = editViewModel.isEditingSongFromTemplate
+    val templateId = if (isEditingSongFromTemplate.value) {
+        templateViewModel.singleTemplate.value
+    } else null
+
     val tonality = remember { mutableStateOf(currentSong.tonality) }
     val temp = remember { mutableStateOf<Float>(currentSong.temp.toInt().toFloat()) }
     val title = remember { mutableStateOf(currentSong.title) }
@@ -148,7 +156,12 @@ fun EditSongScreen(
                 isFromSongbookSong = isFromSongbook.value
             )
 
-            editViewModel.onSaveUpdates(editViewModel.currentSong.value, updatedSong)
+            editViewModel.onSaveUpdates(
+                editViewModel.currentSong.value,
+                updatedSong,
+                isEditingSongFromTemplate.value,
+                templateId
+            )
 
             Log.e(TAG, "EditSongScreen: song :: $updatedSong")
             navController.navigate(Screens.HOME_SCREEN.route)

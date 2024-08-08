@@ -1,6 +1,5 @@
 package ru.betel.app.ui.screens.single_song
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -110,12 +111,23 @@ fun SingleSongScreen(
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val songs by viewModel.selectedSongList// List of songs
+    val songs by viewModel.selectedSongList // List of songs
     val selectedSongIndex = viewModel.selectedSongIndex
-
 
     val appTheme by settingViewModel.appTheme
     val pagerState = rememberPagerState(initialPage = selectedSongIndex.value)
+
+    // Keep track of the current page's song
+    val currentSong = remember { mutableStateOf(songs[selectedSongIndex.value]) }
+
+    // Update currentSong when the pager page changes
+    LaunchedEffect(pagerState.currentPage) {
+        currentSong.value = songs[pagerState.currentPage]
+        viewModel.selectedSong.emit(currentSong.value)
+        editViewModel.currentSong.value = currentSong.value
+        editViewModel.isEditingSongFromTemplate.value = false
+
+    }
 
     Column(
         Modifier
@@ -127,12 +139,6 @@ fun SingleSongScreen(
             count = songs.size, state = pagerState, modifier = Modifier.weight(1f)
         ) { page ->
             val song = songs[page]
-
-            LaunchedEffect(song) {
-                viewModel.selectedSong.emit(song)
-                editViewModel.currentSong.value = song
-                Log.e(TAG, "emit-ed  :: ${song.title}  ")
-            }
 
             Column(
                 Modifier
@@ -159,9 +165,9 @@ fun SingleSongScreen(
                             fontWeight = FontWeight(700),
                             color = appTheme.secondaryTextColor,
                         ),
-                        modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End,
                     )
-
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -182,7 +188,6 @@ fun SingleSongScreen(
         navController.popBackStack()
     }
 }
-
 
 /*
 ******************* SUREN'S VERSION *******************

@@ -10,15 +10,16 @@ import kotlinx.coroutines.launch
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
+import ru.betel.domain.useCase.song.update.UpdateSongFromTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.template.update.UpdateTemplateInLocalUseCase
 
 class EditViewModel(
     private val updateSongInFirebaseUseCase: UpdateSongInFirebaseUseCase,
+    private val updateSongFromTemplateInFirebaseUseCase: UpdateSongFromTemplateInFirebaseUseCase,
     private val updateTemplateInFirebaseUseCase: UpdateTemplateInFirebaseUseCase,
     private val updateTemplateInLocalUseCase: UpdateTemplateInLocalUseCase
-
 ) : ViewModel() {
     val currentSong = MutableStateFlow(
         Song(
@@ -58,14 +59,24 @@ class EditViewModel(
     val tempWeekday = mutableStateOf("Շաբաթվա օր")
     val planningDay = mutableStateOf("Ամսաթիվ")
 
-    fun onSaveUpdates(current: Song, updatedSong: Song) {
-        updateSongInFirebaseUseCase.execute(current, updatedSong)
-    }
+    val isEditingSongFromTemplate = mutableStateOf(false)
 
+    fun onSaveUpdates(
+        current: Song, updatedSong: Song, isFromTemplate: Boolean, template: SongTemplate?
+    ) {
+        Log.e("VARDANYAN", "onSaveUpdates: $isFromTemplate")
+        if (isFromTemplate) {
+            if (template != null) {
+                updateSongFromTemplateInFirebaseUseCase.execute(template, current, updatedSong)
+            }
+        } else {
+            updateSongInFirebaseUseCase.execute(current, updatedSong)
+        }
+    }
 
     fun updateTemplate(mode: TemplateSaveMode, new: SongTemplate, old: SongTemplate) {
         viewModelScope.launch {
-            Log.e("MODE", "updateTemplate: mode :: $mode", )
+            Log.e("MODE", "updateTemplate: mode :: $mode")
             when (mode) {
                 TemplateSaveMode.LOCAL -> {
                     updateTemplateInLocalUseCase.execute(new)

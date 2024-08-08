@@ -15,8 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import ru.betel.app.ui.items.template_songs.TemplatesSongItem
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
@@ -33,6 +33,7 @@ fun TemplatesSongScreen(
     templateViewModel: TemplateViewModel,
     songViewModel: SongViewModel,
     settingViewModel: SettingViewModel,
+    editViewModel: EditViewModel,
     scope: CoroutineScope
 ) {
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
@@ -40,30 +41,39 @@ fun TemplatesSongScreen(
     val clickedSong by songViewModel.selectedSong.collectAsState()
     val appTheme by settingViewModel.appTheme
 
-    val currentSongIndex = remember {
-        mutableStateOf(0)
-    }
-    val currentTemplateSongsList = mutableListOf<Song>().apply {
-        if (template.isSingleMode) {
-            addAll(template.singleModeSongs)
-        } else {
-            addAll(template.glorifyingSong)
-            addAll(template.worshipSong)
-            addAll(template.giftSong)
+    val currentSongIndex = remember { mutableStateOf(0) }
+
+    // Create the list of songs based on the template
+    val currentTemplateSongsList = remember(template) {
+        mutableListOf<Song>().apply {
+            if (template.isSingleMode) {
+                addAll(template.singleModeSongs)
+            } else {
+                addAll(template.glorifyingSong)
+                addAll(template.worshipSong)
+                addAll(template.giftSong)
+            }
         }
     }
-
     val pagerState = rememberPagerState(pageCount = { currentTemplateSongsList.size })
 
-    LaunchedEffect(key1 = currentTemplateSongsList) {
-        currentTemplateSongsList.forEachIndexed { index, song ->
-            if (song.title == clickedSong.title && song.words == clickedSong.words) {
-                currentSongIndex.value = index
-                scope.launch {
-                    pagerState.scrollToPage(currentSongIndex.value, 0f)
-                }
-                return@LaunchedEffect
-            }
+    LaunchedEffect(pagerState.currentPage) {
+        val index = pagerState.currentPage
+        val song = currentTemplateSongsList[index]
+        songViewModel.selectedSong.value = song
+        songViewModel.selectedSong.emit(song)
+        editViewModel.currentSong.value = song
+        editViewModel.isEditingSongFromTemplate.value = true
+
+    }
+
+    LaunchedEffect(clickedSong) {
+        val newIndex = currentTemplateSongsList.indexOfFirst { song ->
+            song.title == clickedSong.title && song.words == clickedSong.words
+        }
+        if (newIndex != -1) {
+            currentSongIndex.value = newIndex
+            pagerState.scrollToPage(newIndex)
         }
     }
 
@@ -75,7 +85,6 @@ fun TemplatesSongScreen(
             song = currentTemplateSongsList[page],
             textSize = settingViewModel.songbookTextSize,
             remainingQuantity = "${page + 1} | ${currentTemplateSongsList.size}",
-
             songViewModel = songViewModel
         )
     }

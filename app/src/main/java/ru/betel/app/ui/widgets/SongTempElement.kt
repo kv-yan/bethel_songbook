@@ -67,6 +67,7 @@ fun TempElement(temp: MutableState<Float>, appTheme: AppTheme) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TempDialog(
     isShowingTempDialog: MutableState<Boolean>, temp: MutableState<Float>, appTheme: AppTheme
@@ -84,6 +85,16 @@ fun TempDialog(
                 Column(modifier = Modifier.padding(16.dp)) {
                     if (showTextField) {
                         OutlinedTextField(
+                            colors = TextFieldDefaults.textFieldColors(
+                                focusedLabelColor = appTheme.secondaryTextColor,
+                                unfocusedLabelColor = appTheme.fieldBackgroundColor,
+                                focusedIndicatorColor = appTheme.primaryTextColor,
+                                unfocusedIndicatorColor = appTheme.fieldBackgroundColor,
+                                containerColor = appTheme.fieldBackgroundColor,
+                                focusedTextColor = appTheme.primaryTextColor,
+                                unfocusedTextColor = appTheme.secondaryTextColor,
+                                cursorColor = appTheme.primaryTextColor,
+                            ),
                             value = textFieldValue,
                             onValueChange = { newValue ->
                                 textFieldValue = newValue
@@ -98,7 +109,13 @@ fun TempDialog(
                         )
                     } else {
                         Text(text = "Ընտրեք տեմպ՝ ${temp.value.toInt()}",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp),
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                lineHeight = 14.sp,
+                                fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                                fontWeight = FontWeight(400),
+                                color = appTheme.primaryTextColor,
+                            ),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { showTextField = true })
@@ -134,11 +151,14 @@ fun Temp(
                 colors = TextFieldDefaults.textFieldColors(
                     focusedLabelColor = appTheme.screenBackgroundColor,
                     unfocusedLabelColor = appTheme.screenBackgroundColor,
-                    focusedIndicatorColor = appTheme.screenBackgroundColor,
+                    focusedIndicatorColor = appTheme.primaryTextColor,
                     unfocusedIndicatorColor = appTheme.screenBackgroundColor,
                     containerColor = appTheme.screenBackgroundColor,
+                    focusedTextColor = appTheme.primaryTextColor,
+                    cursorColor = appTheme.primaryTextColor,
 
-                ),
+
+                    ),
                 onValueChange = { newValue ->
                     textFieldValue = newValue
                     newValue.toFloatOrNull()?.let { newTemp ->
@@ -156,7 +176,7 @@ fun Temp(
                 lineHeight = 14.sp,
                 fontFamily = FontFamily(Font(R.font.mardoto_medium)),
                 fontWeight = FontWeight(400),
-                color = appTheme.secondaryTextColor,
+                color = appTheme.primaryTextColor,
             ), modifier = Modifier
                 .fillMaxWidth()
                 .clickable { showTextField = true })

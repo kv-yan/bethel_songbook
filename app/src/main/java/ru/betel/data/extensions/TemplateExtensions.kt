@@ -109,3 +109,15 @@ private fun parseSongs(jsonArrayString: String?): List<Song> {
     }
     return songs
 }
+
+
+fun List<Song>.isContainSong(song: Song): Boolean {
+    var contains = false
+
+    this.forEach {
+        if (it.id == song.id) {
+            contains = true
+        }
+    }
+    return contains
+}

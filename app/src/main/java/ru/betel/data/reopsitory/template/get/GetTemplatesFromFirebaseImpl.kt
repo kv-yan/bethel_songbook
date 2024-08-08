@@ -35,8 +35,7 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
                     var singleModeSongs: List<Song>
 
                     if (isSingleMode) {
-                        singleModeSongs =
-                            getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
+                        singleModeSongs = getListOfSongs(template["singleModeSongs"] as ArrayList<HashMap<Any, Any>>)
                         glorifyingSong = listOf<Song>()
                         worshipSong = listOf<Song>()
                         giftSong = listOf<Song>()

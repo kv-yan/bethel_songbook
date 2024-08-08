@@ -28,6 +28,7 @@ import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
+import ru.betel.domain.useCase.song.update.UpdateSongFromTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
@@ -97,7 +98,8 @@ val appModule = module {
         EditViewModel(
             updateSongInFirebaseUseCase = get<UpdateSongInFirebaseUseCase>(),
             updateTemplateInFirebaseUseCase = get<UpdateTemplateInFirebaseUseCase>(),
-            updateTemplateInLocalUseCase = get<UpdateTemplateInLocalUseCase>()
+            updateTemplateInLocalUseCase = get<UpdateTemplateInLocalUseCase>(),
+            updateSongFromTemplateInFirebaseUseCase = get<UpdateSongFromTemplateInFirebaseUseCase>()
         )
     }
 }
