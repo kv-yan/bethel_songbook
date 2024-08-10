@@ -88,8 +88,7 @@ class GetTemplatesFromFirebaseImpl(database: FirebaseDatabase) : GetTemplatesFro
             val isWorshipSong = item["worshipSong"] as Boolean
             val isGiftSong = item["giftSong"] as Boolean
             val isFromSongbookSong = item["fromSongbookSong"] as Boolean
-            val isUsingSoundTrack = try {
-                item["usingSoundTrack"] as Boolean
+            val isUsingSoundTrack = try { item["usingSoundTrack"] as Boolean
             } catch (ex : NullPointerException){
                 false
             }

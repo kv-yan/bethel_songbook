@@ -1,11 +1,10 @@
 package ru.betel.domain.useCase.template.update
 
 import android.util.Log
-import ru.betel.domain.model.SongTemplate
-
 import com.google.firebase.database.FirebaseDatabase
+import ru.betel.data.extensions.toMap
 import ru.betel.domain.constants.TEMPLATE_REF
-import ru.betel.domain.model.Song
+import ru.betel.domain.model.SongTemplate
 
 class UpdateTemplateInFirebaseUseCase {
     private val databaseRef = FirebaseDatabase.getInstance().getReference(TEMPLATE_REF)
@@ -15,15 +14,13 @@ class UpdateTemplateInFirebaseUseCase {
         val templateId = template.id
         val templateRef = databaseRef.child(templateId)
 
-        val updatedValues = mapOf(
-            "createDate" to newTemplate.createDate,
+        val updatedValues = mapOf("createDate" to newTemplate.createDate,
             "performerName" to newTemplate.performerName,
             "weekday" to newTemplate.weekday,
             "favorite" to newTemplate.isSingleMode,
             "glorifyingSong" to newTemplate.glorifyingSong.map { it.toMap() },
             "worshipSong" to newTemplate.worshipSong.map { it.toMap() },
-            "giftSong" to newTemplate.giftSong.map { it.toMap() }
-        )
+            "giftSong" to newTemplate.giftSong.map { it.toMap() })
 
         templateRef.updateChildren(updatedValues) { error, ref ->
             if (error != null) {
@@ -34,16 +31,4 @@ class UpdateTemplateInFirebaseUseCase {
         }
     }
 
-    private fun Song.toMap(): HashMap<String, Any?> {
-        return hashMapOf(
-            "id" to id,
-            "title" to title,
-            "tonality" to tonality,
-            "words" to words,
-            "temp" to temp,
-            "glorifyingSong" to isGlorifyingSong,
-            "worshipSong" to isWorshipSong,
-            "giftSong" to isGiftSong,
-            "fromSongbookSong" to isFromSongbookSong
-        )
-    }}
+}

@@ -65,3 +65,17 @@ fun MutableList<Song>.toSnapshotStateList(): SnapshotStateList<Song> {
 
     return list
 }
+
+fun Song.toMap(): HashMap<String, Any?> {
+    return hashMapOf(
+        "id" to id,
+        "title" to title,
+        "tonality" to tonality,
+        "words" to words,
+        "temp" to temp,
+        "glorifyingSong" to isGlorifyingSong,
+        "worshipSong" to isWorshipSong,
+        "giftSong" to isGiftSong,
+        "fromSongbookSong" to isFromSongbookSong
+    )
+}

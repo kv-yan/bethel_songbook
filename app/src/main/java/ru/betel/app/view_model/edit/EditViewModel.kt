@@ -62,17 +62,36 @@ class EditViewModel(
     val isEditingSongFromTemplate = mutableStateOf(false)
 
     fun onSaveUpdates(
-        current: Song, updatedSong: Song, isFromTemplate: Boolean, template: SongTemplate?
+        current: Song,
+        updatedSong: Song,
+        isFromTemplate: Boolean,
+        template: SongTemplate?,
+        allSongList: List<Song>
     ) {
-        Log.e("VARDANYAN", "onSaveUpdates: $isFromTemplate")
+        updateSongInFirebaseUseCase.execute(
+            song = current,
+            updatedSong = updatedSong,
+            allSongList = allSongList as MutableList<Song>
+        )
+
         if (isFromTemplate) {
             if (template != null) {
                 updateSongFromTemplateInFirebaseUseCase.execute(template, current, updatedSong)
             }
-        } else {
-            updateSongInFirebaseUseCase.execute(current, updatedSong)
         }
     }
+
+    /*
+        fun onSaveUpdates(
+            current: Song, updatedSong: Song, isFromTemplate: Boolean, allSongList: List<Song>
+        ) {
+            updateSongInFirebaseUseCase.execute(
+                song = current,
+                updatedSong = updatedSong,
+                allSongList = allSongList as MutableList<Song>
+            )
+        }
+    */
 
     fun updateTemplate(mode: TemplateSaveMode, new: SongTemplate, old: SongTemplate) {
         viewModelScope.launch {

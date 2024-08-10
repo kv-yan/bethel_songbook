@@ -2,11 +2,12 @@ package ru.betel.domain.useCase.song.update
 
 import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
+import ru.betel.domain.constants.TEMPLATE_REF
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 
 class UpdateSongFromTemplateInFirebaseUseCase {
-    private val databaseRef = FirebaseDatabase.getInstance().getReference("SongTemplate")
+    private val databaseRef = FirebaseDatabase.getInstance().getReference(TEMPLATE_REF)
     private val TAG = "UpdateSongInFirebaseUse"
 
     fun execute(template: SongTemplate, song: Song, updatedSong: Song) {

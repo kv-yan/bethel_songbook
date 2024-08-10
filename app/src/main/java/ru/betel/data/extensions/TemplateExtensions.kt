@@ -87,8 +87,8 @@ fun parseTemplateData(data: Map<String, String>): SongTemplate {
     )
 }
 
-private fun parseSongs(jsonArrayString: String?): List<Song> {
-    if (jsonArrayString.isNullOrEmpty()) return emptyList()
+private fun parseSongs(jsonArrayString: String?): MutableList<Song> {
+    if (jsonArrayString.isNullOrEmpty()) return mutableListOf()
 
     val jsonArray = JSONArray(jsonArrayString)
     val songs = mutableListOf<Song>()

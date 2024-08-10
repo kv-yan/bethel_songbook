@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import ru.betel.app.ui.widgets.dropdown_menu.CategoryDropDownMenuWithCheckBox
 import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
+import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
@@ -47,7 +49,8 @@ fun EditSongScreen(
     actionBarState: MutableState<ActionBarState>,
     settingViewModel: SettingViewModel,
     templateViewModel: TemplateViewModel,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
+    songViewModel: SongViewModel
 ) {
     val appTheme = settingViewModel.appTheme.value
 
@@ -59,8 +62,10 @@ fun EditSongScreen(
         templateViewModel.singleTemplate.value
     } else null
 
+    val allSongList = songViewModel.allSongState.collectAsState(initial = mutableListOf())
+
     val tonality = remember { mutableStateOf(currentSong.tonality) }
-    val temp = remember { mutableStateOf<Float>(currentSong.temp.toInt().toFloat()) }
+    val temp = remember { mutableFloatStateOf(currentSong.temp.toInt().toFloat()) }
     val title = remember { mutableStateOf(currentSong.title) }
     val words = remember { mutableStateOf(currentSong.words) }
 
@@ -157,11 +162,20 @@ fun EditSongScreen(
             )
 
             editViewModel.onSaveUpdates(
+                current = editViewModel.currentSong.value,
+                updatedSong = updatedSong,
+                isFromTemplate = isEditingSongFromTemplate.value,
+                template = templateId,
+                allSongList = allSongList.value
+            )
+
+            /*
+            editViewModel.onSaveUpdates(
                 editViewModel.currentSong.value,
                 updatedSong,
                 isEditingSongFromTemplate.value,
-                templateId
-            )
+                allSongList.value
+            )*/
 
             Log.e(TAG, "EditSongScreen: song :: $updatedSong")
             navController.navigate(Screens.HOME_SCREEN.route)

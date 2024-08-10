@@ -5,6 +5,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.suspendCancellableCoroutine
+import ru.betel.domain.constants.SONG_REF
 import ru.betel.domain.model.Song
 import ru.betel.domain.repository.song.get.firebase.GetSongsFromFirebase
 import kotlin.coroutines.resume
@@ -12,14 +13,13 @@ import kotlin.coroutines.resumeWithException
 
 class GetSongFromFirebaseImpl(database: FirebaseDatabase) : GetSongsFromFirebase {
     private val TAG = "GetSongFromFirebaseImpl"
-    private val databaseRef = database.getReference("Song")
+    private val databaseRef = database.getReference(SONG_REF)
     override suspend fun getAllSongs(): List<Song> = suspendCancellableCoroutine { continuation ->
         val allSongList = mutableListOf<Song>()
         val vListener: ValueEventListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 if (allSongList.size > 0) allSongList.clear()
                 for (item: DataSnapshot in p0.children) {
-
                     val song: HashMap<Any, Any> = item.value as HashMap<Any, Any>
                     val isGlorifyingSong = song.getValue("glorifyingSong") as Boolean
                     val isWorshipSong = song.getValue("worshipSong") as Boolean

@@ -2,7 +2,6 @@ package ru.betel.domain.converters
 
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.entity.SongTemplateEntity
-import java.util.*
 
 fun SongTemplate.toEntity(): SongTemplateEntity {
     return SongTemplateEntity(

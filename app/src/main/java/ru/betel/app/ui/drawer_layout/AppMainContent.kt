@@ -299,6 +299,7 @@ fun AppMainContent(
                         actionBarState = actionBarState,
                         settingViewModel = settingViewModel,
                         templateViewModel = templateViewModel,
+                        songViewModel = songViewModel,
                         editViewModel = editViewModel
                     )
                 }
