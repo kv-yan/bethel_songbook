@@ -53,6 +53,5 @@ public class FirebaseNotificationReceiver extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        Log.d(TAG, "New token: " + token);
     }
 }

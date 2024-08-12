@@ -1,6 +1,5 @@
 package ru.betel.app.view_model.edit
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -95,7 +94,6 @@ class EditViewModel(
 
     fun updateTemplate(mode: TemplateSaveMode, new: SongTemplate, old: SongTemplate) {
         viewModelScope.launch {
-            Log.e("MODE", "updateTemplate: mode :: $mode")
             when (mode) {
                 TemplateSaveMode.LOCAL -> {
                     updateTemplateInLocalUseCase.execute(new)

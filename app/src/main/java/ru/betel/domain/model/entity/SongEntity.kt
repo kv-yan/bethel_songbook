@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "song")
 data class SongEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey val id: String,
     @ColumnInfo val title: String,
     @ColumnInfo val tonality: String,
     @ColumnInfo val words: String,
@@ -16,5 +16,5 @@ data class SongEntity(
     @ColumnInfo(name = "is_gift_song") var isGiftSong: Boolean,
     @ColumnInfo(name = "is_from_songbook_song") var isFromSongbookSong: Boolean,
 ) {
-    constructor() : this(0, "Error", "Error", "Error","Error", false, false, false, false)
+    constructor() : this("", "Error", "Error", "Error","Error", false, false, false, false)
 }

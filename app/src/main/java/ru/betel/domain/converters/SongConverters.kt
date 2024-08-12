@@ -8,7 +8,7 @@ fun List<Song>.toEntity(): List<SongEntity> {
     this.forEach {
         entityList.add(
             SongEntity(
-                id = 0,
+                id = it.id,
                 title = it.title,
                 tonality = it.tonality,
                 words = it.words,
@@ -29,7 +29,7 @@ fun List<SongEntity>.toSong(): List<Song> {
     this.forEach {
         songsList.add(
             Song(
-                id = it.id.toString(),
+                id = it.id,
                 title = it.title,
                 tonality = it.tonality,
                 words = it.words,
@@ -46,7 +46,7 @@ fun List<SongEntity>.toSong(): List<Song> {
 
 fun Song.toEntity(): SongEntity {
     return SongEntity(
-        id = if (this.id == "Song" || this.id is String) 0 else this.id.toInt(),
+        id = this.id,
         title = this.title,
         tonality = this.tonality,
         words = this.words,

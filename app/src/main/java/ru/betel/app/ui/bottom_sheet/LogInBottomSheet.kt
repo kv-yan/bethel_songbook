@@ -225,6 +225,6 @@ fun LoginBottomSheetContent(
         if (isShowingToast.value) {
             Toast.makeText(LocalContext.current, toastMsg.value, Toast.LENGTH_LONG).show()
         }
-        LoadingPopUp(isShowDialog = isShowingLoadingState)
+        LoadingPopUp(isShowDialog = isShowingLoadingState , appTheme)
     }
 }

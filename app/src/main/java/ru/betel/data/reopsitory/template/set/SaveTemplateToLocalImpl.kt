@@ -10,7 +10,6 @@ class SaveTemplateToLocalImpl(private val templateDao: TemplateDao) : SaveTempla
     override suspend fun saveTemplate(songTemplate: SongTemplate): Result<Unit> {
         return try {
             templateDao.insertSongTemplate(songTemplate.toEntity())
-            Log.e("DAO", "saveTemplate: completed" )
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e("DAO", "saveTemplate: ${e.message}" )

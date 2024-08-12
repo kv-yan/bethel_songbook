@@ -15,7 +15,7 @@ import ru.betel.domain.dao.TemplateDao
 
 @Database(
     entities = [SongTemplateEntity::class, SongEntity::class, FavoriteSongsEntity::class],
-    version = 1
+    version = 2
 )
 @TypeConverters(SongListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -24,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteSongsDao(): FavoriteSongsDao
 }
 
-val MIGRATION_1_2 = object : Migration(1, 2) {
+val MIGRATION_TEMPLATE_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `template_temp` " +
                 "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
@@ -46,5 +46,48 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
         database.execSQL("DROP TABLE IF EXISTS `template`")
 
         database.execSQL("ALTER TABLE `template_temp` RENAME TO `template`")
+    }
+}
+
+val MIGRATION_SONG_1_2 = object : Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Step 1: Create a new temporary table with the updated schema
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `song_temp` (
+                `id` TEXT NOT NULL PRIMARY KEY, 
+                `title` TEXT NOT NULL, 
+                `tonality` TEXT NOT NULL, 
+                `words` TEXT NOT NULL, 
+                `temp` TEXT NOT NULL, 
+                `is_glorifying_song` INTEGER NOT NULL, 
+                `is_worship_song` INTEGER NOT NULL, 
+                `is_gift_song` INTEGER NOT NULL, 
+                `is_from_songbook_song` INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
+
+        // Step 2: Copy data from the old table to the new table
+        database.execSQL(
+            """
+            INSERT INTO `song_temp` (
+                `id`, `title`, `tonality`, `words`, `temp`, 
+                `is_glorifying_song`, `is_worship_song`, 
+                `is_gift_song`, `is_from_songbook_song`
+            )
+            SELECT 
+                `id`, `title`, `tonality`, `words`, `temp`, 
+                `is_glorifying_song`, `is_worship_song`, 
+                `is_gift_song`, `is_from_songbook_song`
+            FROM `song`
+            """.trimIndent()
+        )
+
+        // Step 3: Drop the old table
+        database.execSQL("DROP TABLE IF EXISTS `song`")
+
+        // Step 4: Rename the new table to the original table name
+        database.execSQL("ALTER TABLE `song_temp` RENAME TO `song`")
     }
 }
