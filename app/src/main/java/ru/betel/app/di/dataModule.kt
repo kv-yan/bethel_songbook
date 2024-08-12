@@ -9,6 +9,7 @@ import ru.betel.data.reopsitory.auth.FirebaseAuthRepoImpl
 import ru.betel.data.reopsitory.favorite.FavoriteSongsRepoImpl
 import ru.betel.data.reopsitory.network.NetworkUtilsImpl
 import ru.betel.data.reopsitory.notification.NotificationRepositoryImpl
+import ru.betel.data.reopsitory.pref.PrefRepoImpl
 import ru.betel.data.reopsitory.song.delete.DeleteSongFromFirebaseImpl
 import ru.betel.data.reopsitory.song.get.all.GetAllSongsImpl
 import ru.betel.data.reopsitory.song.get.category.GetFromSongbookSongsImpl
@@ -31,6 +32,7 @@ import ru.betel.domain.repository.auth.FirebaseAuthRepo
 import ru.betel.domain.repository.favorite.FavoriteSongsRepo
 import ru.betel.domain.repository.network.NetworkUtils
 import ru.betel.domain.repository.notification.NotificationRepository
+import ru.betel.domain.repository.pref.PrefRepo
 import ru.betel.domain.repository.share.ShareRepo
 import ru.betel.domain.repository.song.delete.DeleteSongFromFirebase
 import ru.betel.domain.repository.song.get.all.GetAllSongs
@@ -141,5 +143,9 @@ val dataModule = module {
 
     single<ThemeRepository> {
         ThemeRepositoryImpl(sharedPreferences = get<SharedPreferences>())
+    }
+
+    single<PrefRepo> {
+        PrefRepoImpl(sharedPreferences = get<SharedPreferences>())
     }
 }

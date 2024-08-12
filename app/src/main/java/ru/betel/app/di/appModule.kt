@@ -17,6 +17,8 @@ import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.favorite.InsertFavoriteSongsUseCase
 import ru.betel.domain.useCase.network.GetNetworkStateUseCase
 import ru.betel.domain.useCase.notification.SendNotificationToAllUsersUseCase
+import ru.betel.domain.useCase.pref.performer_name.GetPerformerNameUseCase
+import ru.betel.domain.useCase.pref.performer_name.SetPerformerNameUseCase
 import ru.betel.domain.useCase.share.ShareSongUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
@@ -78,6 +80,8 @@ val appModule = module {
             shareTemplateUseCase = get<ShareTemplateUseCase>(),
             deleteTemplateFromLocalUseCase = get<DeleteTemplateFromLocalUseCase>(),
             sendNotificationToAllUsersUseCase = get<SendNotificationToAllUsersUseCase>(),
+            getPerformerNameUseCase = get<GetPerformerNameUseCase>(),
+            setPerformerNameUseCase = get<SetPerformerNameUseCase>()
         )
     }
 

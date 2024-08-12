@@ -43,7 +43,6 @@ fun TemplatesSongScreen(
 
     val currentSongIndex = remember { mutableStateOf(0) }
 
-    // Create the list of songs based on the template
     val currentTemplateSongsList = remember(template) {
         mutableListOf<Song>().apply {
             if (template.isSingleMode) {

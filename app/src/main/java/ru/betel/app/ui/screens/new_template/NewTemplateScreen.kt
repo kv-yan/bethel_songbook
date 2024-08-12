@@ -24,6 +24,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -80,6 +81,7 @@ fun NewTemplateScreen(
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveStateDialog = remember { mutableStateOf(false) }
     val isShowingSaveModeDialog = remember { mutableStateOf(false) }
+
     Box {
         MainContent(
             navController = navController,
@@ -135,6 +137,8 @@ private fun MainContent(
     isShowingSaveStateDialog: MutableState<Boolean>,
     isShowingSaveModeDialog: MutableState<Boolean>
 ) {
+    val isAdmin = FirebaseAuth.getInstance().currentUser != null
+
     val appTheme = settingViewModel.appTheme.value
 
     val isShowingDayDialog = remember { mutableStateOf(false) }
@@ -204,66 +208,70 @@ private fun MainContent(
                 Column(
                     Modifier.fillMaxSize()
                 ) {
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                    ) {
-                        MyTextFields(
-                            appTheme = appTheme,
-                            placeholder = "Առաջնորդ",
-                            fieldText = templateViewModel.tempPerformerName,
-                            modifier = Modifier
+                    if (isAdmin) {
+                        Row(
+                            Modifier
                                 .fillMaxWidth()
-                                .width(25.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                    ) {
-                        Surface(
-                            modifier = Modifier.clickable {
-                                songViewModel.isDropdownMenuVisible.value = true
-                            },
-                            shape = RoundedCornerShape(8.dp),
-                            color = appTheme.fieldBackgroundColor
+                                .padding(vertical = 6.dp, horizontal = 12.dp)
                         ) {
-                            WeekdayDropDownMenu(
+                            MyTextFields(
                                 appTheme = appTheme,
-                                selectedDay = templateViewModel.tempWeekday,
-                                modifier = Modifier.fillMaxWidth(0.49f)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Surface(modifier = Modifier
-                            .clickable {
-                                isShowingDayDialog.value = true
+                                placeholder = "Առաջնորդ",
+                                fieldText = templateViewModel.tempPerformerName as MutableState<String>,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .width(25.dp)
+                            ) {
+                                templateViewModel.setPerformerName(it)
                             }
-                            .fillMaxWidth()
-                            .height(38.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            color = appTheme.fieldBackgroundColor) {
-                            DayPickerDialog(
-                                appTheme = appTheme,
-                                isShowing = isShowingDayDialog,
-                                dayState = templateViewModel.planningDay
-                            )
+                            Spacer(modifier = Modifier.width(6.dp))
                         }
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                        ) {
+                            Surface(
+                                modifier = Modifier.clickable {
+                                    songViewModel.isDropdownMenuVisible.value = true
+                                },
+                                shape = RoundedCornerShape(8.dp),
+                                color = appTheme.fieldBackgroundColor
+                            ) {
+                                WeekdayDropDownMenu(
+                                    appTheme = appTheme,
+                                    selectedDay = templateViewModel.tempWeekday,
+                                    modifier = Modifier.fillMaxWidth(0.49f)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(6.dp))
+
+                            Surface(modifier = Modifier
+                                .clickable {
+                                    isShowingDayDialog.value = true
+                                }
+                                .fillMaxWidth()
+                                .height(38.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                color = appTheme.fieldBackgroundColor) {
+                                DayPickerDialog(
+                                    appTheme = appTheme,
+                                    isShowing = isShowingDayDialog,
+                                    dayState = templateViewModel.planningDay
+                                )
+                            }
+                        }
+
+                        Divider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 1.dp,
+                            color = appTheme.dividerColor
+                        )
+
                     }
 
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(color = appTheme.dividerColor)
-                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -313,7 +321,7 @@ private fun MainContent(
                         val createdTemplate = SongTemplate(
                             id = "",
                             createDate = templateViewModel.planningDay.value,
-                            performerName = templateViewModel.tempPerformerName.value,
+                            performerName = templateViewModel.tempPerformerName.value!!,
                             weekday = templateViewModel.tempWeekday.value,
                             isSingleMode = isSingleMode,
                             glorifyingSong = if (!isSingleMode) tempGlorifyingSongs.toList() else mutableListOf(),
@@ -369,12 +377,9 @@ private fun MainContent(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(text = songViewModel.searchAppBarText,
-                    onTextChange = {
-                        songViewModel.searchAppBarText.value = it
-                    },
-                    onCloseClicked = {},
-                    textSize = settingViewModel.songbookTextSize
+                SearchTopAppBar(text = songViewModel.searchAppBarText, onTextChange = {
+                    songViewModel.searchAppBarText.value = it
+                }, onCloseClicked = {}, textSize = settingViewModel.songbookTextSize
                 )
                 CategoryTabs(
                     categorySongs = selectedCategorySongsList.value,
@@ -470,7 +475,8 @@ fun SingleModeSongs(
         ) {
             selectedCategory.value = AddSongCategory.SingleMode
 //            selectedCategoryForAddNewSong.addAll(it)
-            selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForSingleModeCategory.value
+            selectedCategoryBottomSheetAllSongs.value =
+                bottomSheetAllSongsForSingleModeCategory.value
             scope.launch { bottomSheetState.show() }
         }
     }

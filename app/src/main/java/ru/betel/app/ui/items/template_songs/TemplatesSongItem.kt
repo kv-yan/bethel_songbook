@@ -45,7 +45,21 @@ fun TemplatesSongItem(
             .fillMaxSize()
             .verticalScroll(scrollState),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = remainingQuantity,
+                style = TextStyle(
+                    fontSize = textSize.normalItemDefaultTextSize,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(700),
+                    color = appTheme.secondaryTextColor,
+                ),
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            )
+
             Text(
                 text = song.title,
                 style = TextStyle(
@@ -60,19 +74,6 @@ fun TemplatesSongItem(
                     .padding(top = 20.dp, start = 20.dp, end = 20.dp)
             )
 
-            Text(
-                text = remainingQuantity,
-                style = TextStyle(
-                    fontSize = textSize.normalItemDefaultTextSize,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(700),
-                    color = appTheme.secondaryTextColor,
-                ),
-                textAlign = TextAlign.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-            )
 
         }
         Row(

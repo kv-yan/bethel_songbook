@@ -55,7 +55,8 @@ fun MyTextFields(
     fontSize: TextUnit = 14.sp,
     singleLine: Boolean = false,
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
-    align: Alignment.Vertical = Alignment.CenterVertically
+    align: Alignment.Vertical = Alignment.CenterVertically,
+    onDataSave: (String) -> Unit = {}
 ) {
 
     var text by rememberSaveable { mutableStateOf(fieldText.value) }
@@ -71,6 +72,7 @@ fun MyTextFields(
                 onValueChange = {
                     text = it
                     fieldText.value = it
+                    onDataSave.invoke(it)
                 },
                 singleLine = singleLine,
                 modifier = if (singleLine && fontSize < 14.sp) {

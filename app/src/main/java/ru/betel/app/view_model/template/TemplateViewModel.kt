@@ -20,6 +20,8 @@ import ru.betel.domain.model.ui.NewTemplateFieldState
 import ru.betel.domain.model.ui.TemplateType
 import ru.betel.domain.useCase.favorite.GetFavoriteSongsUseCase
 import ru.betel.domain.useCase.notification.SendNotificationToAllUsersUseCase
+import ru.betel.domain.useCase.pref.performer_name.GetPerformerNameUseCase
+import ru.betel.domain.useCase.pref.performer_name.SetPerformerNameUseCase
 import ru.betel.domain.useCase.share.ShareTemplateUseCase
 import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
@@ -47,8 +49,11 @@ class TemplateViewModel(
     private val deleteTemplateFromFirebaseUseCase: DeleteTemplateFromFirebaseUseCase,
     private val deleteTemplateFromLocalUseCase: DeleteTemplateFromLocalUseCase,
     private val shareTemplateUseCase: ShareTemplateUseCase,
-    private val sendNotificationToAllUsersUseCase: SendNotificationToAllUsersUseCase
-) : ViewModel() {
+    private val sendNotificationToAllUsersUseCase: SendNotificationToAllUsersUseCase,
+    private val getPerformerNameUseCase: GetPerformerNameUseCase,
+    private val setPerformerNameUseCase: SetPerformerNameUseCase,
+
+    ) : ViewModel() {
     val isOpeningAllTemplate = mutableStateOf(false)
     val localTemplateState = MutableLiveData<List<SongTemplate>>().apply {
         viewModelScope.launch {
@@ -80,8 +85,13 @@ class TemplateViewModel(
         )
     )
 
-    private val _tempPerformerName = mutableStateOf("")
-    val tempPerformerName = _tempPerformerName
+    private val _tempPerformerName = MutableLiveData<String>().apply {
+        viewModelScope.launch {
+            value = getPerformerNameUseCase.execute()
+        }
+
+    }
+    val tempPerformerName = mutableStateOf(_tempPerformerName.value)
 
     private val _tempWeekday = mutableStateOf("Շաբաթվա օր")
     val tempWeekday = _tempWeekday
@@ -202,8 +212,14 @@ class TemplateViewModel(
         }
     }
 
+    fun setPerformerName(performerName: String) {
+        viewModelScope.launch {
+            setPerformerNameUseCase.execute(performerName)
+        }
+    }
+
     fun checkFields(templateFieldState: MutableState<NewTemplateFieldState>): Result<Unit> {
-        return if (tempPerformerName.value.isNotEmpty()) {
+        return if (tempPerformerName.value?.isNotEmpty() == true) {
             if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
                 if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
                     if (isSingleMode.value) {
@@ -256,7 +272,7 @@ class TemplateViewModel(
         tempGiftSongs: SnapshotStateList<Song>,
         tempSingleModeSongs: SnapshotStateList<Song>,
     ): Result<Unit> {
-        return if (tempPerformerName.value.isNotEmpty()) {
+        return if (tempPerformerName.value?.isNotEmpty() == true) {
             if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
                 if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {
                     if (isSingleMode.value) {
