@@ -27,8 +27,8 @@ import ru.betel.domain.useCase.song.GetAllSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromFirebaseUseCase
 import ru.betel.domain.useCase.template.get.GetTemplatesFromLocalUseCase
 import ru.betel.domain.useCase.template.set.SaveTemplateInFirebaseUseCase

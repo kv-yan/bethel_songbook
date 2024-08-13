@@ -27,8 +27,8 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongFromTemplateInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongInFirebaseUseCase
@@ -61,7 +61,8 @@ val appModule = module {
             insertFavoriteSongsUseCase = get<InsertFavoriteSongsUseCase>(),
             deleteFavoriteSongsUseCase = get<DeleteFavoriteSongsUseCase>(),
             saveSongInFirebaseUseCase = get<SaveSongInFirebaseUseCase>(),
-            deleteSongFromFirebaseUseCase = get<DeleteSongFromFirebaseUseCase>()
+            deleteSongFromFirebaseUseCase = get<DeleteSongFromFirebaseUseCase>(),
+            deleteSongInfFirebaseWithoutIdUseCase = get<DeleteSongInFirebaseWithoutIdUseCase>()
         )
     }
 

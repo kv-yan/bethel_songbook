@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
 import ru.betel.data.extensions.getWordsFirst2Lines
 import ru.betel.domain.model.Song
@@ -46,11 +48,18 @@ fun FavoriteSongItemWithWords(
     item: Song,
     textSize: SongbookTextSize,
     onItemClick: () -> Unit,
+    onEditClick: (Song) -> Unit,
+    onShareClick: (Song) -> Unit,
+    onDeleteSong: (Song) -> Unit,
     onRemoveFavSong: (Song) -> Unit,
 ) {
     val isShowAdditionBtn = remember { mutableStateOf(false) }
+    val isAdminModeOn = FirebaseAuth.getInstance().currentUser != null
     val horizontalScrollState = rememberScrollState()
+
+
     Column(modifier = Modifier
+        .fillMaxWidth()
         .pointerInput(Unit) {
             detectTapGestures(onLongPress = {
                 isShowAdditionBtn.value = !isShowAdditionBtn.value
@@ -63,9 +72,9 @@ fun FavoriteSongItemWithWords(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .fillMaxWidth()
                 .horizontalScroll(horizontalScrollState)
-                .widthIn(max = 450.dp)
+                .wrapContentWidth()
+                .widthIn(max = 370.dp, min = 200.dp)
         ) {
             Spacer(modifier = Modifier.width(12.dp))
             IconButton(onClick = {
@@ -107,33 +116,43 @@ fun FavoriteSongItemWithWords(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.padding(end = 12.dp)
                 ) {
+                    if (isAdminModeOn) {
+                        IconButton(
+                            onClick = { onEditClick(item) }, modifier = Modifier.size(20.dp, 20.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = appTheme.secondaryTextColor,
+                                modifier = Modifier.size(15.dp, 20.dp)
+                            )
+                        }
 
-                    IconButton(onClick = { }, modifier = Modifier.size(20.dp, 20.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null,
-                            tint = appTheme.secondaryTextColor,
-                            modifier = Modifier.size(15.dp, 20.dp)
-                        )
+                        Spacer(modifier = Modifier.width(6.dp))
                     }
-                    Spacer(modifier = Modifier.width(6.dp))
-                    IconButton(onClick = { }, modifier = Modifier.size(20.dp, 20.dp)) {
+                    IconButton(
+                        onClick = { onShareClick(item) }, modifier = Modifier.size(20.dp, 20.dp)
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_share),
                             contentDescription = null,
                             tint = appTheme.secondaryTextColor,
                             modifier = Modifier.size(15.dp, 20.dp)
                         )
-
                     }
-                    Spacer(modifier = Modifier.width(6.dp))
-                    IconButton(onClick = { }, modifier = Modifier.size(20.dp, 20.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = appTheme.secondaryTextColor,
-                            modifier = Modifier.size(17.dp)
-                        )
+
+                    if (isAdminModeOn) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        IconButton(
+                            onClick = { onDeleteSong(item) }, modifier = Modifier.size(20.dp, 20.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = appTheme.secondaryTextColor,
+                                modifier = Modifier.size(17.dp)
+                            )
+                        }
                     }
                 }
             }

@@ -2,7 +2,6 @@ package ru.betel.app.ui.screens.favorite
 
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,6 +35,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import ru.betel.app.R
 import ru.betel.app.ui.widgets.FavoriteSongsList
 import ru.betel.app.ui.widgets.NothingFoundScreen
+import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
+import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.Song
@@ -46,6 +50,7 @@ fun FavoriteScreen(
     actionBarState: MutableState<ActionBarState>,
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
+    editViewModel: EditViewModel
 ) {
     val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.FAVORITE_SCREEN
@@ -71,6 +76,9 @@ fun FavoriteScreen(
 
     val isLoading = viewModel.isLoadingContainer.value
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+    val isShowingDeleteDialog = remember { mutableStateOf(false) }
+    val songState =
+        remember { mutableStateOf(Song("", "", "", "", "", false, false, false, false, false)) }
 
 
 
@@ -119,12 +127,38 @@ fun FavoriteScreen(
                     viewModel.selectedSongList.value = sortedSongs.value
                     navController.navigate(Screens.SINGLE_SONG_SCREEN.route)
                 },
+                onEditClick = {
+                    editViewModel.currentSong.value = it
+                    navController.navigate(Screens.EDIT_SONG_SCREEN.route)
+                },
+                onShareClick = {
+                    viewModel.shareSong(it)
+                },
+                onDeleteSong = {
+                    isShowingDeleteDialog.value = true
+                    songState.value = it
+                },
                 onRemoveFavSong = {
                     viewModel.deleteFavoriteSongs(it)
                 })
 
         } else if (sortedSongs.value.isEmpty() && searchAppBarText.value.isNotEmpty()) {
             NothingFoundScreen(appTheme)
+        }
+
+        if (isShowingDeleteDialog.value) {
+            val allSongs = viewModel.allSongState.collectAsState(initial = mutableListOf())
+            DeleteSongDialog(showDialog = isShowingDeleteDialog,
+                song = songState,
+                onConfirmationClick = {
+                    viewModel.deleteSongFromFirebaseWithoutId(
+                        songState.value, allSongs.value
+                    )
+                    viewModel.deleteFavoriteSongs(songState.value)
+                    isShowingDeleteDialog.value = false
+                }) {
+                viewModel.loadSong()
+            }
         }
     }
 

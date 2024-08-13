@@ -18,6 +18,9 @@ fun FavoriteSongsList(
     songs: List<Song>,
     songbookTextSize: SongbookTextSize,
     onSongSelected: (Song, Int) -> Unit,
+    onEditClick: (Song) -> Unit,
+    onShareClick: (Song) -> Unit,
+    onDeleteSong: (Song) -> Unit,
     onRemoveFavSong: (Song) -> Unit,
 ) {
     Column(Modifier.fillMaxSize()) {
@@ -26,9 +29,11 @@ fun FavoriteSongsList(
                 FavoriteSongItemWithWords(appTheme = appTheme,
                     item = song,
                     textSize = songbookTextSize,
-                    onItemClick = { onSongSelected(song, index) }) {
-                    onRemoveFavSong(it)
-                }
+                    onItemClick = { onSongSelected(song, index) },
+                    onEditClick = { onEditClick(it) },
+                    onShareClick = { onShareClick(it) },
+                    onDeleteSong = { onDeleteSong(it) },
+                    onRemoveFavSong = { onRemoveFavSong(it) })
             }
         }
     }

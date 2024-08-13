@@ -1,6 +1,5 @@
 package ru.betel.app.di
 
-import android.content.Context
 import org.koin.dsl.module
 import ru.betel.domain.dao.TemplateDao
 import ru.betel.domain.repository.auth.FirebaseAuthRepo
@@ -40,8 +39,8 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromFirebaseUseCase
-import ru.betel.domain.useCase.song.delete.DeleteTemplateFromLocalUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromFirebaseUseCase
+import ru.betel.domain.useCase.template.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.song.update.UpdateSongFromTemplateInFirebaseUseCase
@@ -196,5 +195,7 @@ val domainModule = module {
         SetPerformerNameUseCase(repo = get<PrefRepo>())
     }
 
-
+    single<DeleteSongInFirebaseWithoutIdUseCase> {
+        DeleteSongInFirebaseWithoutIdUseCase(repo = get<PrefRepo>())
+    }
 }

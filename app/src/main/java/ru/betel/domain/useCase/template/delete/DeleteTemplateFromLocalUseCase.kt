@@ -1,4 +1,4 @@
-package ru.betel.domain.useCase.song.delete
+package ru.betel.domain.useCase.template.delete
 
 import ru.betel.domain.converters.toUpdateEntity
 import ru.betel.domain.dao.TemplateDao

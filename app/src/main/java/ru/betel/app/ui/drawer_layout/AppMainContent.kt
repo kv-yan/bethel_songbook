@@ -74,7 +74,7 @@ fun AppMainContent(
     ) {
 
         NavHost(navController = navController,
-            startDestination = Screens.TEMPLATE_SCREEN.route,
+            startDestination = Screens.FAVORITE_SCREEN.route,
             modifier = Modifier.fillMaxSize(),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
@@ -179,7 +179,8 @@ fun AppMainContent(
                         navController = navController,
                         actionBarState = actionBarState,
                         settingViewModel = settingViewModel,
-                        viewModel = songViewModel
+                        viewModel = songViewModel,
+                        editViewModel = editViewModel
                     )
                 }
             }

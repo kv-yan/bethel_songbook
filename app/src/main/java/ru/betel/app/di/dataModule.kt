@@ -130,7 +130,11 @@ val dataModule = module {
     }
 
     single<DeleteSongFromFirebase> {
-        DeleteSongFromFirebaseImpl(database = get<FirebaseDatabase>())
+        DeleteSongFromFirebaseImpl(
+            database = get<FirebaseDatabase>(),
+            favoriteSongsDao = get<FavoriteSongsDao>(),
+            songDao = get<SongDao>()
+        )
     }
 
     single<DeleteTemplateFromFirebase> {

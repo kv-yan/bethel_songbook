@@ -24,6 +24,7 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteSongInFirebaseWithoutIdUseCase
 import ru.betel.domain.useCase.song.set.SaveSongInFirebaseUseCase
 import ru.betel.domain.useCase.sync.song.SyncSongFromFbToLocalStorageUseCase
 
@@ -39,7 +40,8 @@ class SongViewModel(
     private val insertFavoriteSongsUseCase: InsertFavoriteSongsUseCase,
     private val deleteFavoriteSongsUseCase: DeleteFavoriteSongsUseCase,
     private val saveSongInFirebaseUseCase: SaveSongInFirebaseUseCase,
-    private val deleteSongFromFirebaseUseCase: DeleteSongFromFirebaseUseCase
+    private val deleteSongFromFirebaseUseCase: DeleteSongFromFirebaseUseCase,
+    private val deleteSongInfFirebaseWithoutIdUseCase: DeleteSongInFirebaseWithoutIdUseCase
 ) : ViewModel() {
 
     val searchAppBarText = mutableStateOf("")
@@ -83,7 +85,7 @@ class SongViewModel(
 
     fun syncSongs() {
         viewModelScope.launch {
-            delay(20000)
+            delay(7000)
             syncSongFromFbToLocalStorageUseCase.execute()
         }
     }
@@ -167,6 +169,12 @@ class SongViewModel(
     fun deleteSongFromFirebase(song: Song) {
         viewModelScope.launch {
             deleteSongFromFirebaseUseCase.execute(song)
+        }
+    }
+
+    fun deleteSongFromFirebaseWithoutId(song: Song, allSongs: List<Song>) {
+        viewModelScope.launch {
+            deleteSongInfFirebaseWithoutIdUseCase.execute(song, allSongs)
         }
     }
 }
