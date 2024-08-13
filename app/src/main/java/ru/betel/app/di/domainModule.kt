@@ -39,6 +39,7 @@ import ru.betel.domain.useCase.song.category.GetGiftSongsUseCase
 import ru.betel.domain.useCase.song.category.GetGlorifyingSongsUseCase
 import ru.betel.domain.useCase.song.category.GetWorshipSongsUseCase
 import ru.betel.domain.useCase.song.delete.DeleteSongFromFirebaseUseCase
+import ru.betel.domain.useCase.song.delete.DeleteSongInFirebaseWithoutIdUseCase
 import ru.betel.domain.useCase.template.delete.DeleteTemplateFromFirebaseUseCase
 import ru.betel.domain.useCase.template.delete.DeleteTemplateFromLocalUseCase
 import ru.betel.domain.useCase.song.local.GetSongsFromLocalUseCase
@@ -196,6 +197,6 @@ val domainModule = module {
     }
 
     single<DeleteSongInFirebaseWithoutIdUseCase> {
-        DeleteSongInFirebaseWithoutIdUseCase(repo = get<PrefRepo>())
+        DeleteSongInFirebaseWithoutIdUseCase(deleteSongFromFirebase = get<DeleteSongFromFirebase>())
     }
 }

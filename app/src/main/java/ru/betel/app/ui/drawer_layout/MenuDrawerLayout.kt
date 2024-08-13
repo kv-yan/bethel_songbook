@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,16 +75,16 @@ fun MenuDrawerLayout(
             )
         )
     }
+    val allSongs = songViewModel.allSongState.collectAsState(initial = listOf())
 
 
     DeleteSongDialog(showDialog = deleteSongDialogState, song = songState, onConfirmationClick = {
-        songViewModel.deleteSongFromFirebase(it)
+        songViewModel.deleteSongFromFirebase(it, allSongs.value)
     }) {
         navController.popBackStack()
     }
 
-    SendNotificationDialog(
-        showDialog = sendNotificationDialogState,
+    SendNotificationDialog(showDialog = sendNotificationDialogState,
         template = templateState,
         onConfirmationClick = {
             templateViewModel.sendNotification(it)

@@ -12,7 +12,7 @@ import kotlin.coroutines.resumeWithException
 class DeleteSongFromFirebaseImpl(
     database: FirebaseDatabase,
     private val favoriteSongsDao: FavoriteSongsDao,
-    private val songDao: SongDao
+    private val songDao: SongDao,
 ) : DeleteSongFromFirebase {
     private val databaseRef = database.getReference("Song")
     override suspend fun deleteSong(song: Song): Boolean =
@@ -32,12 +32,10 @@ class DeleteSongFromFirebaseImpl(
 
     override suspend fun deleteSong(song: Song, allSongs: List<Song>): Boolean =
         suspendCancellableCoroutine { continuation ->
-            var isFromLocalDb: Boolean
             var songId = song.id
 
             try {
                 song.id.toInt()
-                isFromLocalDb = false
 
                 allSongs.forEach {
                     if (song.title == it.title && song.words == it.words) {
@@ -46,7 +44,6 @@ class DeleteSongFromFirebaseImpl(
                 }
 
             } catch (exception: NumberFormatException) {
-                isFromLocalDb = false
                 songId = song.id
             }
 
@@ -61,7 +58,5 @@ class DeleteSongFromFirebaseImpl(
             }.addOnFailureListener { exception ->
                 continuation.resumeWithException(exception)
             }
-
-
         }
 }

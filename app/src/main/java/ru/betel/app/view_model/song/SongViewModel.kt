@@ -41,7 +41,7 @@ class SongViewModel(
     private val deleteFavoriteSongsUseCase: DeleteFavoriteSongsUseCase,
     private val saveSongInFirebaseUseCase: SaveSongInFirebaseUseCase,
     private val deleteSongFromFirebaseUseCase: DeleteSongFromFirebaseUseCase,
-    private val deleteSongInfFirebaseWithoutIdUseCase: DeleteSongInFirebaseWithoutIdUseCase
+    private val deleteSongInfFirebaseWithoutIdUseCase: DeleteSongInFirebaseWithoutIdUseCase,
 ) : ViewModel() {
 
     val searchAppBarText = mutableStateOf("")
@@ -166,9 +166,14 @@ class SongViewModel(
         }
     }
 
-    fun deleteSongFromFirebase(song: Song) {
+    fun deleteSongFromFirebase(song: Song, allSongs: List<Song>) {
         viewModelScope.launch {
-            deleteSongFromFirebaseUseCase.execute(song)
+            try {
+                song.id.toInt()
+                deleteSongInfFirebaseWithoutIdUseCase.execute(song, allSongs)
+            } catch (ex: NumberFormatException) {
+                deleteSongFromFirebaseUseCase.execute(song)
+            }
         }
     }
 

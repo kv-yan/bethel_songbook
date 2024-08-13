@@ -198,7 +198,7 @@ private fun MainContent(
     DeleteSongDialog(showDialog = isDeletingSong, song = deletingSong, onUpdateSongs = {
         viewModel.loadSong()
     }, onConfirmationClick = {
-        viewModel.deleteSongFromFirebase(it)
+        viewModel.deleteSongFromFirebase(it , allSongState.value)
     })
     DoubleBackToExitApp()
 }
