@@ -74,7 +74,7 @@ fun AppMainContent(
     ) {
 
         NavHost(navController = navController,
-            startDestination = Screens.FAVORITE_SCREEN.route,
+            startDestination = Screens.TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize(),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },

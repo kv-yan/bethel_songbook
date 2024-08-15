@@ -69,7 +69,7 @@ fun DatePickerScreen(dayState: MutableState<String>) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        DatePicker(state = datePickerState)
+        DatePicker(state = datePickerState, modifier = Modifier.fillMaxWidth())
 
         LaunchedEffect(datePickerState.selectedDateMillis) {
             datePickerState.selectedDateMillis?.let { millis ->
@@ -115,10 +115,12 @@ fun DayPickerDialog(
         Spacer(modifier = Modifier.width(12.dp))
     }
     if (isShowing.value) {
-        Surface(color = appTheme.fieldBackgroundColor) {
+        Surface(color = appTheme.fieldBackgroundColor, modifier = Modifier.fillMaxWidth()) {
             AlertDialog(
                 onDismissRequest = { isShowing.value = false },
-                modifier = Modifier.background(appTheme.fieldBackgroundColor)
+                modifier = Modifier
+                    .background(appTheme.fieldBackgroundColor)
+                    .fillMaxWidth()
             ) {
                 DatePickerScreen(dayState)
             }

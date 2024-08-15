@@ -18,7 +18,7 @@ import ru.betel.app.ui.widgets.pop_up.DeleteSongDialog
 import ru.betel.app.ui.widgets.pop_up.DeleteTemplateDialog
 import ru.betel.app.ui.widgets.pop_up.SendNotificationDialog
 import ru.betel.app.ui.widgets.pop_up.TemplateSaveMode
-import ru.betel.app.ui.widgets.pop_up.UploadLocalTemplateToServerDialog
+import ru.betel.app.ui.widgets.pop_up.UploadDialog
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
@@ -84,14 +84,17 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    SendNotificationDialog(showDialog = sendNotificationDialogState,
+    SendNotificationDialog(
+        showDialog = sendNotificationDialogState,
         template = templateState,
         onConfirmationClick = {
             templateViewModel.sendNotification(it)
             sendNotificationDialogState.value = false
         })
 
-    UploadLocalTemplateToServerDialog(
+    UploadDialog(
+        appTheme = appTheme,
+        templateViewModel = templateViewModel,
         showDialog = uploadDialogState,
         template = templateState,
     ) { template ->

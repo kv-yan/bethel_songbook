@@ -19,13 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import ru.betel.app.R
-import ru.betel.app.ui.theme.actionBarColor
 import ru.betel.app.ui.widgets.dropdown_menu.AddNewItemDropdownMenu
 import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
@@ -46,6 +44,14 @@ fun SingleTemplateActionBar(
     onUploadBtnClick: (SongTemplate) -> Unit,
 ) {
     val appTheme = settingViewModel.appTheme.value
+
+    val isLocalTemplate = remember { mutableStateOf(false) }
+
+    try {
+        isLocalTemplate.value = templateViewModel.singleTemplate.value.id.toInt() >= 0
+    } catch (ex: NumberFormatException) {
+        isLocalTemplate.value = false
+    }
 
     Surface(
         color = appTheme.actionBarColor, modifier = Modifier
@@ -110,47 +116,8 @@ fun SingleTemplateActionBar(
                     )
                 }
 
-
-                if (FirebaseAuth.getInstance().currentUser != null) {
-                    var templateId = null as Int?
-                    try {
-                        templateId = templateViewModel.singleTemplate.value.id.toInt()
-
-                    }catch (ex : NumberFormatException){
-                        ex.printStackTrace()
-                    }
-                    if (templateId != null) {
-                        if (templateId >=  0) {
-                            Spacer(modifier = Modifier.width(20.dp))
-                            IconButton(
-                                onClick = { onUploadBtnClick(templateViewModel.singleTemplate.value) }, modifier = Modifier.size(16.dp)
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_upload),
-                                    contentDescription = "image description",
-                                    tint = appTheme.actionBarIconColor,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
-                    }
-
-
-
+                if (FirebaseAuth.getInstance().currentUser != null || isLocalTemplate.value) {
                     Spacer(modifier = Modifier.width(20.dp))
-                    IconButton(
-                        onClick = {
-                            onNotificationBtnClick(templateViewModel.singleTemplate.value)
-                        }, modifier = Modifier.size(20.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Send notification",
-                            tint = appTheme.actionBarIconColor,
-                            modifier = Modifier.size(34.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(19.dp))
                     IconButton(
                         onClick = {
                             editViewModel.currentTemplate.value =
@@ -161,6 +128,37 @@ fun SingleTemplateActionBar(
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit song",
+                            tint = appTheme.actionBarIconColor,
+                            modifier = Modifier.size(34.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(19.dp))
+                }
+
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    if (isLocalTemplate.value) {
+                        IconButton(
+                            onClick = { onUploadBtnClick(templateViewModel.singleTemplate.value) },
+                            modifier = Modifier.size(16.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_upload),
+                                contentDescription = "image description",
+                                tint = appTheme.actionBarIconColor,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+
+                    IconButton(
+                        onClick = {
+                            onNotificationBtnClick(templateViewModel.singleTemplate.value)
+                        }, modifier = Modifier.size(20.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Send notification",
                             tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(34.dp)
                         )

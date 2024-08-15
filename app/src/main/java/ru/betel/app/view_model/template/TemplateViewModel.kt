@@ -218,6 +218,10 @@ class TemplateViewModel(
         }
     }
 
+
+    suspend fun getPerformerName(): String = getPerformerNameUseCase.execute()
+
+
     fun checkFields(templateFieldState: MutableState<NewTemplateFieldState>): Result<Unit> {
         return if (tempPerformerName.value?.isNotEmpty() == true) {
             if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {

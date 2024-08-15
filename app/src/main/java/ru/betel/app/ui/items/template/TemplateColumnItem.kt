@@ -59,7 +59,15 @@ fun TemplateColumnItem(
     textSize: SongbookTextSize,
     onClick: () -> Unit,
 ) {
-    var isShowingTemplateDetails by remember { mutableStateOf(detailsState.value == TemplateDetailsState.Opened) }
+    val isLocalTemplate = remember { mutableStateOf(false) }
+    var isShowingTemplateDetails by remember { mutableStateOf(if (isLocalTemplate.value) true else (detailsState.value == TemplateDetailsState.Opened)) }
+
+    try {
+        template.id.toInt()
+        isLocalTemplate.value = true
+    } catch (e: NumberFormatException) {
+        isLocalTemplate.value = false
+    }
 
     LaunchedEffect(detailsState.value) {
         isShowingTemplateDetails = (detailsState.value == TemplateDetailsState.Opened)
@@ -77,54 +85,107 @@ fun TemplateColumnItem(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp, vertical = 5.dp)
         ) {
-            // Header Row with performer name and date
-            Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = template.performerName, style = TextStyle(
-                        fontSize = textSize.normalItemDefaultTextSize,
-                        fontFamily = FontFamily(Font(R.font.mardoto_medium)),
-                        fontWeight = FontWeight(500),
-                        color = appTheme.primaryTextColor,
-                    ), modifier = Modifier.fillMaxWidth(0.4f)
-                )
-
+            if (!isLocalTemplate.value) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "${template.weekday.substring(0..2)}. | ${template.createDate}",
-                        style = TextStyle(
-                            fontSize = if (textSize.normalItemDefaultTextSize > 18.sp) 16.sp else textSize.smallItemDefaultTextSize,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(400),
-                            color = appTheme.secondaryTextColor,
-                        ),
+                        text = template.performerName, style = TextStyle(
+                            fontSize = textSize.normalItemDefaultTextSize,
+                            fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                            fontWeight = FontWeight(500),
+                            color = appTheme.primaryTextColor,
+                        ), modifier = Modifier.fillMaxWidth(0.4f)
                     )
 
-                    IconButton(onClick = {
-                        isShowingTemplateDetails = !isShowingTemplateDetails
-                    }, modifier = Modifier.size(24.dp)) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            if (isShowingTemplateDetails) Icons.Filled.KeyboardArrowUp
-                            else Icons.Filled.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = appTheme.secondaryTextColor
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Text(
+                            text = "${template.weekday.substring(0..2)}. | ${template.createDate}",
+                            style = TextStyle(
+                                fontSize = if (textSize.normalItemDefaultTextSize > 18.sp) 16.sp else textSize.smallItemDefaultTextSize,
+                                fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                                fontWeight = FontWeight(400),
+                                color = appTheme.secondaryTextColor,
+                            ),
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+
+                        IconButton(onClick = {
+                            isShowingTemplateDetails = !isShowingTemplateDetails
+                        }, modifier = Modifier.size(24.dp)) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Icon(
+                                if (isShowingTemplateDetails) Icons.Filled.KeyboardArrowUp
+                                else Icons.Filled.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = appTheme.secondaryTextColor
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
                     }
                 }
+
             }
-            AnimatedVisibility(visible = isShowingTemplateDetails) {
+            // Header Row with performer name and date
+
+            if (!isLocalTemplate.value) {
+                AnimatedVisibility(visible = isShowingTemplateDetails) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.height(1.dp))
+                        Divider(color = songDividerColor, thickness = 1.dp)
+                        Spacer(modifier = Modifier.height(1.dp))
+
+                        val songDetails = template.getSongsTitle()
+                        val styledText = buildAnnotatedString {
+                            if (searchQuery.isEmpty()) {
+                                append(songDetails)
+                            } else {
+                                val lowercasedDetails = songDetails.lowercase()
+                                val lowercasedQuery = searchQuery.lowercase()
+                                var startIndex = 0
+                                while (startIndex < lowercasedDetails.length) {
+                                    val foundIndex =
+                                        lowercasedDetails.indexOf(lowercasedQuery, startIndex)
+                                    if (foundIndex != -1) {
+                                        append(songDetails.substring(startIndex, foundIndex))
+                                        withStyle(
+                                            style = SpanStyle(
+                                                color = appTheme.primaryTextColor,
+                                                fontWeight = FontWeight(500)
+                                            )
+                                        ) {
+                                            append(
+                                                songDetails.substring(
+                                                    foundIndex, foundIndex + lowercasedQuery.length
+                                                )
+                                            )
+                                        }
+                                        startIndex = foundIndex + lowercasedQuery.length
+                                    } else {
+                                        append(songDetails.substring(startIndex))
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        Text(
+                            text = styledText, lineHeight = 24.sp, style = TextStyle(
+                                fontSize = textSize.normalItemDefaultTextSize,
+                                fontWeight = FontWeight(400),
+                                color = appTheme.secondaryTextColor,
+                            ), modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+            } else {
                 Column(Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(1.dp))
-                    Divider(color = songDividerColor, thickness = 1.dp)
-                    Spacer(modifier = Modifier.height(1.dp))
-
                     val songDetails = template.getSongsTitle()
                     val styledText = buildAnnotatedString {
                         if (searchQuery.isEmpty()) {
@@ -138,7 +199,12 @@ fun TemplateColumnItem(
                                     lowercasedDetails.indexOf(lowercasedQuery, startIndex)
                                 if (foundIndex != -1) {
                                     append(songDetails.substring(startIndex, foundIndex))
-                                    withStyle(style = SpanStyle(color = appTheme.primaryTextColor, fontWeight = FontWeight(500))) {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = appTheme.primaryTextColor,
+                                            fontWeight = FontWeight(500)
+                                        )
+                                    ) {
                                         append(
                                             songDetails.substring(
                                                 foundIndex, foundIndex + lowercasedQuery.length
@@ -158,11 +224,12 @@ fun TemplateColumnItem(
                         text = styledText, lineHeight = 24.sp, style = TextStyle(
                             fontSize = textSize.normalItemDefaultTextSize,
                             fontWeight = FontWeight(400),
-                            color = appTheme.secondaryTextColor,
+                            color = appTheme.primaryTextColor,
                         ), modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
+
             }
         }
     }
