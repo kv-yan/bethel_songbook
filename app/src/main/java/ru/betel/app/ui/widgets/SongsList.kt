@@ -16,7 +16,9 @@ import ru.betel.domain.model.ui.SongbookTextSize
 fun SongsList(
     appTheme: AppTheme,
     songs: List<Song>,
+    favoriteSongs: List<Song>,
     isEnableLongPress: Boolean = true,
+    isForCategory: Boolean = false,
     songbookTextSize: SongbookTextSize,
     onEditClick: (Song) -> Unit,
     onShareClick: (Song) -> Unit,
@@ -27,16 +29,20 @@ fun SongsList(
     Column(Modifier.fillMaxSize()) {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             itemsIndexed(songs) { index, song ->
-                SongItemWithWords(isEnableLongPress = isEnableLongPress,
+                SongItemWithWords(
+                    isForCategory = isForCategory,
                     appTheme = appTheme,
                     item = song,
-                    favoriteSongs = emptyList(),
+                    favoriteSongs = favoriteSongs,
                     textSize = songbookTextSize,
+                    isEnableLongPress = isEnableLongPress,
                     onEditClick = { onEditClick(song) },
-                    onFavoriteClick = { _, _ -> },
+                    onFavoriteClick = { song, state -> onFavoriteClick(song, state) },
                     onShareClick = { onShareClick(song) },
                     onDeleteClick = { onDeleteClick(song) }) { onSongSelected(song, index) }
             }
         }
     }
 }
+
+

@@ -47,6 +47,7 @@ import ru.betel.domain.model.ui.SongbookTextSize
 @Composable
 fun SongItemWithWords(
     isEnableLongPress: Boolean = true,
+    isForCategory: Boolean = false,
     appTheme: AppTheme,
     item: Song,
     favoriteSongs: List<Song>,
@@ -54,7 +55,7 @@ fun SongItemWithWords(
     onEditClick: (Song) -> Unit,
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
-    onFavoriteClick: (Song , Boolean) -> Unit,
+    onFavoriteClick: (Song, Boolean) -> Unit,
     onItemClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -112,32 +113,37 @@ fun SongItemWithWords(
                         modifier = Modifier.padding(end = 12.dp)
                     ) {
                         if (FirebaseAuth.getInstance().currentUser != null) {
+                            if (!isForCategory) {
+                                IconButton(
+                                    onClick = { onEditClick(item) },
+                                    modifier = Modifier.size(20.dp, 20.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = null,
+                                        tint = appTheme.primaryIconColor,
+                                        modifier = Modifier.size(15.dp, 20.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(6.dp))
+                        }
+                        if (!isForCategory) {
                             IconButton(
-                                onClick = { onEditClick(item) },
+                                onClick = { onShareClick(item) },
                                 modifier = Modifier.size(20.dp, 20.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Edit,
+                                    painter = painterResource(id = R.drawable.ic_share),
                                     contentDescription = null,
                                     tint = appTheme.primaryIconColor,
                                     modifier = Modifier.size(15.dp, 20.dp)
                                 )
                             }
+                            Spacer(modifier = Modifier.width(6.dp))
                         }
-                        Spacer(modifier = Modifier.width(6.dp))
                         IconButton(
-                            onClick = { onShareClick(item) }, modifier = Modifier.size(20.dp, 20.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_share),
-                                contentDescription = null,
-                                tint = appTheme.primaryIconColor,
-                                modifier = Modifier.size(15.dp, 20.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(6.dp))
-                        IconButton(
-                            onClick = { onFavoriteClick(item , bookmarkIconState) },
+                            onClick = { onFavoriteClick(item, bookmarkIconState) },
                             modifier = Modifier.size(20.dp, 20.dp)
                         ) {
                             Icon(
@@ -148,17 +154,20 @@ fun SongItemWithWords(
                             )
                         }
                         Spacer(modifier = Modifier.width(6.dp))
-                        if (FirebaseAuth.getInstance().currentUser != null) {
-                            IconButton(
-                                onClick = { onDeleteClick(item) },
-                                modifier = Modifier.size(20.dp, 20.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = null,
-                                    tint = appTheme.primaryIconColor,
-                                    modifier = Modifier.size(17.dp)
-                                )
+
+                        if (!isForCategory) {
+                            if (FirebaseAuth.getInstance().currentUser != null) {
+                                IconButton(
+                                    onClick = { onDeleteClick(item) },
+                                    modifier = Modifier.size(20.dp, 20.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = null,
+                                        tint = appTheme.primaryIconColor,
+                                        modifier = Modifier.size(17.dp)
+                                    )
+                                }
                             }
                         }
                     }

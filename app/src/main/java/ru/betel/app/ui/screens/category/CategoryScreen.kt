@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -62,7 +63,7 @@ fun CategoryScreen(
 
     val isLoading = viewModel.isLoadingContainer.value
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-
+    val favoriteSongs = viewModel.favoriteSongs.observeAsState(initial = emptyList())
 
     SwipeRefresh(
         modifier = Modifier.background(appTheme.screenBackgroundColor),
@@ -76,12 +77,20 @@ fun CategoryScreen(
             // showing all songs
             SongsList(appTheme = appTheme,
                 songs = sortedSongs.value,
-                isEnableLongPress = false,
+                favoriteSongs = favoriteSongs.value,
+                isEnableLongPress = true,
+                isForCategory = true,
                 songbookTextSize = settingViewModel.songbookTextSize,
                 onEditClick = {},
                 onShareClick = {},
-                onFavoriteClick = {_,_ ->},
-                onDeleteClick = {}) {song ,index ->
+                onFavoriteClick = { song, isAdded ->
+                    if (isAdded) {
+                        viewModel.deleteFavoriteSongs(song)
+                    } else {
+                        viewModel.insertFavoriteSongs(song)
+                    }
+                },
+                onDeleteClick = {}) { song, index ->
                 viewModel.selectedSong.value = song
                 viewModel.selectedSongIndex.value = index
                 viewModel.selectedSongList.value = sortedSongs.value
