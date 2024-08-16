@@ -27,6 +27,7 @@ import ru.betel.domain.model.Song
 import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.AppTheme
+import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.SearchAppBarState
 import ru.betel.domain.model.ui.SongbookTextSize
 
@@ -76,6 +77,9 @@ fun MenuDrawerLayout(
         )
     }
     val allSongs = songViewModel.allSongState.collectAsState(initial = listOf())
+    val screenState = remember {
+        mutableStateOf(Screens.HOME_SCREEN)
+    }
 
 
     DeleteSongDialog(showDialog = deleteSongDialogState, song = songState, onConfirmationClick = {
@@ -84,7 +88,8 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    SendNotificationDialog(showDialog = sendNotificationDialogState,
+    SendNotificationDialog(
+        showDialog = sendNotificationDialogState,
         template = templateState,
         onConfirmationClick = {
             templateViewModel.sendNotification(it)
@@ -131,7 +136,8 @@ fun MenuDrawerLayout(
     }
 
     Scaffold(drawerContent = {
-        DrawerContent(scope = scope,
+        DrawerContent(screenState = screenState,
+            scope = scope,
             appTheme = appTheme,
             drawerState = scaffoldState.drawerState,
             navController = navController,
@@ -145,6 +151,7 @@ fun MenuDrawerLayout(
         scaffoldState = scaffoldState,
         content = {
             AppMainContent(
+                screenState = screenState,
                 navController = navController,
                 actionBarState = actionBarState,
                 songViewModel = songViewModel,

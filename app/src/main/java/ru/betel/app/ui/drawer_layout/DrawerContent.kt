@@ -1,5 +1,6 @@
 package ru.betel.app.ui.drawer_layout
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +23,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -43,60 +44,56 @@ import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.MenuItem
 import ru.betel.domain.model.ui.Screens
 
+
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
     appTheme: AppTheme,
+    screenState: MutableState<Screens>,
     scope: CoroutineScope,
     drawerState: DrawerState,
     navController: NavController,
     onLogInBtnClick: () -> Unit,
 ) {
-    val models = remember {
-        mutableStateOf<List<MenuItem>>(
-            mutableListOf(
-                MenuItem(
-                    "Երգեր",
-                    R.drawable.ic_home_active,
-                    R.drawable.ic_home_passive,
-                    mutableStateOf(true),
-                    Screens.HOME_SCREEN
-                ), MenuItem(
-                    "Ցուցակներ",
-                    R.drawable.ic_template_active,
-                    R.drawable.ic_template_passive,
-                    mutableStateOf(false),
-                    Screens.TEMPLATE_SCREEN
-                ), MenuItem(
-                    "Կատեգորիաներ",
-                    R.drawable.ic_category_active,
-                    R.drawable.ic_category_pasive,
-                    mutableStateOf(false),
-                    Screens.CATEGORY_SCREEN
-                ), MenuItem(
-                    "Ընտրվածներ",
-                    R.drawable.ic_menu_bookmark_selected,
-                    R.drawable.ic_menu_bookmark,
-                    mutableStateOf(false),
-                    Screens.FAVORITE_SCREEN
-                )
-            )
+    val menuItems = listOf(
+        MenuItem(
+            title = "Երգեր",
+            activeIcon = R.drawable.ic_home_active,
+            passiveIcon = R.drawable.ic_home_passive,
+            isSelected = mutableStateOf(screenState.value == Screens.HOME_SCREEN),
+            screen = Screens.HOME_SCREEN
+        ), MenuItem(
+            "Ցուցակներ",
+            R.drawable.ic_template_active,
+            R.drawable.ic_template_passive,
+            mutableStateOf(screenState.value == Screens.TEMPLATE_SCREEN),
+            Screens.TEMPLATE_SCREEN
+        ), MenuItem(
+            "Կատեգորիաներ",
+            R.drawable.ic_category_active,
+            R.drawable.ic_category_pasive,
+            mutableStateOf(screenState.value == Screens.CATEGORY_SCREEN),
+            Screens.CATEGORY_SCREEN
+        ), MenuItem(
+            "Ընտրվածներ",
+            R.drawable.ic_menu_bookmark_selected,
+            R.drawable.ic_menu_bookmark,
+            mutableStateOf(screenState.value == Screens.FAVORITE_SCREEN),
+            Screens.FAVORITE_SCREEN
         )
-    }
+    )
+
     val loginItem = MenuItem(
         title = "Մուտք",
         activeIcon = R.drawable.ic_log_in,
         passiveIcon = R.drawable.ic_log_in,
-        isSelected = remember {
-            mutableStateOf(false)
-        },
+        isSelected = mutableStateOf(false),
         screen = Screens.CATEGORY_SCREEN
     )
 
     Scaffold(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(), contentColor = appTheme.screenBackgroundColor
+        Modifier.fillMaxSize(), contentColor = appTheme.screenBackgroundColor
     ) {
         Column(
             modifier = Modifier
@@ -108,14 +105,14 @@ fun DrawerContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(appTheme.drawerIconBackgroundColor),
+                    .background(appTheme.drawerFieldSelectedColor),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(modifier = Modifier.padding(20.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.des_1),
                         contentDescription = null,
-                        tint = appTheme.drawerIconColor,
+                        tint = appTheme.drawerSelectedIconColor,
                         modifier = Modifier.size(80.dp)
                     )
                     Column(modifier = Modifier.padding(start = 11.dp, top = 20.dp)) {
@@ -146,7 +143,6 @@ fun DrawerContent(
                 }
             }
 
-
             // Menu part
             LazyColumn(
                 modifier = Modifier
@@ -155,15 +151,17 @@ fun DrawerContent(
                     .padding(top = 11.dp)
                     .heightIn(min = 50.dp, max = 200.dp),
             ) {
-                itemsIndexed(models.value) { index, item ->
+                itemsIndexed(menuItems) { index, item ->
                     DrawerMenuItem(item = item, appTheme) {
                         scope.launch { drawerState.close() }
-                        models.value.forEach { it.isSelected.value = false }
+                        menuItems.forEach { it.isSelected.value = false }
                         item.isSelected.value = true
+                        screenState.value = item.screen
                         navController.navigate(item.screen.route)
                     }
                 }
             }
+
             Box(
                 modifier = Modifier
                     .background(appTheme.screenBackgroundColor)
@@ -188,7 +186,6 @@ fun DrawerContent(
                             delay(50)
                             onLogInBtnClick()
                         }
-
                     }
                 }
             }
@@ -196,5 +193,4 @@ fun DrawerContent(
 
         it
     }
-
 }

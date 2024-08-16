@@ -48,6 +48,7 @@ import ru.betel.domain.model.ui.SearchAppBarState
 @Composable
 fun AppMainContent(
     navController: NavHostController,
+    screenState: MutableState<Screens>,
     actionBarState: MutableState<ActionBarState>,
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
@@ -63,8 +64,6 @@ fun AppMainContent(
     uploadDialogState: MutableState<Boolean>,
     deleteSongDialogState: MutableState<Boolean>,
 ) {
-
-
     val coroutineScope = rememberCoroutineScope()
     val modifier = Modifier.fillMaxSize()
     Column(
@@ -81,6 +80,7 @@ fun AppMainContent(
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }) {
             composable(Screens.HOME_SCREEN.route) {
+                screenState.value = Screens.HOME_SCREEN
                 Column(modifier = modifier) {
                     HomeActionBar(navController = navController,
                         searchAppBarState = searchAppBarState,
@@ -105,6 +105,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.TEMPLATE_SCREEN.route) {
+                screenState.value = Screens.TEMPLATE_SCREEN
                 Column(modifier = modifier) {
                     TemplateActionBar(navController = navController,
                         searchAppBarState = searchAppBarState,
@@ -126,6 +127,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.NEW_SONG_SCREEN.route) {
+                screenState.value = Screens.NEW_SONG_SCREEN
                 Column(modifier = modifier) {
                     NewSongActionBar(
                         navController = navController, appTheme = settingViewModel.appTheme.value
@@ -140,6 +142,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.CATEGORY_SCREEN.route) {
+                screenState.value = Screens.CATEGORY_SCREEN
                 Column(modifier = modifier) {
                     CategoryActionBar(navController = navController,
                         searchAppBarState = searchAppBarState,
@@ -162,6 +165,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.FAVORITE_SCREEN.route) {
+                screenState.value = Screens.FAVORITE_SCREEN
                 Column(modifier = modifier) {
                     FavoriteActionBar(navController = navController,
                         searchAppBarState = searchAppBarState,
@@ -185,6 +189,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.NEW_TEMPLATE_SCREEN.route) {
+                screenState.value = Screens.NEW_TEMPLATE_SCREEN
                 Column(modifier = modifier) {
                     NewTemplateActionBar(
                         navController = navController,
@@ -203,6 +208,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.SINGLE_TEMPLATE_SCREEN.route) {
+                screenState.value = Screens.SINGLE_TEMPLATE_SCREEN
                 Column(modifier = modifier) {
                     SingleTemplateActionBar(navController = navController,
                         settingViewModel = settingViewModel,
@@ -237,6 +243,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.SINGLE_SONG_SCREEN.route) {
+                screenState.value = Screens.SINGLE_SONG_SCREEN
                 Column(modifier = modifier) {
                     SingleSongActionBar(navController = navController,
                         settingViewModel = settingViewModel,
@@ -291,6 +298,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.EDIT_SONG_SCREEN.route) {
+                screenState.value = Screens.EDIT_SONG_SCREEN
                 Column(modifier = modifier) {
                     NewSongActionBar(
                         navController = navController, appTheme = settingViewModel.appTheme.value
@@ -306,6 +314,7 @@ fun AppMainContent(
                 }
             }
             composable(Screens.EDIT_TEMPLATE_SCREEN.route) {
+                screenState.value = Screens.EDIT_TEMPLATE_SCREEN
                 Column(modifier = modifier) {
                     NewTemplateActionBar(
                         navController = navController,

@@ -1,7 +1,6 @@
 package ru.betel.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
 
 
 val actionBarColor = Color(0xFF002C85)
@@ -17,6 +16,7 @@ val menuTextSelectedColor = Color(0xFF756F86)
 val menuTextUnselectedColor = Color(0xFF111111)
 
 val primary_bgColor = Color(0xFFffffff)
+val primary_screenBackgroundColor = Color(0xFFffffff)
 val primary_actionbarIconColor = Color(0xFFFFFFFF)
 val primary_actionBarColor = Color(0xFF002C85)
 val primary_actionStatusBarColor = Color(0xFF002C85)
@@ -29,11 +29,13 @@ val primary_primaryButtonColor = Color(0xFF002C85)
 val primary_secondaryButtonColor = Color(0xFFF4F6FF)
 val primary_selectedBoxColor = Color(0xFF002C85)
 val primary_unselectedBoxColor = Color(0xFF756F86)
-val primary_screenBackgroundColor = Color(0xFFffffff)
-val primary_drawerIconColor = Color(0xFF002C85)
-val primary_drawerIconBackgroundColor = Color(0xFFF4F6FF)
+val primary_drawerSelectedIconColor = Color(0xFF002C85)
+val primary_drawerUnselectedIconColor = Color(0xFF000000)
+val primary_drawerFieldSelectedColor = Color(0xFFF4F6FF)
+val primary_drawerFieldUnselectedColor = Color(0xFFffffff)
 
 val gray_bgColor = Color(0xFF2B3131)
+val gray_screenBackgroundColor = Color(0xFF2B3131)
 val gray_actionbarIconColor = Color(0xFFDDDFDE)
 val gray_actionBarColor = Color(0xFF2B3131)
 val gray_actionStatusBarColor = Color(0xFF2B3131)
@@ -46,6 +48,7 @@ val gray_primaryButtonColor = Color(0xFF383E3E)
 val gray_secondaryButtonColor = Color(0xFF444A4A)
 val gray_selectedBoxColor = Color(0xFFDDDFDE)
 val gray_unselectedBoxColor = Color(0xFF756F86)
-val gray_screenBackgroundColor = Color(0xFF2B3131)
-val gray_drawerIconColor = Color(0xFFDDDFDE)
-val gray_drawerIconBackgroundColor = Color(0xFF2B3131)
+val gray_drawerSelectedIconColor = Color(0xFFFEFFFF)
+val gray_drawerUnselectedIconColor = Color(0xFF9AA0A0)
+val gray_drawerFieldSelectedColor = Color(0xFF424B4A)
+val gray_drawerFieldUnselectedColor = Color(0xFF2B3131)

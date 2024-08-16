@@ -8,8 +8,10 @@ import ru.betel.app.ui.theme.gray_actionStatusBarColor
 import ru.betel.app.ui.theme.gray_actionbarIconColor
 import ru.betel.app.ui.theme.gray_bgColor
 import ru.betel.app.ui.theme.gray_dividerColor
-import ru.betel.app.ui.theme.gray_drawerIconBackgroundColor
-import ru.betel.app.ui.theme.gray_drawerIconColor
+import ru.betel.app.ui.theme.gray_drawerFieldSelectedColor
+import ru.betel.app.ui.theme.gray_drawerFieldUnselectedColor
+import ru.betel.app.ui.theme.gray_drawerSelectedIconColor
+import ru.betel.app.ui.theme.gray_drawerUnselectedIconColor
 import ru.betel.app.ui.theme.gray_fieldTextColor
 import ru.betel.app.ui.theme.gray_primaryButtonColor
 import ru.betel.app.ui.theme.gray_primaryIconColor
@@ -24,8 +26,10 @@ import ru.betel.app.ui.theme.primary_actionStatusBarColor
 import ru.betel.app.ui.theme.primary_actionbarIconColor
 import ru.betel.app.ui.theme.primary_bgColor
 import ru.betel.app.ui.theme.primary_dividerColor
-import ru.betel.app.ui.theme.primary_drawerIconBackgroundColor
-import ru.betel.app.ui.theme.primary_drawerIconColor
+import ru.betel.app.ui.theme.primary_drawerFieldSelectedColor
+import ru.betel.app.ui.theme.primary_drawerFieldUnselectedColor
+import ru.betel.app.ui.theme.primary_drawerSelectedIconColor
+import ru.betel.app.ui.theme.primary_drawerUnselectedIconColor
 import ru.betel.app.ui.theme.primary_fieldTextColor
 import ru.betel.app.ui.theme.primary_primaryButtonColor
 import ru.betel.app.ui.theme.primary_primaryIconColor
@@ -35,7 +39,6 @@ import ru.betel.app.ui.theme.primary_secondaryButtonColor
 import ru.betel.app.ui.theme.primary_secondaryTextColor
 import ru.betel.app.ui.theme.primary_selectedBoxColor
 import ru.betel.app.ui.theme.primary_unselectedBoxColor
-import ru.betel.app.ui.theme.textFieldPlaceholder
 
 enum class ThemeMode(
     var isSelected: MutableState<Boolean>,
@@ -73,9 +76,12 @@ enum class AppTheme(
     val selectedBoxColor: Color,
     val unselectedBoxColor: Color,
     val screenBackgroundColor: Color,
-    val drawerIconColor: Color,
-    val drawerIconBackgroundColor: Color,
-) {
+    val drawerSelectedIconColor: Color,
+    val drawerUnselectedIconColor: Color,
+    val drawerFieldSelectedColor: Color,
+    val drawerFieldUnselectedColor: Color,
+
+    ) {
     PRIMARY(
         backgroundColor = primary_bgColor,
         actionBarIconColor = primary_actionbarIconColor,
@@ -91,8 +97,10 @@ enum class AppTheme(
         selectedBoxColor = primary_selectedBoxColor,
         unselectedBoxColor = primary_unselectedBoxColor,
         screenBackgroundColor = primary_screenBackgroundColor,
-        drawerIconColor = primary_drawerIconColor,
-        drawerIconBackgroundColor = primary_drawerIconBackgroundColor
+        drawerSelectedIconColor = primary_drawerSelectedIconColor,
+        drawerUnselectedIconColor = primary_drawerUnselectedIconColor,
+        drawerFieldSelectedColor = primary_drawerFieldSelectedColor ,
+        drawerFieldUnselectedColor = primary_drawerFieldUnselectedColor
     ),
     GRAY(
         backgroundColor = gray_bgColor,
@@ -109,7 +117,9 @@ enum class AppTheme(
         selectedBoxColor = gray_selectedBoxColor,
         unselectedBoxColor = gray_unselectedBoxColor,
         screenBackgroundColor = gray_screenBackgroundColor,
-        drawerIconColor = gray_drawerIconColor,
-        drawerIconBackgroundColor = gray_drawerIconBackgroundColor
+        drawerSelectedIconColor = gray_drawerSelectedIconColor,
+        drawerUnselectedIconColor = gray_drawerUnselectedIconColor,
+        drawerFieldSelectedColor = gray_drawerFieldSelectedColor ,
+        drawerFieldUnselectedColor = gray_drawerFieldUnselectedColor
     )
 }
