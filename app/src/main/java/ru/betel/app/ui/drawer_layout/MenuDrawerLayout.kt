@@ -84,8 +84,7 @@ fun MenuDrawerLayout(
         navController.popBackStack()
     }
 
-    SendNotificationDialog(
-        showDialog = sendNotificationDialogState,
+    SendNotificationDialog(showDialog = sendNotificationDialogState,
         template = templateState,
         onConfirmationClick = {
             templateViewModel.sendNotification(it)
@@ -97,8 +96,11 @@ fun MenuDrawerLayout(
         templateViewModel = templateViewModel,
         showDialog = uploadDialogState,
         template = templateState,
-    ) { template ->
+    ) { template, isSendNotification ->
         templateViewModel.saveTemplateToFirebase(template)
+        if (isSendNotification) {
+            templateViewModel.sendNotification(template)
+        }
         uploadDialogState.value = false
     }
     val saveMode = mutableStateOf<TemplateSaveMode>(
