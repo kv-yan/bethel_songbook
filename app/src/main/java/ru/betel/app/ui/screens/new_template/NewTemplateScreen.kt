@@ -309,6 +309,7 @@ private fun MainContent(
 
                     SaveButton(appTheme = appTheme) {
                         templateViewModel.checkFields(
+                            isAdmin = isAdmin,
                             templateFieldState = templateFieldState,
                             tempGlorifyingSongs = tempGlorifyingSongs,
                             tempWorshipSongs = tempWorshipSongs,

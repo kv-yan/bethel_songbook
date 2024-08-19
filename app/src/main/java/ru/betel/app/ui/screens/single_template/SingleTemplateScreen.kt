@@ -14,10 +14,10 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -43,11 +43,18 @@ fun SingleTemplateScreen(
     songViewModel: SongViewModel,
     settingViewModel: SettingViewModel,
 ) {
+    actionBarState.value = ActionBarState.SINGLE_TEMPLATE_SCREEN
     val fontSize = settingViewModel.songbookTextSize.textFieldItemDefaultTextSize
     val template by templateViewModel.singleTemplate
-    actionBarState.value = ActionBarState.SINGLE_TEMPLATE_SCREEN
     val rememberScrollState = rememberScrollState()
     val appTheme = settingViewModel.appTheme.value
+    val isLocalTemplate = remember { mutableStateOf(false) }
+    try {
+        template.id.toInt()
+        isLocalTemplate.value = true
+    } catch (ex: NumberFormatException) {
+        isLocalTemplate.value = false
+    }
 
     Surface {
         Column(
@@ -56,36 +63,38 @@ fun SingleTemplateScreen(
                 .background(appTheme.screenBackgroundColor)
                 .verticalScroll(rememberScrollState)
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 16.dp)
-            ) {
-                Text(
-                    text = template.performerName,
-                    fontSize = fontSize,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(500),
-                    color = appTheme.secondaryTextColor,
-                )
+            if (!isLocalTemplate.value) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = template.performerName,
+                        fontSize = fontSize,
+                        fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                        fontWeight = FontWeight(500),
+                        color = appTheme.secondaryTextColor,
+                    )
 
-                Text(
-                    text = "${template.weekday.substring(0..2)}. | ${template.createDate}",
-                    fontSize = fontSize,
-                    overflow = TextOverflow.Ellipsis,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(500),
-                    color = appTheme.secondaryTextColor,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End
-                )
+                    Text(
+                        text = "${template.weekday.substring(0..2)}. | ${template.createDate}",
+                        fontSize = fontSize,
+                        overflow = TextOverflow.Ellipsis,
+                        fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                        fontWeight = FontWeight(500),
+                        color = appTheme.secondaryTextColor,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
             if (template.isSingleMode) {
-                SingleModeSongs(appTheme,settingViewModel, template, navController, songViewModel)
+                SingleModeSongs(appTheme, settingViewModel, template, navController, songViewModel)
             } else {
-                CategorizedSongs(appTheme ,settingViewModel, template, navController, songViewModel)
+                CategorizedSongs(appTheme, settingViewModel, template, navController, songViewModel)
             }
 
         }
@@ -108,7 +117,7 @@ fun CategorizedSongs(
 ) {
     val appTheme = settingViewModel.appTheme.value
     CategorySongs(
-        appTheme=appTheme,
+        appTheme = appTheme,
         fontSize = settingViewModel.songbookTextSize,
         categoryTitle = "Փառաբանություն",
         categorySongs = template.glorifyingSong
@@ -119,7 +128,7 @@ fun CategorizedSongs(
     }
     Spacer(modifier = Modifier.height(12.dp))
     CategorySongs(
-        appTheme=appTheme,
+        appTheme = appTheme,
         categoryTitle = "Երկրպագություն",
         fontSize = settingViewModel.songbookTextSize,
         categorySongs = template.worshipSong
@@ -130,7 +139,8 @@ fun CategorizedSongs(
 
     }
     Spacer(modifier = Modifier.height(12.dp))
-    CategorySongs(appTheme=appTheme,
+    CategorySongs(
+        appTheme = appTheme,
         categoryTitle = "Ընծա",
         fontSize = settingViewModel.songbookTextSize,
         categorySongs = template.giftSong
@@ -149,7 +159,8 @@ fun SingleModeSongs(
     navController: NavController,
     songViewModel: SongViewModel
 ) {
-    CategorySongs(appTheme,
+    CategorySongs(
+        appTheme,
         fontSize = settingViewModel.songbookTextSize,
         categoryTitle = "Փառաբանություն",
         isSingMode = true,

@@ -24,6 +24,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -133,12 +134,14 @@ private fun MainContent(
 
     val appTheme = settingViewModel.appTheme.value
     actionBarState.value = ActionBarState.NEW_TEMPLATE_SCREEN
-
     val currentTemplate = editViewModel.currentTemplate.value
+    val isLocalTemplate = remember { mutableStateOf(false) }
     val saveMode = try {
+        isLocalTemplate.value = true
         currentTemplate.id.toInt()
         TemplateSaveMode.LOCAL
     } catch (ex: Exception) {
+        isLocalTemplate.value = false
         TemplateSaveMode.SERVER
     }
 
@@ -148,7 +151,7 @@ private fun MainContent(
     val tempSingleModeSongs = editViewModel.tempGiftSongs
 
     val tempPerformerName = remember { mutableStateOf(currentTemplate.performerName) }
-    val isSingleMode = remember { mutableStateOf(false) }
+    val isSingleMode = remember { mutableStateOf(currentTemplate.isSingleMode) }
     val tempWeekday = editViewModel.tempWeekday
     val planningDay = editViewModel.planningDay
 
@@ -224,63 +227,65 @@ private fun MainContent(
                 Spacer(modifier = Modifier.width(6.dp))
 
                 Column(Modifier.fillMaxSize()) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                    ) {
-                        MyTextFields(
-                            appTheme = appTheme,
-                            placeholder = "Առաջնորդ",
-                            fieldText = tempPerformerName,
-                            modifier = Modifier
+                    if (!isLocalTemplate.value) {
+                        Row(
+                            Modifier
                                 .fillMaxWidth()
-                                .width(25.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                    }
-
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp, horizontal = 12.dp)
-                    ) {
-                        Surface(
-                            modifier = Modifier.clickable {
-                                songViewModel.isDropdownMenuVisible.value = true
-                            }, shape = RoundedCornerShape(8.dp), appTheme.fieldBackgroundColor
+                                .padding(vertical = 6.dp, horizontal = 12.dp)
                         ) {
-                            WeekdayDropDownMenu(
+                            MyTextFields(
                                 appTheme = appTheme,
-                                selectedDay = tempWeekday,
-                                modifier = Modifier.fillMaxWidth(0.49f)
+                                placeholder = "Առաջնորդ",
+                                fieldText = tempPerformerName,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .width(25.dp)
                             )
+                            Spacer(modifier = Modifier.width(6.dp))
                         }
 
-                        Spacer(modifier = Modifier.width(6.dp))
-
-                        Surface(modifier = Modifier
-                            .clickable {
-                                isShowingDayDialog.value = true
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp, horizontal = 12.dp)
+                        ) {
+                            Surface(
+                                modifier = Modifier.clickable {
+                                    songViewModel.isDropdownMenuVisible.value = true
+                                }, shape = RoundedCornerShape(8.dp), appTheme.fieldBackgroundColor
+                            ) {
+                                WeekdayDropDownMenu(
+                                    appTheme = appTheme,
+                                    selectedDay = tempWeekday,
+                                    modifier = Modifier.fillMaxWidth(0.49f)
+                                )
                             }
-                            .fillMaxWidth()
-                            .height(38.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            color = appTheme.fieldBackgroundColor) {
-                            DayPickerDialog(
-                                appTheme = appTheme,
-                                isShowing = isShowingDayDialog,
-                                dayState = planningDay
-                            )
+
+                            Spacer(modifier = Modifier.width(6.dp))
+
+                            Surface(modifier = Modifier
+                                .clickable {
+                                    isShowingDayDialog.value = true
+                                }
+                                .fillMaxWidth()
+                                .height(38.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                color = appTheme.fieldBackgroundColor) {
+                                DayPickerDialog(
+                                    appTheme = appTheme,
+                                    isShowing = isShowingDayDialog,
+                                    dayState = planningDay
+                                )
+                            }
                         }
+
+                        Divider(
+                            modifier = Modifier.fillMaxWidth(),
+                            thickness = 1.dp,
+                            color = appTheme.dividerColor
+                        )
                     }
 
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(color = appTheme.dividerColor)
-                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
                     AddNewSongToTemplate(
@@ -321,6 +326,7 @@ private fun MainContent(
 
                     SaveButton(appTheme) {
                         templateViewModel.checkFields(
+                            isLocalTemplate = isLocalTemplate.value,
                             templateFieldState = templateFieldState,
                             tempPerformerName = tempPerformerName,
                             tempWeekday = tempWeekday,
@@ -340,8 +346,6 @@ private fun MainContent(
                                 worshipSong = tempWorshipSongs.toList(),
                                 giftSong = tempGiftSongs.toList()
                             )
-
-
 
                             editViewModel.updateTemplate(
                                 mode = saveMode,
@@ -365,8 +369,7 @@ private fun MainContent(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(
-                    text = songViewModel.searchAppBarText,
+                SearchTopAppBar(text = songViewModel.searchAppBarText,
                     onTextChange = {},
                     onCloseClicked = {},
                     textSize = settingViewModel.songbookTextSize

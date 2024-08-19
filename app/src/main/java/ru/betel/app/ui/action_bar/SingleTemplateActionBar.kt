@@ -132,11 +132,12 @@ fun SingleTemplateActionBar(
                             modifier = Modifier.size(34.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(19.dp))
                 }
 
                 if (FirebaseAuth.getInstance().currentUser != null) {
                     if (isLocalTemplate.value) {
+                        Spacer(modifier = Modifier.width(19.dp))
+
                         IconButton(
                             onClick = { onUploadBtnClick(templateViewModel.singleTemplate.value) },
                             modifier = Modifier.size(16.dp)
@@ -171,7 +172,7 @@ fun SingleTemplateActionBar(
                     ) {
                         Icon(
                             painterResource(id = R.drawable.ic_delete),
-                            contentDescription = "Edit song",
+                            contentDescription = "",
                             tint = appTheme.actionBarIconColor,
                             modifier = Modifier.size(24.dp)
                         )
