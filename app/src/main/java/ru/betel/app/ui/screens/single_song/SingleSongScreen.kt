@@ -109,7 +109,6 @@ fun SingleSongScreen(
     editViewModel: EditViewModel
 ) {
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
-    val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val songs by viewModel.selectedSongList // List of songs
     val selectedSongIndex = viewModel.selectedSongIndex

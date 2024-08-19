@@ -41,8 +41,6 @@ fun TemplatesSongScreen(
     val clickedSong by songViewModel.selectedSong.collectAsState()
     val appTheme by settingViewModel.appTheme
 
-    val currentSongIndex = remember { mutableStateOf(0) }
-
     val currentTemplateSongsList = remember(template) {
         mutableListOf<Song>().apply {
             if (template.isSingleMode) {
@@ -54,30 +52,26 @@ fun TemplatesSongScreen(
             }
         }
     }
-    val pagerState = rememberPagerState(pageCount = { currentTemplateSongsList.size })
 
-    LaunchedEffect(pagerState.currentPage) {
-        val index = pagerState.currentPage
-        val song = currentTemplateSongsList[index]
-        songViewModel.selectedSong.value = song
-        songViewModel.selectedSong.emit(song)
-        editViewModel.currentSong.value = song
-        editViewModel.isEditingSongFromTemplate.value = true
-
+    val initialPage = remember {
+        currentTemplateSongsList.indexOfFirst { song ->
+            song.title == clickedSong.title && song.words == clickedSong.words
+        }.takeIf { it != -1 } ?: 0 // Default to the first page if not found
     }
 
-    LaunchedEffect(clickedSong) {
-        val newIndex = currentTemplateSongsList.indexOfFirst { song ->
-            song.title == clickedSong.title && song.words == clickedSong.words
-        }
-        if (newIndex != -1) {
-            currentSongIndex.value = newIndex
-            pagerState.scrollToPage(newIndex)
-        }
+    val pagerState = rememberPagerState(initialPage = initialPage , pageCount = { currentTemplateSongsList.size })
+
+    // Sync current displayed song with view models on page change
+    LaunchedEffect(pagerState.currentPage) {
+        val currentSong = currentTemplateSongsList[pagerState.currentPage]
+        songViewModel.selectedSong.value = currentSong
+        editViewModel.currentSong.value = currentSong
+        editViewModel.isEditingSongFromTemplate.value = true
     }
 
     HorizontalPager(
-        state = pagerState, modifier = Modifier.fillMaxSize()
+        state = pagerState,
+        modifier = Modifier.fillMaxSize()
     ) { page ->
         TemplatesSongItem(
             appTheme = appTheme,
