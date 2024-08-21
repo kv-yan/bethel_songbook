@@ -29,6 +29,7 @@ fun SearchTopAppBar(
     appTheme: AppTheme = AppTheme.GRAY,
     text: MutableState<String>,
     textSize: SongbookTextSize,
+    isInBottomSheet: Boolean = false,
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
 ) {
@@ -42,8 +43,7 @@ fun SearchTopAppBar(
         mutableStateOf(TrailingIconState.DELETE)
     }
 
-    MyTextFields(
-        isForSearch = true,
+    MyTextFields(isForSearch = true,
         singleLine = true,
         fieldText = text,
         fontSize = textSize.textFieldItemDefaultTextSize,
@@ -60,7 +60,7 @@ fun SearchTopAppBar(
             }
         },
         trailingIcon = {
-            if (text.value.isNotEmpty()) {
+            if (!isInBottomSheet) {
                 IconButton(onClick = {
                     when (trailingIconState) {
                         TrailingIconState.DELETE -> {

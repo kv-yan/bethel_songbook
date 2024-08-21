@@ -75,7 +75,6 @@ fun SingleTemplateActionBar(
                 )
             }
 
-
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
@@ -149,9 +148,8 @@ fun SingleTemplateActionBar(
                                 modifier = Modifier.size(16.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.width(20.dp))
                     }
-
+                    Spacer(modifier = Modifier.width(20.dp))
                     IconButton(
                         onClick = {
                             onNotificationBtnClick(templateViewModel.singleTemplate.value)

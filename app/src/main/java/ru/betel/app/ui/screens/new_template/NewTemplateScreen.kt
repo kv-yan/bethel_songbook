@@ -378,9 +378,13 @@ private fun MainContent(
             ) {
 
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(text = songViewModel.searchAppBarText, onTextChange = {
-                    songViewModel.searchAppBarText.value = it
-                }, onCloseClicked = {}, textSize = settingViewModel.songbookTextSize
+                SearchTopAppBar(isInBottomSheet = true,
+                    text = songViewModel.searchAppBarText,
+                    onTextChange = {
+                        songViewModel.searchAppBarText.value = it
+                    },
+                    onCloseClicked = {},
+                    textSize = settingViewModel.songbookTextSize
                 )
                 CategoryTabs(
                     categorySongs = selectedCategorySongsList.value,
