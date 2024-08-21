@@ -23,14 +23,14 @@ fun LoadingPopUp(
     val onDismiss = { isShowDialog.value = !isShowDialog.value }
     if (isShowDialog.value) {
         AlertDialog(
-            backgroundColor = appTheme.backgroundColor,
+            backgroundColor = appTheme.screenBackgroundColor,
             onDismissRequest = { onDismiss() },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 50.dp, vertical = 250.dp),
             buttons = {
-                Surface(shape = RoundedCornerShape(25.dp), color = appTheme.backgroundColor) {
-                    LoadingScreen()
+                Surface(shape = RoundedCornerShape(25.dp), color = appTheme.screenBackgroundColor) {
+                    LoadingScreen(appTheme)
                 }
             },
             properties = DialogProperties(dismissOnBackPress = false)

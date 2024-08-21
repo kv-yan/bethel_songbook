@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import ru.betel.domain.model.ui.AppTheme
 
 @Composable
-fun LoadingScreen(appTheme: AppTheme = AppTheme.GRAY) {
+fun LoadingScreen(appTheme: AppTheme) {
     Column(
-        modifier = Modifier.fillMaxSize().background(appTheme.screenBackgroundColor),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
