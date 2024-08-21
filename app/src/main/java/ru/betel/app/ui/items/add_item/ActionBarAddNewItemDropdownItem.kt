@@ -1,7 +1,5 @@
 package ru.betel.app.ui.items.add_item
 
-import android.text.Layout
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,29 +25,28 @@ import ru.betel.domain.model.ui.AddItem
 
 @Composable
 fun ActionBarAddNewItemDropdownItem(item: AddItem, onAddItemClick: () -> Unit) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 7.dp)
-            .clickable {
-                onAddItemClick()
-            },
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Icon(
-            painter = painterResource(item.icon),
-            contentDescription = null,
-            modifier = Modifier.size(22.dp), tint = Color.Black
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = item.title,
-            style = TextStyle(
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                fontWeight = FontWeight(400),
-                color = Color.Black,
+    Surface(onClick = { onAddItemClick() }) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                painter = painterResource(item.icon),
+                contentDescription = null,
+                modifier = Modifier.size(22.dp),
+                tint = Color.Black
             )
-        )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = item.title, style = TextStyle(
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(400),
+                    color = Color.Black,
+                )
+            )
+        }
+
     }
 }

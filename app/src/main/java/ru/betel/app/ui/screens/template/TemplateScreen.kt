@@ -2,12 +2,23 @@ package ru.betel.app.ui.screens.template
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -17,10 +28,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import ru.betel.app.R
 import ru.betel.app.ui.items.template.TemplateColumnItem
 import ru.betel.app.ui.items.template.TemplateDetailsState
 import ru.betel.app.ui.widgets.NothingFoundScreen
@@ -47,9 +66,7 @@ fun TemplateScreen(
 
     val isLoading = false
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-    val detailsState = remember {
-        mutableStateOf(TemplateDetailsState.Closed)
-    }
+    val detailsState = remember { mutableStateOf(TemplateDetailsState.Closed) }
     detailsState.value = if (viewModel.isOpeningAllTemplate.value) {
         TemplateDetailsState.Opened
     } else {
@@ -76,6 +93,64 @@ fun TemplateScreen(
                 if (viewModel.templateSelectedType.value == TemplateType.ALL) filteredTemplates else localTemplate
 
             when {
+                viewModel.templateSelectedType.value == TemplateType.MINE && itemsList.isEmpty() -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Չկան պահպանված ցուցակներ", style = TextStyle(
+                                    fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
+                                    lineHeight = 20.sp,
+                                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                                    fontWeight = FontWeight(500),
+                                    color = appTheme.primaryTextColor,
+                                )
+                            )
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_template_active),
+                                contentDescription = "image description",
+                                tint = appTheme.primaryIconColor,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+
+                        Surface(modifier = Modifier.fillMaxWidth(),
+                            color = appTheme.screenBackgroundColor,
+                            shape = RoundedCornerShape(12.dp),
+                            onClick = { navController.navigate(Screens.NEW_TEMPLATE_SCREEN.route) }) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Ավելացնել նոր ցուցակ", style = TextStyle(
+                                        fontSize = 12.sp,
+                                        fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                                        fontWeight = FontWeight(400),
+                                        color = Color.Black,
+                                    )
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add_new_template),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp),
+                                    tint = Color.Black
+                                )
+                            }
+
+                        }
+                    }
+                }
+
                 itemsList.isEmpty() && searchQuery.isEmpty() && performerNameFilter.isEmpty() -> {
                     LoadingScreen(appTheme)
                 }
