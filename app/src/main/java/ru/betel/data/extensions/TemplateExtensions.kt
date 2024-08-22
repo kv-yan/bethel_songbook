@@ -7,39 +7,34 @@ import ru.betel.domain.model.SongTemplate
 import ru.betel.domain.model.entity.SongTemplateEntity
 
 fun SongTemplate.getSongsTitle(): String {
-    var songsList = ""
-    val glorifyingSong: List<Song> = this.glorifyingSong as List<Song>
-    val worshipSong: List<Song> = this.worshipSong as List<Song>
-    val giftSong: List<Song> = this.giftSong as List<Song>
+    return if (this.isSingleMode) {
+        this.singleModeSongs.joinToString(separator = "\n") { it.title }
+    } else {
+        val glorifyingSongList = this.glorifyingSong.joinToString(separator = "\n") { it.title }
+        val worshipSongList = this.worshipSong.joinToString(separator = "\n") { it.title }
+        val giftSongList = this.giftSong.joinToString(separator = "\n") { it.title }
 
-    glorifyingSong.forEach {
-        songsList += "${it.title}\n"
+        "$glorifyingSongList\n$worshipSongList\n$giftSongList"
     }
-    val glorifyingSongList = songsList
-    songsList = ""
-    worshipSong.forEach {
-        songsList += "${it.title}\n"
-    }
-    val worshipSongList = songsList
-    songsList = ""
-    giftSong.forEachIndexed { index, it ->
-        songsList += "${it.title}${if (giftSong.size - 1 == index) "" else "\n"}"
-    }
-    val giftSongList = songsList
-    return "$glorifyingSongList\n$worshipSongList\n$giftSongList"
 }
 
 fun SongTemplate.getMessageForShare(showTitle: Boolean = true): String {
-    return "Փառաբանություն\n${
-        this.glorifyingSong.getSongsTitle(showTitle)
-    }\n Երկրպագություն\n${
-        this.worshipSong.getSongsTitle(
-            showTitle
-        )
-    }\n Ընծա\n${
-        this.giftSong.getSongsTitle(showTitle)
-    }"
+    return if (this.isSingleMode) {
+        buildString {
+            append(this@getMessageForShare.singleModeSongs.getSongsTitle(showTitle))
+        }
+    } else {
+        buildString {
+            append("Փառաբանություն\n")
+            append(this@getMessageForShare.glorifyingSong.getSongsTitle(showTitle))
+            append("\nԵրկրպագություն\n")
+            append(this@getMessageForShare.worshipSong.getSongsTitle(showTitle))
+            append("\nԸնծա\n")
+            append(this@getMessageForShare.giftSong.getSongsTitle(showTitle))
+        }
+    }
 }
+
 
 
 fun List<SongTemplateEntity>.toSongTemplate(): MutableList<SongTemplate> {
@@ -65,26 +60,6 @@ fun List<SongTemplateEntity>.toSongTemplate(): MutableList<SongTemplate> {
 fun SongTemplate.getNotificationBody(): String {
     val text = this.getMessageForShare(false)
     return text
-}
-
-
-fun parseTemplateData(data: Map<String, String>): SongTemplate {
-    val glorifyingSongs = parseSongs(data["glorifyingSong"])
-    val worshipSongs = parseSongs(data["worshipSong"])
-    val giftSongs = parseSongs(data["giftSong"])
-    val singleModeSongs = parseSongs(data["singleModeSongs"])
-
-    return SongTemplate(
-        id = data["id"] ?: "",
-        createDate = data["createDate"] ?: "",
-        performerName = data["performerName"] ?: "",
-        weekday = data["weekday"] ?: "",
-        isSingleMode = data["isSingleMode"]?.toBoolean() ?: false,
-        glorifyingSong = glorifyingSongs,
-        worshipSong = worshipSongs,
-        giftSong = giftSongs,
-        singleModeSongs = singleModeSongs
-    )
 }
 
 private fun parseSongs(jsonArrayString: String?): MutableList<Song> {

@@ -83,11 +83,10 @@ fun SongItemWithTonalityAndTemp(
                 )
             }
 
-            // Tonality and date on the right
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth(0.4f) // Adjust the width as needed
+                modifier = Modifier.fillMaxWidth(0.4f)
             ) {
                 Text(
                     text = "${item.temp} | ${item.tonality}", style = TextStyle(

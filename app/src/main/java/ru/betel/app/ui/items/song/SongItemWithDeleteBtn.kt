@@ -77,13 +77,16 @@ fun SongItemWithDeleteBtn(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = if (item.isUsingSoundTrack) {"(ֆ)"} else "${item.temp} | ${item.tonality}", style = TextStyle(
+                Text(text = if (item.isUsingSoundTrack) {
+                    "(ֆ)"
+                } else "${item.temp} | ${item.tonality}", style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
                     color = appTheme.primaryTextColor,
                 ), modifier = Modifier.pointerInput(Unit) {
-                    detectTapGestures(onLongPress = { onTonalityTempItemLongPres(item) })
+                    detectTapGestures(onLongPress = { onTonalityTempItemLongPres(item) },
+                        onTap = { onTonalityTempItemLongPres(item) })
                 })
 
                 Spacer(modifier = Modifier.width(12.dp))

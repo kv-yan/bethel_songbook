@@ -9,3 +9,8 @@ fun State<MutableList<AddSong>>.toMutableState(): MutableState<MutableList<AddSo
     val value = this.value
     return mutableStateOf(value)
 }
+
+fun MutableList<AddSong>.toMutableState(): MutableState<MutableList<AddSong>> {
+    val value = this
+    return mutableStateOf(value)
+}

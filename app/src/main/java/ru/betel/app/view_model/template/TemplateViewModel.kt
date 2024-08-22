@@ -127,13 +127,6 @@ class TemplateViewModel(
         }
     }
 
-    private val _tempFavoriteAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
-        viewModelScope.launch {
-            getFavoriteSongsUseCase.execute().collect {
-                value = it.toImmutableAddSongList()
-            }
-        }
-    }
 
     private val _tempWorshipAllAddSongs = MutableLiveData<MutableList<AddSong>>().apply {
         viewModelScope.launch {
@@ -187,7 +180,6 @@ class TemplateViewModel(
     private val _isSingleMode = mutableStateOf(false)
 
     val tempGlorifyingAllAddSongs = _tempGlorifyingAllAddSongs
-    val tempFavoriteAllAddSongs = _tempFavoriteAllAddSongs
     val tempWorshipAllAddSongs = _tempWorshipAllAddSongs
     val tempGiftAllAddSongs = _tempGiftAllAddSongs
     val tempSingleModeAddSongs = _tempSingleModeAddSongs
@@ -379,7 +371,7 @@ class TemplateViewModel(
         worshipSongsState: SnapshotStateList<Song>,
         giftSongsState: SnapshotStateList<Song>,
     ): Result<Unit> {
-        return if (isLocalTemplate){
+        return if (isLocalTemplate) {
             if (glorifyingSongsState.isNotEmpty()) {
                 if (worshipSongsState.isNotEmpty()) {
                     if (giftSongsState.isNotEmpty()) {
@@ -397,7 +389,7 @@ class TemplateViewModel(
                 templateFieldState.value = NewTemplateFieldState.INVALID_GLORIFYING
                 Result.failure(IllegalAccessError())
             }
-        } else{
+        } else {
             if (tempPerformerName.value.isNotEmpty()) {
                 if (tempWeekday.value.isNotEmpty() && tempWeekday.value != "Շաբաթվա օր") {
                     if (planningDay.value.isNotEmpty() && planningDay.value != "Ամսաթիվ") {

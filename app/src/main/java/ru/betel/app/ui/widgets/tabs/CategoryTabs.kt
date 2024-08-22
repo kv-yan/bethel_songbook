@@ -11,7 +11,13 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.material3.Tab
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,12 +33,15 @@ import ru.betel.app.ui.widgets.tabs.teb_screens.TabScreenCategory
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AddSong
 
+private val TAG = "single_mode"
+
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CategoryTabs(
     categorySongs: MutableList<AddSong>,
     categoryTitle: String,
+    isSingleMode: MutableState<Boolean>,
     allSongs: State<MutableList<AddSong>>,
     favoriteSongs: State<MutableList<AddSong>>,
     searchAppBarText: MutableState<String>,
@@ -47,7 +56,11 @@ fun CategoryTabs(
 
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val tabRowItems = listOf(categoryTitle, "Առանձնացվածները", "Բոլորը")
+    val tabRowItems = if (isSingleMode.value) {
+        listOf("Առանձնացվածները", "Բոլորը")
+    } else {
+        listOf(categoryTitle, "Առանձնացվածները", "Բոլորը")
+    }
     val horizontalScrollState = rememberScrollState()
     val selectedSongForShowing = remember {
         mutableStateOf(
@@ -112,9 +125,12 @@ fun CategoryTabs(
                 item.song.words.lowercase()
             }
         } else {
-            allSongs.value
+            favoriteSongs.value
         }
     }
+
+    val pagerSongsList = if (isSingleMode.value) listOf(sortedFavoriteSong, sortedAllSong)
+    else listOf(sortedCategorySong, sortedFavoriteSong, sortedAllSong)
 
     Column(
         modifier = Modifier
@@ -122,7 +138,7 @@ fun CategoryTabs(
         TabRow(
             modifier = Modifier
                 .horizontalScroll(horizontalScrollState)
-                .widthIn(min = 200.dp, max = 600.dp),
+                .widthIn(min = 100.dp, max = if (!isSingleMode.value) 480.dp else 350.dp),
             backgroundColor = Color.White,
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
@@ -142,12 +158,13 @@ fun CategoryTabs(
                     })
             }
         }
+
         HorizontalPager(
             count = tabRowItems.size, state = pagerState, modifier = Modifier.fillMaxSize()
         ) {
             when (it) {
                 0 -> {
-                    TabScreenCategory(categorySongs = sortedCategorySong.value.toMutableList(),
+                    TabScreenCategory(categorySongs = pagerSongsList[it].value.toMutableList(),
                         onItemClick = { item ->
                             if (!item.isAdded.value) {
                                 categoryListForAdd.add(item.song)
@@ -157,12 +174,10 @@ fun CategoryTabs(
                                 item.isAdded.value = !item.isAdded.value
                             }
                             updateIsAddedState(
-                                sortedFavoriteSong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedFavoriteSong.value.toMutableList(), categoryListForAdd
                             )
                             updateIsAddedState(
-                                sortedAllSong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedAllSong.value.toMutableList(), categoryListForAdd
                             )
                         },
                         onItemLongPress = { songItem ->
@@ -172,7 +187,7 @@ fun CategoryTabs(
                 }
 
                 1 -> {
-                    TabScreenCategory(categorySongs = sortedFavoriteSong.value.toMutableList(),
+                    TabScreenCategory(categorySongs = pagerSongsList[it].value.toMutableList(),
                         onItemClick = { item ->
                             if (!item.isAdded.value) {
                                 categoryListForAdd.add(item.song)
@@ -182,12 +197,10 @@ fun CategoryTabs(
                                 item.isAdded.value = !item.isAdded.value
                             }
                             updateIsAddedState(
-                                sortedAllSong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedAllSong.value.toMutableList(), categoryListForAdd
                             )
                             updateIsAddedState(
-                                sortedCategorySong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedCategorySong.value.toMutableList(), categoryListForAdd
                             )
                         },
                         onItemLongPress = { songItem ->
@@ -198,7 +211,7 @@ fun CategoryTabs(
 
                 2 -> {
 
-                    TabScreenCategory(categorySongs = sortedAllSong.value.toMutableList(),
+                    TabScreenCategory(categorySongs = pagerSongsList[it].value.toMutableList(),
                         onItemClick = { item ->
                             if (!item.isAdded.value) {
                                 categoryListForAdd.add(item.song)
@@ -208,12 +221,10 @@ fun CategoryTabs(
                                 item.isAdded.value = !item.isAdded.value
                             }
                             updateIsAddedState(
-                                sortedFavoriteSong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedFavoriteSong.value.toMutableList(), categoryListForAdd
                             )
                             updateIsAddedState(
-                                sortedCategorySong.value.toMutableList(),
-                                categoryListForAdd
+                                sortedCategorySong.value.toMutableList(), categoryListForAdd
                             )
                         },
                         onItemLongPress = { songItem ->
@@ -228,8 +239,7 @@ fun CategoryTabs(
 }
 
 private fun updateIsAddedState(
-    addSongs: MutableList<AddSong>,
-    categoryListForAdd: SnapshotStateList<Song>
+    addSongs: MutableList<AddSong>, categoryListForAdd: SnapshotStateList<Song>
 ) {
     addSongs.forEach { addSong ->
         addSong.isAdded.value = categoryListForAdd.contains(addSong.song)
