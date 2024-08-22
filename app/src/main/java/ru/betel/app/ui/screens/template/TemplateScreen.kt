@@ -1,5 +1,6 @@
 package ru.betel.app.ui.screens.template
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -50,6 +50,7 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.TemplateType
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun TemplateScreen(
     navController: NavController,
@@ -115,7 +116,7 @@ fun TemplateScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_template_active),
                                 contentDescription = "image description",
-                                tint = appTheme.primaryIconColor,
+                                tint = appTheme.primaryTextColor,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -134,7 +135,7 @@ fun TemplateScreen(
                                         fontSize = 12.sp,
                                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                                         fontWeight = FontWeight(400),
-                                        color = Color.Black,
+                                        color = appTheme.primaryTextColor,
                                     )
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -143,7 +144,7 @@ fun TemplateScreen(
                                     painter = painterResource(R.drawable.ic_add_new_template),
                                     contentDescription = null,
                                     modifier = Modifier.size(22.dp),
-                                    tint = Color.Black
+                                    tint = appTheme.primaryTextColor
                                 )
                             }
 
@@ -160,13 +161,52 @@ fun TemplateScreen(
                 }
 
                 else -> {
+                    val reversedItemsList = itemsList.reversed()
+
                     LazyColumn(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxSize()
                             .background(appTheme.screenBackgroundColor)
                     ) {
-                        item { Spacer(modifier = Modifier.height(16.dp)) }
-                        items(itemsList, key = { it.id }) { template ->
+                        item {
+                            val template = reversedItemsList.firstOrNull()
+                            template?.let {
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    color = appTheme.screenBackgroundColor,
+                                    shape = RoundedCornerShape(12.dp),
+                                    onClick = {
+                                        viewModel.singleTemplate.value = it
+                                        navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
+                                    }
+                                ) {
+                                    Column(modifier = Modifier.padding(bottom = 6.dp)) {
+                                        Text(
+                                            text = "Նոր",
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(start = 12.dp, top = 10.dp),
+                                            style = TextStyle(
+                                                fontSize = settingViewModel.songbookTextSize.smallItemDefaultTextSize,
+                                                color = appTheme.secondaryTextColor
+                                            )
+                                        )
+                                        TemplateColumnItem(
+                                            detailsState = mutableStateOf(TemplateDetailsState.Opened),
+                                            appTheme = appTheme,
+                                            template = it,
+                                            textSize = settingViewModel.songbookTextSize,
+                                            searchQuery = viewModel.searchQuery.value,
+                                        ) {
+                                            viewModel.singleTemplate.value = it
+                                            navController.navigate(Screens.SINGLE_TEMPLATE_SCREEN.route)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        items(reversedItemsList.drop(1), key = { it.id }) { template ->
                             TemplateColumnItem(
                                 detailsState = detailsState,
                                 appTheme = appTheme,

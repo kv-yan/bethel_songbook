@@ -57,7 +57,7 @@ fun CategoryTabs(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val tabRowItems = if (isSingleMode.value) {
-        listOf("Առանձնացվածները", "Բոլորը")
+        listOf("Բոլորը", "Առանձնացվածները")
     } else {
         listOf(categoryTitle, "Առանձնացվածները", "Բոլորը")
     }
@@ -129,7 +129,7 @@ fun CategoryTabs(
         }
     }
 
-    val pagerSongsList = if (isSingleMode.value) listOf(sortedFavoriteSong, sortedAllSong)
+    val pagerSongsList = if (isSingleMode.value) listOf(sortedAllSong, sortedFavoriteSong)
     else listOf(sortedCategorySong, sortedFavoriteSong, sortedAllSong)
 
     Column(

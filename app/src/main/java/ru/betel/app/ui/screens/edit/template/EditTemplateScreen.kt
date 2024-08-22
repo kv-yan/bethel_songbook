@@ -42,7 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import ru.betel.app.R
-import ru.betel.app.ui.widgets.AddNewSongToTemplate
+import ru.betel.app.ui.screens.new_template.CategorizedSongs
+import ru.betel.app.ui.screens.new_template.SingleModeSongs
 import ru.betel.app.ui.widgets.MyTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.SearchTopAppBar
@@ -99,7 +100,7 @@ fun EditTemplateScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(appTheme.fieldBackgroundColor, RoundedCornerShape(8.dp))
+                    .background(appTheme.primaryButtonColor, RoundedCornerShape(8.dp))
                     .padding(16.dp), verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -153,20 +154,21 @@ private fun MainContent(
     val tempSingleModeSongs = editViewModel.tempGiftSongs
 
     val tempPerformerName = remember { mutableStateOf(currentTemplate.performerName) }
-    val isSingleMode = remember { mutableStateOf(currentTemplate.isSingleMode) }
+
     val tempWeekday = editViewModel.tempWeekday
     val planningDay = editViewModel.planningDay
 
 
     LaunchedEffect(currentTemplate) {
-        this.launch {
-            tempWeekday.value = currentTemplate.weekday
-            planningDay.value = currentTemplate.createDate
+        tempWeekday.value = currentTemplate.weekday
+        planningDay.value = currentTemplate.createDate
 
-            tempGlorifyingSongs.addAll(currentTemplate.glorifyingSong)
-            tempWorshipSongs.addAll(currentTemplate.worshipSong)
-            tempGiftSongs.addAll(currentTemplate.giftSong)
-        }
+        tempGlorifyingSongs.addAll(currentTemplate.glorifyingSong)
+        tempWorshipSongs.addAll(currentTemplate.worshipSong)
+        tempGiftSongs.addAll(currentTemplate.giftSong)
+        tempSingleModeSongs.addAll(currentTemplate.singleModeSongs)
+
+        templateViewModel.isSingleMode.value = currentTemplate.isSingleMode
     }
 
     val isShowingDayDialog = remember { mutableStateOf(false) }
@@ -198,11 +200,16 @@ private fun MainContent(
 
     val allSongs = songViewModel.allSongState.collectAsState(mutableListOf())
     val favorites = songViewModel.favoriteSongs.observeAsState(mutableListOf())
-    val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> = allSongs.value.toImmutableAddSongList().toMutableState()
-    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> = favorites.value.toImmutableAddSongList().toMutableState()
+    val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> =
+        templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =
+        allSongs.value.toImmutableAddSongList().toMutableState()
+    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> =
+        favorites.value.toImmutableAddSongList().toMutableState()
 
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         AddSongCategory.GLORIFYING -> bottomSheetAllSongsForGlorifyingCategory
@@ -287,40 +294,34 @@ private fun MainContent(
 
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    AddNewSongToTemplate(
-                        appTheme = appTheme,
-                        categoryTitle = "Փառաբանություն",
-                        categorySongs = tempGlorifyingSongs
-                    ) {
-                        selectedCategory.value = AddSongCategory.GLORIFYING
-                        selectedCategoryForAddNewSong = tempGlorifyingSongs
-                        selectedCategoryBottomSheetAllSongs =
-                            bottomSheetAllSongsForGlorifyingCategory
-                        scope.launch { bottomSheetState.show() }
+                    if (templateViewModel.isSingleMode.value) {
+                        SingleModeSongs(
+                            appTheme = appTheme,
+                            selectedCategory = selectedCategory,
+                            singleModeSongs = tempSingleModeSongs,
+                            templateViewModel = templateViewModel,
+                            selectedCategoryBottomSheetAllSongs = selectedCategoryBottomSheetAllSongs,
+                            bottomSheetAllSongsForSingleModeCategory = bottomSheetAllSongsForSingleModeCategory,
+                            bottomSheetState = bottomSheetState,
+                            scope = scope
+                        )
+                    } else {
+                        CategorizedSongs(
+                            appTheme = appTheme,
+                            templateViewModel = templateViewModel,
+                            selectedCategory = selectedCategory,
+                            tempGlorifyingSongs = tempGlorifyingSongs,
+                            tempWorshipSongs = tempWorshipSongs,
+                            tempGiftSongs = tempGiftSongs,
+                            selectedCategoryBottomSheetAllSongs = selectedCategoryBottomSheetAllSongs,
+                            bottomSheetAllSongsForGlorifyingCategory = bottomSheetAllSongsForGlorifyingCategory,
+                            bottomSheetAllSongsForWorshipCategory = bottomSheetAllSongsForWorshipCategory,
+                            bottomSheetAllSongsForGiftCategory = bottomSheetAllSongsForGiftCategory,
+                            bottomSheetState = bottomSheetState,
+                            scope = scope
+                        )
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
 
-
-                    AddNewSongToTemplate(
-                        appTheme = appTheme,
-                        categoryTitle = "Երկրպագություն",
-                        categorySongs = tempWorshipSongs
-                    ) {
-                        selectedCategory.value = AddSongCategory.WORSHIP
-                        selectedCategoryForAddNewSong = tempWorshipSongs
-                        selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForWorshipCategory
-                        scope.launch { bottomSheetState.show() }
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    AddNewSongToTemplate(
-                        appTheme = appTheme, categoryTitle = "Ընծա", categorySongs = tempGiftSongs
-                    ) {
-                        selectedCategory.value = AddSongCategory.GIFT
-                        selectedCategoryForAddNewSong = tempGiftSongs
-                        selectedCategoryBottomSheetAllSongs = bottomSheetAllSongsForGiftCategory
-                        scope.launch { bottomSheetState.show() }
-                    }
                     Spacer(modifier = Modifier.height(12.dp))
 
                     SaveButton(appTheme) {
@@ -332,7 +333,8 @@ private fun MainContent(
                             planningDay = planningDay,
                             glorifyingSongsState = tempGlorifyingSongs,
                             worshipSongsState = tempWorshipSongs,
-                            giftSongsState = tempGiftSongs
+                            giftSongsState = tempGiftSongs,
+                            singleModeSongsState = tempSingleModeSongs
                         )
                         isShowingDialog.value = true
                         if (templateFieldState.value == NewTemplateFieldState.DONE) {
@@ -340,10 +342,11 @@ private fun MainContent(
                                 createDate = planningDay.value,
                                 performerName = tempPerformerName.value,
                                 weekday = tempWeekday.value,
-                                isSingleMode = false,
-                                glorifyingSong = tempGlorifyingSongs.toList(),
-                                worshipSong = tempWorshipSongs.toList(),
-                                giftSong = tempGiftSongs.toList()
+                                isSingleMode = templateViewModel.isSingleMode.value,
+                                glorifyingSong = if (templateViewModel.isSingleMode.value) mutableListOf() else tempGlorifyingSongs.toList(),
+                                worshipSong = if (templateViewModel.isSingleMode.value) mutableListOf() else tempWorshipSongs.toList(),
+                                giftSong = if (templateViewModel.isSingleMode.value) mutableListOf() else tempGiftSongs.toList(),
+                                singleModeSongs = if (templateViewModel.isSingleMode.value) tempSingleModeSongs.toList() else mutableListOf(),
                             )
 
                             editViewModel.updateTemplate(
@@ -382,7 +385,7 @@ private fun MainContent(
                     searchAppBarText = songViewModel.searchAppBarText,
                     favoriteSongs = bottomSheetFavoriteSong,
                     categoryListForAdd = selectedCategoryForAddNewSong,
-                    isSingleMode = isSingleMode,
+                    isSingleMode = templateViewModel.isSingleMode,
                 ) {
                     scope.launch {
                         bottomSheetState.hide()

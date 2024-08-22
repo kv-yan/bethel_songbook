@@ -193,8 +193,6 @@ private fun MainContent(
     }
     val allSongs = songViewModel.allSongState.collectAsState(mutableListOf())
     val favorites = songViewModel.favoriteSongs.observeAsState(mutableListOf())
-    Log.e(TAG, "allSongs :: ${allSongs.value.size}")
-    Log.e(TAG, "favorites :: ${favorites.value.size}")
     val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> =
         templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
     val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> =
@@ -488,10 +486,6 @@ fun SingleModeSongs(
     AddNewSongToTemplate(
         appTheme = appTheme, categoryTitle = "Առանձնացված", categorySongs = singleModeSongs
     ) {
-        Log.e(
-            TAG,
-            "SingleModeSongs: click time :: ${bottomSheetAllSongsForSingleModeCategory.value.size}",
-        )
         selectedCategory.value = AddSongCategory.SingleMode
         selectedCategoryBottomSheetAllSongs.value = bottomSheetAllSongsForSingleModeCategory.value
         scope.launch { bottomSheetState.show() }

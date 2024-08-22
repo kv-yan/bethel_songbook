@@ -77,7 +77,7 @@ fun AppMainContent(
     ) {
 
         NavHost(navController = navController,
-            startDestination = Screens.NEW_TEMPLATE_SCREEN.route,
+            startDestination = Screens.TEMPLATE_SCREEN.route,
             modifier = Modifier.fillMaxSize(),
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
@@ -337,10 +337,6 @@ fun AppMainContent(
             }
             composable(Screens.EDIT_TEMPLATE_SCREEN.route) {
                 screenState.value = Screens.EDIT_TEMPLATE_SCREEN
-                val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
-                val tempWorshipSongs = remember { mutableStateListOf<Song>() }
-                val tempGiftSongs = remember { mutableStateListOf<Song>() }
-                val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
                 Column(modifier = modifier) {
                     NewTemplateActionBar(
                         navController = navController,
