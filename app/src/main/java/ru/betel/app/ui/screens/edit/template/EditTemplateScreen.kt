@@ -191,25 +191,18 @@ private fun MainContent(
     }
     var selectedCategoryForAddNewSong = when (selectedCategory.value) {
         AddSongCategory.GLORIFYING -> tempGlorifyingSongs
-
         AddSongCategory.WORSHIP -> tempWorshipSongs
-
         AddSongCategory.GIFT -> tempGiftSongs
         AddSongCategory.SingleMode -> tempSingleModeSongs
     }
 
     val allSongs = songViewModel.allSongState.collectAsState(mutableListOf())
     val favorites = songViewModel.favoriteSongs.observeAsState(mutableListOf())
-    val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> =
-        templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> =
-        templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> =
-        templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
-    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> =
-        allSongs.value.toImmutableAddSongList().toMutableState()
-    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> =
-        favorites.value.toImmutableAddSongList().toMutableState()
+    val bottomSheetAllSongsForGlorifyingCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempGlorifyingAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForWorshipCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempWorshipAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForGiftCategory: MutableState<MutableList<AddSong>> = templateViewModel.tempGiftAllAddSongs.observeAsState(mutableListOf()).toMutableState()
+    val bottomSheetAllSongsForSingleModeCategory: MutableState<MutableList<AddSong>> = allSongs.value.toImmutableAddSongList().toMutableState()
+    val bottomSheetFavoriteSong: MutableState<MutableList<AddSong>> = favorites.value.toImmutableAddSongList().toMutableState()
 
     var selectedCategoryBottomSheetAllSongs = when (selectedCategory.value) {
         AddSongCategory.GLORIFYING -> bottomSheetAllSongsForGlorifyingCategory

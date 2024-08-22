@@ -2,6 +2,7 @@ package ru.betel.app.ui.screens.new_template
 
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +34,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,6 +81,11 @@ fun NewTemplateScreen(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
+    tempGlorifyingSongs: SnapshotStateList<Song>,
+    tempWorshipSongs: SnapshotStateList<Song>,
+    tempGiftSongs: SnapshotStateList<Song>,
+    tempSingleModeSongs: SnapshotStateList<Song>
+
 ) {
     val appTheme = settingViewModel.appTheme.value
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
@@ -96,7 +101,11 @@ fun NewTemplateScreen(
             settingViewModel = settingViewModel,
             isShowingSaveStateDialog = isShowingSaveStateDialog,
             templateFieldState = templateFieldState,
-            isShowingSaveModeDialog = isShowingSaveModeDialog
+            isShowingSaveModeDialog = isShowingSaveModeDialog,
+            tempGlorifyingSongs = tempGlorifyingSongs,
+            tempWorshipSongs = tempWorshipSongs,
+            tempGiftSongs = tempGiftSongs,
+            tempSingleModeSongs = tempSingleModeSongs
         )
 
         AppSnackbar(
@@ -140,7 +149,11 @@ private fun MainContent(
     settingViewModel: SettingViewModel,
     templateFieldState: MutableState<NewTemplateFieldState>,
     isShowingSaveStateDialog: MutableState<Boolean>,
-    isShowingSaveModeDialog: MutableState<Boolean>
+    isShowingSaveModeDialog: MutableState<Boolean>,
+    tempGlorifyingSongs: SnapshotStateList<Song>,
+    tempWorshipSongs: SnapshotStateList<Song>,
+    tempGiftSongs: SnapshotStateList<Song>,
+    tempSingleModeSongs: SnapshotStateList<Song>
 ) {
     val isAdmin = FirebaseAuth.getInstance().currentUser != null
 
@@ -167,10 +180,10 @@ private fun MainContent(
         }
     }
 
-    val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
-    val tempWorshipSongs = remember { mutableStateListOf<Song>() }
-    val tempGiftSongs = remember { mutableStateListOf<Song>() }
-    val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
+//    val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
+//    val tempWorshipSongs = remember { mutableStateListOf<Song>() }
+//    val tempGiftSongs = remember { mutableStateListOf<Song>() }
+//    val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
 
     val selectedCategoryForAddNewSong = when (categoryState.value) {
         AddSongCategory.GLORIFYING -> tempGlorifyingSongs
@@ -386,8 +399,7 @@ private fun MainContent(
                     .padding(horizontal = 12.dp)
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(
-                    isInBottomSheet = true,
+                SearchTopAppBar(isInBottomSheet = true,
                     text = songViewModel.searchAppBarText,
                     onTextChange = {
                         songViewModel.searchAppBarText.value = it
@@ -410,6 +422,7 @@ private fun MainContent(
                 }
             }
         })
+
 }
 
 

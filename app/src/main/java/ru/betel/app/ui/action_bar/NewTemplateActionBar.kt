@@ -32,7 +32,8 @@ fun NewTemplateActionBar(
     appTheme: AppTheme,
     navController: NavController,
     editViewModel: EditViewModel,
-    templateViewModel: TemplateViewModel
+    templateViewModel: TemplateViewModel ,
+    onResetClick: () -> Unit
 ) {
     val isSingleMode = templateViewModel.isSingleMode
 
@@ -73,7 +74,7 @@ fun NewTemplateActionBar(
             ) {
                 TemplateModeTypeDropdownMenu(isSingleMode, appTheme)
 
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { onResetClick() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_reset),
                         tint = appTheme.actionBarIconColor,

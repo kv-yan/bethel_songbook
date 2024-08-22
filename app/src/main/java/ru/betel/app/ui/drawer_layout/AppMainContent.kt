@@ -1,6 +1,8 @@
 package ru.betel.app.ui.drawer_layout
 
 import android.os.Build
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -9,6 +11,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -190,22 +194,40 @@ fun AppMainContent(
             }
             composable(Screens.NEW_TEMPLATE_SCREEN.route) {
                 screenState.value = Screens.NEW_TEMPLATE_SCREEN
+                val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
+                val tempWorshipSongs = remember { mutableStateListOf<Song>() }
+                val tempGiftSongs = remember { mutableStateListOf<Song>() }
+                val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
                 Column(modifier = modifier) {
                     NewTemplateActionBar(
                         navController = navController,
                         editViewModel = editViewModel,
                         templateViewModel = templateViewModel,
                         appTheme = settingViewModel.appTheme.value
-                    )
+                    ) {
+                        tempGlorifyingSongs.clear()
+                        tempWorshipSongs.clear()
+                        tempGiftSongs.clear()
+                        tempSingleModeSongs.clear()
+                    }
 
                     NewTemplateScreen(
                         navController = navController,
                         actionBarState = actionBarState,
                         songViewModel = songViewModel,
                         templateViewModel = templateViewModel,
-                        settingViewModel = settingViewModel
+                        settingViewModel = settingViewModel,
+                        tempGlorifyingSongs = tempGlorifyingSongs,
+                        tempWorshipSongs = tempWorshipSongs,
+                        tempGiftSongs = tempGiftSongs,
+                        tempSingleModeSongs = tempSingleModeSongs
                     )
                 }
+                BackHandler {
+                    Log.e("TAG", "check is working: back pres")
+                    navController.popBackStack()
+                }
+
             }
             composable(Screens.SINGLE_TEMPLATE_SCREEN.route) {
                 screenState.value = Screens.SINGLE_TEMPLATE_SCREEN
@@ -315,20 +337,29 @@ fun AppMainContent(
             }
             composable(Screens.EDIT_TEMPLATE_SCREEN.route) {
                 screenState.value = Screens.EDIT_TEMPLATE_SCREEN
+                val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
+                val tempWorshipSongs = remember { mutableStateListOf<Song>() }
+                val tempGiftSongs = remember { mutableStateListOf<Song>() }
+                val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
                 Column(modifier = modifier) {
                     NewTemplateActionBar(
                         navController = navController,
                         editViewModel = editViewModel,
                         templateViewModel = templateViewModel,
                         appTheme = settingViewModel.appTheme.value
-                    )
+                    ) {
+                        editViewModel.tempGlorifyingSongs.clear()
+                        editViewModel.tempWorshipSongs.clear()
+                        editViewModel.tempGiftSongs.clear()
+                        editViewModel.tempSingleModeSongs.clear()
+                    }
                     EditTemplateScreen(
                         navController = navController,
                         actionBarState = actionBarState,
                         songViewModel = songViewModel,
                         templateViewModel = templateViewModel,
                         settingViewModel = settingViewModel,
-                        editViewModel = editViewModel
+                        editViewModel = editViewModel,
                     )
                 }
             }

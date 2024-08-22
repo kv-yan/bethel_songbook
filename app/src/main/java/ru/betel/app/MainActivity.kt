@@ -208,17 +208,6 @@ class MainActivity : ComponentActivity() {
             windowManager.addView(view, layoutParams)
         }
     */
-
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (overlayView != null) {
-            windowManager.removeView(overlayView)
-            overlayView = null
-        } else {
-            super.onBackPressed()
-        }
-    }
 }
 
 
