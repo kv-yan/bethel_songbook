@@ -6,6 +6,9 @@ import android.app.NotificationManager
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import ru.betel.app.R
@@ -14,6 +17,8 @@ import ru.betel.app.di.daoModules
 import ru.betel.app.di.dataModule
 import ru.betel.app.di.databaseModule
 import ru.betel.app.di.domainModule
+import ru.betel.app.worker.SyncWorker
+import java.util.concurrent.TimeUnit
 
 class App : Application() {
     override fun onCreate() {
@@ -23,6 +28,7 @@ class App : Application() {
             androidContext(this@App)
             modules(appModule, dataModule, domainModule, databaseModule, daoModules)
         }
+        setupWorkManager()
     }
 
     private fun createNotificationChannel() {
@@ -39,8 +45,7 @@ class App : Application() {
                     soundUri,
                     AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                        .build()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION).build()
                 )
             }
 
@@ -48,5 +53,13 @@ class App : Application() {
             notificationManager.deleteNotificationChannel(channelId)
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    private fun setupWorkManager() {
+        val syncRequest = PeriodicWorkRequestBuilder<SyncWorker>(7, TimeUnit.DAYS).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "SyncSongsWork", ExistingPeriodicWorkPolicy.KEEP, syncRequest
+        )
     }
 }

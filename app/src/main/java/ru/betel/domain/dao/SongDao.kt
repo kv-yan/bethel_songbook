@@ -1,7 +1,6 @@
 package ru.betel.domain.dao
 
 import androidx.room.*
-import kotlinx.coroutines.flow.StateFlow
 import ru.betel.domain.model.entity.SongEntity
 
 @Dao
@@ -17,5 +16,11 @@ interface SongDao {
 
     @Delete
     suspend fun deleteSong(songTemplate: SongEntity)
+
+    @Query("DELETE FROM song")
+    suspend fun cleareAllSongs()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSongs(songTemplates: List<SongEntity>)
 }
 

@@ -1,10 +1,10 @@
 package ru.betel.app
 
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.delay
@@ -33,6 +35,7 @@ import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
+import ru.betel.app.worker.SyncWorker
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import kotlin.system.exitProcess
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
         scheduleWeeklyNotification(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         subscribeNotificationTopic()
+        setupWorkManager(this)
         setContent {
 //            requestPermission()
             RequestNotificationPermission()
@@ -151,63 +155,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*
-        private fun requestPermission() {
-            if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")
-                )
-                startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION)
-            } else {
-    //            showOverlay()
-            }
+    private fun setupWorkManager(context: Context) {
+//        val syncRequest = PeriodicWorkRequestBuilder<SyncWorker>(7, TimeUnit.DAYS).build()
 
-        }
-    */
+//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+//            "SyncSongsWork", ExistingPeriodicWorkPolicy.KEEP, syncRequest
+//        )
 
-    /*
-        @RequiresApi(Build.VERSION_CODES.O)
-        @Deprecated("Deprecated in Java")
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-            if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
-                if (Settings.canDrawOverlays(this)) {
-                    showOverlay()
-                } else {
-                }
-            }
-        }
-    */
+        val syncRequest = OneTimeWorkRequestBuilder<SyncWorker>().build()
 
+        WorkManager.getInstance(context).enqueue(syncRequest)
 
-    /*
-        @RequiresApi(Build.VERSION_CODES.O)
-        private fun showOverlay() {
-            if (overlayView != null) return
-            val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    }
 
-            val layoutParams = WindowManager.LayoutParams(
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT
-            )
-
-            layoutParams.gravity = Gravity.CENTER
-
-            val view = LayoutInflater.from(this).inflate(R.layout.reminder_layout, null)
-            overlayView = view
-
-            view.findViewById<Button>(R.id.button_open).setOnClickListener {
-                windowManager.removeView(view)
-            }
-
-            view.findViewById<TextView>(R.id.button_close).setOnClickListener {
-                windowManager.removeView(view)
-            }
-
-            windowManager.addView(view, layoutParams)
-        }
-    */
 }
 
 

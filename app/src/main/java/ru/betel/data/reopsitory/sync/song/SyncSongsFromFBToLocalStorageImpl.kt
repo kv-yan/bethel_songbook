@@ -40,18 +40,12 @@ class SyncSongsFromFBToLocalStorageImpl(
 ) : SyncSongsFromFBToLocalStorage {
 
     override suspend fun syncData() {
-        val localSongs = songDao.getAllSong().toMutableList()
-        val fbSongs: Array<Song> = getSongsFromFirebase.getAllSongs().toTypedArray()
+        // Step 1: Clear local database
+        songDao.cleareAllSongs()
 
-
-        for (sItem in fbSongs) {
-            val matchingLocalSong = localSongs.find { it.title == sItem.title }
-            if (matchingLocalSong == null || matchingLocalSong.words != sItem.words) {
-                songDao.insertSong(sItem.toEntity())
-                println(sItem.title)
-            }
-        }
-
-        println("localSongs :: ${songDao.getAllSong().size}")
+        // Step 2: Fetch songs from Firebase and insert into local database
+        val fbSongs: List<Song> = getSongsFromFirebase.getAllSongs()
+        val songEntities = fbSongs.map { it.toEntity() }
+        songDao.insertSongs(songEntities)
     }
 }
