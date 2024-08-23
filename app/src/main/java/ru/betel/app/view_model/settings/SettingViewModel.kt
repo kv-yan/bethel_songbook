@@ -71,8 +71,10 @@ class SettingViewModel(
     fun increaseTextSize() {
         val currentSize = additionTextSize.floatValue
         val newSize = currentSize + 1f
-        if (newSize >= 0f) {
-            updateTextSize(newSize)
+        if (currentSize <= 12f) {
+            if (newSize >= 0f) {
+                updateTextSize(newSize)
+            }
         }
     }
 
@@ -81,7 +83,6 @@ class SettingViewModel(
         val newSize = currentSize - 1f
         if (newSize >= 0f) {
             updateTextSize(newSize)
-
         }
     }
 

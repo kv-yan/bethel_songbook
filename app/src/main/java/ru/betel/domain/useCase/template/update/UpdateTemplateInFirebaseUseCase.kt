@@ -21,7 +21,7 @@ class UpdateTemplateInFirebaseUseCase {
             "glorifyingSong" to newTemplate.glorifyingSong.map { it.toMap() },
             "worshipSong" to newTemplate.worshipSong.map { it.toMap() },
             "giftSong" to newTemplate.giftSong.map { it.toMap() },
-        "singleModeSongs" to newTemplate.singleModeSongs.map { it.toMap() })
+            "singleModeSongs" to newTemplate.singleModeSongs.map { it.toMap() })
 
         templateRef.updateChildren(updatedValues) { error, ref ->
             if (error != null) {

@@ -183,7 +183,6 @@ fun MyTextFieldsForEditScreen(
 
 @Composable
 fun MyTextFields(
-    isForSearch: Boolean,
     placeholder: String,
     modifier: Modifier = Modifier,
     fieldText: MutableState<String>,
@@ -196,9 +195,6 @@ fun MyTextFields(
     shape: RoundedCornerShape = RoundedCornerShape(12.dp),
     align: Alignment.Vertical = Alignment.CenterVertically
 ) {
-
-//    var text by rememberSaveable { mutableStateOf(fieldText.value) }
-
     Surface(
         shape = shape, color = fieldBg
     ) {

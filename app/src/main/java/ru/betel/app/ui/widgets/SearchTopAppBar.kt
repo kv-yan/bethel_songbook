@@ -43,8 +43,7 @@ fun SearchTopAppBar(
         mutableStateOf(TrailingIconState.DELETE)
     }
 
-    MyTextFields(isForSearch = true,
-        singleLine = true,
+    MyTextFields(singleLine = true,
         fieldText = text,
         fontSize = textSize.textFieldItemDefaultTextSize,
         placeholder = " Որոնում",

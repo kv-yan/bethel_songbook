@@ -30,10 +30,13 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import ru.betel.app.R
+import ru.betel.app.ui.widgets.pop_up.EditSongTonAndTemp
+import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AppTheme
 
 
@@ -165,7 +168,7 @@ fun Temp(
                         temp.value = newTemp
                     }
                 },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(fontSize = 14.sp)
@@ -192,5 +195,37 @@ fun Temp(
             }, valueRange = 20f..250f
         )
     }
+}
 
+
+@Preview
+@Composable
+private fun ModulationPrev() {
+    val appTheme = AppTheme.PRIMARY
+    val isShowingTempDialog = remember { mutableStateOf(true) }
+    val tonality = remember { mutableStateOf("") }
+    val songState = remember {
+        mutableStateOf(
+            Song(
+                id = "",
+                title = "",
+                tonality = tonality.value,
+                words = "",
+                temp = "0",
+                isUsingSoundTrack = false,
+                isGlorifyingSong = false,
+                isWorshipSong = false,
+                isGiftSong = false,
+                isFromSongbookSong = false,
+            )
+        )
+    }
+
+    EditSongTonAndTemp(
+        isShowDialog = isShowingTempDialog,
+        songState = songState,
+        appTheme = appTheme
+    ) {
+
+    }
 }

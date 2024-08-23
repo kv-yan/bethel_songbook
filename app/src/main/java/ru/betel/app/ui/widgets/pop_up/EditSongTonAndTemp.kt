@@ -1,6 +1,7 @@
 package ru.betel.app.ui.widgets.pop_up
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,12 +25,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.betel.app.R
+import ru.betel.app.ui.widgets.ModulationTextFields
 import ru.betel.app.ui.widgets.SaveButton
 import ru.betel.app.ui.widgets.Temp
 import ru.betel.app.ui.widgets.dropdown_menu.TonalityDropDownMenu
+import ru.betel.app.ui.widgets.transformInput
 import ru.betel.domain.model.Song
 import ru.betel.domain.model.ui.AppTheme
 
@@ -43,13 +47,14 @@ fun EditSongTonAndTemp(
     val tonality = remember { mutableStateOf(songState.value.tonality) }
     val temp = remember { mutableFloatStateOf(songState.value.temp.toFloat()) }
     val isUsingSoundTrack = remember { mutableStateOf(songState.value.isUsingSoundTrack) }
+    val isShowingModulation = remember { mutableStateOf(false) }
 
     val onDismiss = { isShowDialog.value = false }
 
     val onSave = {
         val updatedSong = songState.value.copy(
             tonality = tonality.value,
-            temp = temp.value.toInt().toString(),
+            temp = temp.floatValue.toInt().toString(),
             isUsingSoundTrack = isUsingSoundTrack.value
         )
         doAfterSave(updatedSong)
@@ -64,19 +69,50 @@ fun EditSongTonAndTemp(
                 Surface(shape = RoundedCornerShape(15.dp), color = appTheme.screenBackgroundColor) {
                     Column(Modifier.padding(16.dp)) {
                         Spacer(modifier = Modifier.height(10.dp))
-                        Text(
-                            text = "Տոն*", style = TextStyle(
-                                fontSize = 13.sp,
-                                lineHeight = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.mardoto_medium)),
-                                fontWeight = FontWeight(400),
-                                color = appTheme.secondaryTextColor,
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Տոն*", style = TextStyle(
+                                    fontSize = 13.sp,
+                                    lineHeight = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                                    fontWeight = FontWeight(400),
+                                    color = appTheme.secondaryTextColor,
+                                )
                             )
-                        )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(text = if (isShowingModulation.value) "Տոն" else "Մոդուլացիա",
+                                    style = TextStyle(
+                                        fontSize = 13.sp,
+                                        lineHeight = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.mardoto_medium)),
+                                        fontWeight = FontWeight(400),
+                                        color = appTheme.secondaryTextColor,
+                                        textAlign = TextAlign.End
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            isShowingModulation.value = !isShowingModulation.value
+                                        })
+
+                            }
+                        }
                         Spacer(modifier = Modifier.height(4.dp))
-                        TonalityDropDownMenu(
-                            appTheme = appTheme, tonality, modifier = Modifier.fillMaxWidth()
-                        )
+                        if (isShowingModulation.value) {
+                            ModulationTextFields(
+                                placeholder = "Մոդուլացիա", fieldText = tonality
+                            )
+                        } else {
+                            TonalityDropDownMenu(
+                                appTheme = appTheme, tonality, modifier = Modifier.fillMaxWidth()
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(18.dp))
                         Temp(temp = temp, appTheme = appTheme)
@@ -101,6 +137,8 @@ fun EditSongTonAndTemp(
                         SaveButton(
                             appTheme = appTheme,
                         ) {
+                            val newTonality = transformInput(tonality.value)
+                            tonality.value = newTonality
                             onSave()
                         }
                     }

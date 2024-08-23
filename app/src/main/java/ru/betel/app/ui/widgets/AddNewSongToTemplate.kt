@@ -101,7 +101,7 @@ fun AddNewSongToTemplate(
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = "Տեմպ | Տոն",
+                        text = "Տոն | Տեմպ",
                         color = appTheme.secondaryTextColor,
                         textAlign = TextAlign.End,
                         modifier = Modifier.fillMaxWidth()

@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -50,62 +49,63 @@ fun SongItemWithDeleteBtn(
     ) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(
-            modifier = Modifier, verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${index}.", style = TextStyle(
-                    fontSize = 12.sp,
-                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                    fontWeight = FontWeight(400),
-                    color = appTheme.secondaryTextColor
-                ), modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = item.title, maxLines = 1, style = TextStyle(
+                text = "${index}.${item.title}",
+                maxLines = 1,
+                style = TextStyle(
                     fontSize = 12.sp,
                     lineHeight = 20.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
                     color = appTheme.primaryTextColor
-                ), modifier = Modifier
-                    .fillMaxWidth(0.6f)
+                ),
+                modifier = Modifier
+                    .weight(0.6f)
                     .padding(start = 8.dp)
+                    .align(Alignment.CenterVertically)
             )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .weight(0.35f)
+                    .fillMaxWidth()
             ) {
                 Text(text = if (item.isUsingSoundTrack) {
                     "(ֆ)"
-                } else "${item.temp} | ${item.tonality}", style = TextStyle(
+                } else "${item.tonality} | ${item.temp}", style = TextStyle(
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                     fontWeight = FontWeight(400),
                     color = appTheme.primaryTextColor,
-                ), modifier = Modifier.pointerInput(Unit) {
-                    detectTapGestures(onLongPress = { onTonalityTempItemLongPres(item) },
-                        onTap = { onTonalityTempItemLongPres(item) })
-                })
+                ), modifier = Modifier
+                    .padding(end = 8.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onLongPress = { onTonalityTempItemLongPres(item) },
+                            onTap = { onTonalityTempItemLongPres(item) })
+                    })
 
-                Spacer(modifier = Modifier.width(12.dp))
                 Icon(painter = painterResource(id = R.drawable.ic_delete),
                     tint = appTheme.secondaryTextColor,
                     contentDescription = "Delete this song",
                     modifier = Modifier
-                        .size(12.dp)
+                        .sizeIn(minWidth = 12.dp, minHeight = 12.dp)
                         .clickable {
                             onDeleteItemClick(item)
                         })
-                Spacer(modifier = Modifier.width(10.dp))
             }
         }
-        Spacer(
-            Modifier.height(8.dp)
-        )
+        Spacer(Modifier.height(8.dp))
         if (!isLastItem) {
-            Divider(Modifier.fillMaxWidth(), 1.dp, color = appTheme.dividerColor)
+            Divider(
+                Modifier.fillMaxWidth(), 1.dp, color = appTheme.dividerColor
+            )
         }
     }
 }
