@@ -184,7 +184,6 @@ fun CategoryActionBar(
                     text = viewModel.searchAppBarText,
                     onTextChange = { text ->
                         viewModel.searchAppBarText.value = text
-                        println("${viewModel.searchAppBarText.value} :: $text")
                     },
                     onCloseClicked = {
                         searchAppBarState.value = SearchAppBarState.CLOSED

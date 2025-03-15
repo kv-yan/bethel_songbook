@@ -115,7 +115,6 @@ class SongViewModel(
     }
 
     fun onCategorySelected(category: SongsCategory) {
-        println("selected category ${category.title}")
         selectedCategory.value = category
         isDropdownMenuVisible.value = false
     }

@@ -98,13 +98,12 @@ fun CategoryTabs(
                 song.song.words.lowercase()
             }
         } else {
-            songs
+            songs.sortedBy { song -> song.song.title.lowercase() }
         }
     }
     val sortedAllSong: State<List<AddSong>> = derivedStateOf {
         if (searchAppBarText.value.isNotBlank()) {
             allSongs.value.filter { song ->
-
                 song.song.title.lowercase()
                     .contains(searchAppBarText.value.lowercase(), ignoreCase = true)
             }.sortedBy { song ->
@@ -112,7 +111,7 @@ fun CategoryTabs(
                 song.song.words.lowercase()
             }
         } else {
-            allSongs.value
+            allSongs.value.sortedBy { song -> song.song.title.lowercase() }
         }
     }
     val sortedFavoriteSong: State<List<AddSong>> = derivedStateOf {
@@ -125,7 +124,7 @@ fun CategoryTabs(
                 item.song.words.lowercase()
             }
         } else {
-            favoriteSongs.value
+            favoriteSongs.value.sortedBy { song -> song.song.title.lowercase() }
         }
     }
 
@@ -239,7 +238,7 @@ fun CategoryTabs(
 }
 
 private fun updateIsAddedState(
-    addSongs: MutableList<AddSong>, categoryListForAdd: SnapshotStateList<Song>
+    addSongs: MutableList<AddSong>, categoryListForAdd: SnapshotStateList<Song>,
 ) {
     addSongs.forEach { addSong ->
         addSong.isAdded.value = categoryListForAdd.contains(addSong.song)

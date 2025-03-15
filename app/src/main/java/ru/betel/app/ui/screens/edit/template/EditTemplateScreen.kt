@@ -72,7 +72,7 @@ fun EditTemplateScreen(
     songViewModel: SongViewModel,
     templateViewModel: TemplateViewModel,
     settingViewModel: SettingViewModel,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
 ) {
     val appTheme = settingViewModel.appTheme.value
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
@@ -132,7 +132,7 @@ private fun MainContent(
     settingViewModel: SettingViewModel,
     isShowingDialog: MutableState<Boolean>,
     templateFieldState: MutableState<NewTemplateFieldState>,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
 ) {
 
     val appTheme = settingViewModel.appTheme.value
@@ -324,7 +324,10 @@ private fun MainContent(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    SaveButton(appTheme) {
+                    SaveButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        appTheme = appTheme
+                    ) {
                         templateViewModel.checkFields(
                             isLocalTemplate = isLocalTemplate.value,
                             templateFieldState = templateFieldState,

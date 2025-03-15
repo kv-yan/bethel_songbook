@@ -2,6 +2,7 @@ package ru.betel.app.ui.screens.single_song
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -106,7 +106,7 @@ fun SingleSongScreen(
     actionBarState: MutableState<ActionBarState>,
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
 ) {
     actionBarState.value = ActionBarState.SINGLE_SONG_SCREEN
     val scrollState = rememberScrollState()
@@ -125,7 +125,6 @@ fun SingleSongScreen(
         viewModel.selectedSong.emit(currentSong.value)
         editViewModel.currentSong.value = currentSong.value
         editViewModel.isEditingSongFromTemplate.value = false
-
     }
 
     Column(
@@ -146,14 +145,21 @@ fun SingleSongScreen(
                     .background(appTheme.screenBackgroundColor)
                     .verticalScroll(scrollState)
             ) {
-                Row(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)) {
+                Row(
+                    modifier = Modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
-                        text = song.title, style = TextStyle(
+                        text = song.title,
+                        style = TextStyle(
                             fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
                             fontFamily = FontFamily(Font(R.font.mardoto_regular)),
                             fontWeight = FontWeight(700),
                             color = appTheme.primaryTextColor,
-                        ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth(0.7f)
+                        ),
+                        textAlign = TextAlign.Start,
                     )
 
                     Text(
@@ -164,7 +170,6 @@ fun SingleSongScreen(
                             fontWeight = FontWeight(700),
                             color = appTheme.secondaryTextColor,
                         ),
-                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.End,
                     )
                 }

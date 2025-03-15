@@ -44,7 +44,6 @@ fun TemplateDropdownMenu(
                     template.forEach { templateType ->
                         templateType.isSelected = type == templateType
                     }
-                    println("${type.title} :: ${type.isSelected} :: selectedTemplateType.value :: ${selectedTemplateType.value.title}")
                 }
             }
         }

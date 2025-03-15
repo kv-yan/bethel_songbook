@@ -15,7 +15,6 @@ class NetworkUtilsImpl(private val context: Context) : NetworkUtils {
             activeNetwork?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
         } ?: false
 
-        println("network state " + if (isConnected) "Connected" else "Disconnected")
         return isConnected
     }
 }

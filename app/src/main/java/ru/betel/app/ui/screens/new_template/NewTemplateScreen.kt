@@ -180,11 +180,6 @@ private fun MainContent(
         }
     }
 
-//    val tempGlorifyingSongs = remember { mutableStateListOf<Song>() }
-//    val tempWorshipSongs = remember { mutableStateListOf<Song>() }
-//    val tempGiftSongs = remember { mutableStateListOf<Song>() }
-//    val tempSingleModeSongs = remember { mutableStateListOf<Song>() }
-
     val selectedCategoryForAddNewSong = when (categoryState.value) {
         AddSongCategory.GLORIFYING -> tempGlorifyingSongs
         AddSongCategory.WORSHIP -> tempWorshipSongs

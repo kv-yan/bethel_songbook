@@ -61,7 +61,7 @@ fun CategorizedLazyColumn(
             stickyHeader {
                 Surface(
                     color = appTheme.screenBackgroundColor.copy(alpha = 0.95f),
-                    elevation = 3.dp,
+                    elevation = 8.dp,
                 ) {
                     Spacer(modifier = Modifier.height(12.dp))
                     SongCategoryHeader(appTheme = appTheme, header = category.charName)

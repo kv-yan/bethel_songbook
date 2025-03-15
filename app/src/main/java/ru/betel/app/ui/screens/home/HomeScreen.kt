@@ -40,7 +40,7 @@ fun HomeScreen(
     actionBarState: MutableState<ActionBarState>,
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
 ) {
     MainContent(
         navController = navController,
@@ -59,7 +59,7 @@ private fun MainContent(
     actionBarState: MutableState<ActionBarState>,
     viewModel: SongViewModel,
     settingViewModel: SettingViewModel,
-    editViewModel: EditViewModel
+    editViewModel: EditViewModel,
 ) {
     actionBarState.value = ActionBarState.HOME_SCREEN
 
@@ -143,9 +143,11 @@ private fun MainContent(
             }
 
             filteredSongs.value.isNotEmpty() -> {
-                val songs = filteredSongs.value.groupBy {
-                    it.title.first()
-                }.toSortedMap()
+                val songs = filteredSongs.value
+                    .sortedBy { it.title.lowercase() }
+                    .groupBy {
+                        it.title.first()
+                    }.toSortedMap()
 
                 val categoryList = songs.map {
                     SongCategory(items = it.value, charName = it.key.toString())
@@ -198,7 +200,7 @@ private fun MainContent(
     DeleteSongDialog(showDialog = isDeletingSong, song = deletingSong, onUpdateSongs = {
         viewModel.loadSong()
     }, onConfirmationClick = {
-        viewModel.deleteSongFromFirebase(it , allSongState.value)
+        viewModel.deleteSongFromFirebase(it, allSongState.value)
     })
     DoubleBackToExitApp()
 }

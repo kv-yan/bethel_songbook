@@ -3,6 +3,8 @@ package ru.betel.app.ui.drawer_layout
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -48,7 +50,7 @@ fun MenuDrawerLayout(
     onLogInBtnClick: () -> Unit,
     appTheme: AppTheme,
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val scaffoldState = rememberScaffoldState(drawerState = DrawerState(DrawerValue.Open))
     val scope = rememberCoroutineScope()
     val deleteSongDialogState = remember { mutableStateOf(false) }
     val sendNotificationDialogState = remember { mutableStateOf(false) }
@@ -78,7 +80,7 @@ fun MenuDrawerLayout(
     }
     val allSongs = songViewModel.allSongState.collectAsState(initial = listOf())
     val screenState = remember {
-        mutableStateOf(Screens.HOME_SCREEN)
+        mutableStateOf(Screens.TEMPLATE_SCREEN)
     }
 
 
@@ -136,7 +138,8 @@ fun MenuDrawerLayout(
     }
 
     Scaffold(drawerContent = {
-        DrawerContent(screenState = screenState,
+        DrawerContent(
+            screenState = screenState,
             scope = scope,
             appTheme = appTheme,
             drawerState = scaffoldState.drawerState,

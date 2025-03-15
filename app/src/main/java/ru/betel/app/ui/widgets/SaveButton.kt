@@ -53,7 +53,11 @@ fun SaveButton(
 
 @Composable
 fun SaveButton(
-    appTheme: AppTheme,btnColor: Color = appTheme.primaryButtonColor, text: String = "Պահպանել", modifier: Modifier = Modifier.fillMaxWidth(),  onClick: () -> Unit
+    modifier: Modifier = Modifier,
+    appTheme: AppTheme,
+    btnColor: Color = appTheme.primaryButtonColor,
+    text: String = "Պահպանել",
+    onClick: () -> Unit,
 ) {
     Box {
         Button(

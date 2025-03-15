@@ -18,8 +18,6 @@ class ShareRepoImpl(private val context: Context) : ShareRepo {
     override suspend fun shareSong(song: Song) {
         shareIntent.putExtra(Intent.EXTRA_TEXT, song.getMessageForShare())
 
-        println("SHARE ::  ${song.getMessageForShare()}")
-
         val intentList = packageNames.mapNotNull { packageName ->
             context.packageManager.getLaunchIntentForPackage(packageName)?.let { intent ->
                 intent.putExtra(Intent.EXTRA_TEXT, song.getMessageForShare())

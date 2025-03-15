@@ -66,7 +66,6 @@ val dataModule = module {
     }
 
     single<GetAllSongs> {
-        println("------------------------ Times on get all songs ------------------------")
         GetAllSongsImpl(
             getSongFromFirebase = get<GetSongsFromFirebase>(),
             getNetworkUtils = get<NetworkUtils>(),
@@ -113,7 +112,6 @@ val dataModule = module {
     }
 
     single<GetFromSongbookSongs> {
-        println("worked di :: GetFromSongbookSongsImpl")
         GetFromSongbookSongsImpl(getAllSongs = get<GetAllSongs>())
     }
 

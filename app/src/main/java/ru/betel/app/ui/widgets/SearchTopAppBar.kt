@@ -63,7 +63,6 @@ fun SearchTopAppBar(
                 IconButton(onClick = {
                     when (trailingIconState) {
                         TrailingIconState.DELETE -> {
-                            println()
                             trailingIconState = if (text.value.isNotEmpty()) {
                                 text.value = ""
                                 onTextChange("")

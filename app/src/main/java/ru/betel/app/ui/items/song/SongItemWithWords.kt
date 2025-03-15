@@ -92,6 +92,7 @@ fun SongItemWithWords(
                         color = appTheme.primaryTextColor,
                     )
                 )
+/*
                 Text(
                     text = item.getWordsFirst2Lines(), style = TextStyle(
                         fontSize = textSize.smallItemDefaultTextSize,
@@ -100,6 +101,7 @@ fun SongItemWithWords(
                         color = appTheme.secondaryTextColor
                     ), modifier = Modifier.padding(start = 4.dp, top = 4.dp)
                 )
+*/
             }
 
 
