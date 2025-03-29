@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -36,6 +35,7 @@ import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.app.view_model.template.TemplateViewModel
 import ru.betel.app.worker.SyncWorker
+import ru.betel.data.reopsitory.notification.NotificationHelper
 import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import kotlin.system.exitProcess
@@ -43,10 +43,8 @@ import kotlin.system.exitProcess
 class MainActivity : ComponentActivity() {
     companion object {
         private const val REQUEST_CODE_OVERLAY_PERMISSION = 1001
-        private val TAG = "NOTIFICATION"
     }
 
-    private var overlayView: View? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterialApi::class)
@@ -57,7 +55,6 @@ class MainActivity : ComponentActivity() {
         subscribeNotificationTopic()
         setupWorkManager(this)
         setContent {
-//            requestPermission()
             RequestNotificationPermission()
 
             val songViewModel: SongViewModel = get()
@@ -148,11 +145,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun subscribeNotificationTopic() {
-//        FirebaseMessaging.getInstance().subscribeToTopic("new_template")
-        FirebaseMessaging.getInstance().subscribeToTopic("test").addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-            }
-        }
+        FirebaseMessaging.getInstance().subscribeToTopic(NotificationHelper.NOTIFICATION_TOPIC)
     }
 
     private fun setupWorkManager(context: Context) {

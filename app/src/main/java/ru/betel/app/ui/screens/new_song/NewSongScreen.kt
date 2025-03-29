@@ -1,6 +1,5 @@
 package ru.betel.app.ui.screens.new_song
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,7 +47,6 @@ import ru.betel.domain.model.ui.NewSongFieldState
 import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.SongsCategory
 
-private const val TAG = "HomeScreen"
 
 
 @Composable
@@ -246,24 +244,18 @@ fun savingLogic(
 ) {
     if (newSong.title.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_TITLE
-        Log.e(TAG, "savingLogic: INVALID_TITLE")
     } else if (newSong.words.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_WORDS
-        Log.e(TAG, "savingLogic: INVALID_WORDS")
     } else if (newSong.tonality.isEmpty()) {
         newSongFieldState.value = NewSongFieldState.INVALID_TONALITY
-        Log.e(TAG, "savingLogic: INVALID_TONALITY")
     } else if ((newSong.temp.isEmpty()) || newSong.temp.toInt() == 0 || newSong.temp.toInt() < 0) {
         newSongFieldState.value = NewSongFieldState.INVALID_TEMP
-        Log.e(TAG, "savingLogic: INVALID_TEMP")
     } else if (!newSong.isGlorifyingSong && !newSong.isWorshipSong) {
         newSongFieldState.value = NewSongFieldState.INVALID_CATEGORY
-        Log.e(TAG, "savingLogic: INVALID_CATEGORY")
     } else {
         onSave()
         onCompleted.invoke()
         newSongFieldState.value = NewSongFieldState.DONE
-        Log.e(TAG, "savingLogic: DONE")
     }
     showDialog.value = true
 }

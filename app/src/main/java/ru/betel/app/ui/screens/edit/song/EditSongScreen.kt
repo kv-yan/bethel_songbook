@@ -1,6 +1,5 @@
 package ru.betel.app.ui.screens.edit.song
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,8 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
@@ -52,7 +49,6 @@ import ru.betel.domain.model.ui.ActionBarState
 import ru.betel.domain.model.ui.Screens
 import ru.betel.domain.model.ui.SongsCategory
 
-private const val TAG = "EditSongScreen"
 
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimatedInsets::class)
@@ -201,7 +197,6 @@ fun EditSongScreen(
                 allSongList = allSongList.value
             )
 
-                Log.e(TAG, "EditSongScreen: song :: $updatedSong")
                 navController.navigate(Screens.HOME_SCREEN.route)
             }
         }

@@ -1,7 +1,6 @@
 package ru.betel.app.worker
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -12,10 +11,9 @@ import ru.betel.data.database.MIGRATION_TEMPLATE_1_2
 import ru.betel.data.reopsitory.song.get.firebase.GetSongFromFirebaseImpl
 import ru.betel.domain.converters.toEntity
 
-private const val TAG = "SyncWorker"
 
 class SyncWorker(
-    appContext: Context, workerParams: WorkerParameters
+    appContext: Context, workerParams: WorkerParameters,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
@@ -34,7 +32,6 @@ class SyncWorker(
 
             Result.success()
         } catch (e: Exception) {
-            Log.e(TAG, "doWork: Error during sync", e)
             Result.failure()
         }
     }

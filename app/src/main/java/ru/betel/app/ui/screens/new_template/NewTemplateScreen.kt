@@ -1,8 +1,6 @@
 package ru.betel.app.ui.screens.new_template
 
 import android.os.Build
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,8 +69,6 @@ import ru.betel.domain.model.ui.AppTheme
 import ru.betel.domain.model.ui.NewTemplateFieldState
 
 
-private const val TAG = "TEMPLATE"
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewTemplateScreen(
@@ -84,9 +80,9 @@ fun NewTemplateScreen(
     tempGlorifyingSongs: SnapshotStateList<Song>,
     tempWorshipSongs: SnapshotStateList<Song>,
     tempGiftSongs: SnapshotStateList<Song>,
-    tempSingleModeSongs: SnapshotStateList<Song>
+    tempSingleModeSongs: SnapshotStateList<Song>,
 
-) {
+    ) {
     val appTheme = settingViewModel.appTheme.value
     val templateFieldState = remember { mutableStateOf(NewTemplateFieldState.INVALID_DAY) }
     val isShowingSaveStateDialog = remember { mutableStateOf(false) }
@@ -153,7 +149,7 @@ private fun MainContent(
     tempGlorifyingSongs: SnapshotStateList<Song>,
     tempWorshipSongs: SnapshotStateList<Song>,
     tempGiftSongs: SnapshotStateList<Song>,
-    tempSingleModeSongs: SnapshotStateList<Song>
+    tempSingleModeSongs: SnapshotStateList<Song>,
 ) {
     val isAdmin = FirebaseAuth.getInstance().currentUser != null
 
@@ -212,7 +208,8 @@ private fun MainContent(
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    ModalBottomSheetLayout(sheetState = bottomSheetState,
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
         sheetShape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp),
         content = {
             Surface(
@@ -265,12 +262,13 @@ private fun MainContent(
 
                             Spacer(modifier = Modifier.width(6.dp))
 
-                            Surface(modifier = Modifier
-                                .clickable {
-                                    isShowingDayDialog.value = true
-                                }
-                                .fillMaxWidth()
-                                .height(38.dp),
+                            Surface(
+                                modifier = Modifier
+                                    .clickable {
+                                        isShowingDayDialog.value = true
+                                    }
+                                    .fillMaxWidth()
+                                    .height(38.dp),
                                 shape = RoundedCornerShape(8.dp),
                                 color = appTheme.fieldBackgroundColor) {
                                 DayPickerDialog(
@@ -322,7 +320,9 @@ private fun MainContent(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    SaveButton(appTheme = appTheme) {
+                    SaveButton(
+                        appTheme = appTheme
+                    ) {
                         templateViewModel.checkFields(
                             isAdmin = isAdmin,
                             templateFieldState = templateFieldState,
@@ -392,7 +392,8 @@ private fun MainContent(
                     .padding(horizontal = 12.dp)
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
-                SearchTopAppBar(isInBottomSheet = true,
+                SearchTopAppBar(
+                    isInBottomSheet = true,
                     text = songViewModel.searchAppBarText,
                     onTextChange = {
                         songViewModel.searchAppBarText.value = it
@@ -433,7 +434,7 @@ fun CategorizedSongs(
     bottomSheetAllSongsForWorshipCategory: State<MutableList<AddSong>>,
     bottomSheetAllSongsForGiftCategory: State<MutableList<AddSong>>,
     bottomSheetState: ModalBottomSheetState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     templateViewModel.initCategorizedSongs()
     AddNewSongToTemplate(
@@ -475,7 +476,7 @@ fun SingleModeSongs(
     selectedCategoryBottomSheetAllSongs: MutableState<MutableList<AddSong>>,
     bottomSheetAllSongsForSingleModeCategory: State<MutableList<AddSong>>,
     bottomSheetState: ModalBottomSheetState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     templateViewModel.initSingleMode()
     AddNewSongToTemplate(

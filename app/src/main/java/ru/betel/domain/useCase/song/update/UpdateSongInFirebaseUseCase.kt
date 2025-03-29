@@ -1,21 +1,16 @@
 package ru.betel.domain.useCase.song.update
 
-import android.util.Log
 import com.google.firebase.database.FirebaseDatabase
 import ru.betel.domain.model.Song
 
 class UpdateSongInFirebaseUseCase {
     private val databaseRef = FirebaseDatabase.getInstance().getReference("Song")
-    private val TAG = "UpdateSongInFirebaseUse"
 
     fun execute(song: Song, updatedSong: Song, allSongList: MutableList<Song>) {
-        var songId: String = ""
+        var songId = ""
         try {
             song.id.toInt()
-            val count = allSongList.size
             for (item in allSongList) {
-                Log.e(TAG, "execute: ${allSongList.indexOf(item)} / $count")
-                Log.e(TAG, "execute: ${item.title} :: ", )
                 if (item.title == song.title && item.words == song.words) {
                     songId = item.id
                     updatedSong.id = item.id
@@ -26,7 +21,6 @@ class UpdateSongInFirebaseUseCase {
             songId = song.id
         }
         val songRef = databaseRef.child(songId)
-        Log.e(TAG, "execute: $songId")
 
 
         val updatedValues = mapOf(

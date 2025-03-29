@@ -1,6 +1,5 @@
 package ru.betel.app.ui.widgets
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,7 +53,7 @@ fun CategorizedLazyColumn(
     onShareClick: (Song) -> Unit,
     onDeleteClick: (Song) -> Unit,
     onFavoriteClick: (Song, Boolean) -> Unit,
-    onItemClick: (Song, Int) -> Unit
+    onItemClick: (Song, Int) -> Unit,
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
         categories.forEach { category ->
@@ -69,7 +68,8 @@ fun CategorizedLazyColumn(
             }
 
             items(category.items, key = { it.id }) { song ->
-                SongItemWithWords(isEnableLongPress = true,
+                SongItemWithWords(
+                    isEnableLongPress = true,
                     appTheme = appTheme,
                     item = song,
                     textSize = textSize,
@@ -80,8 +80,6 @@ fun CategorizedLazyColumn(
                     onDeleteClick = onDeleteClick,
                     onItemClick = {
                         val index = songList.indexOf(song)
-                        Log.e(TAG, "clicked index : $index ${song.title}")
-                        Log.e(TAG, "get by index : ${songList[index].title}")
                         onItemClick(song, index)
                     })
             }

@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.AlertDialog
@@ -37,17 +40,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import ru.betel.app.R
 import ru.betel.domain.model.ui.AppTheme
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatePickerScreen(dayState: MutableState<String>) {
-    val dateTime = LocalDateTime.now()
 
     val datePickerState = remember {
         DatePickerState(
@@ -89,7 +91,6 @@ fun DatePickerScreen(dayState: MutableState<String>) {
 fun DayPickerDialog(
     appTheme: AppTheme, isShowing: MutableState<Boolean>, dayState: MutableState<String>
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable { isShowing.value = true },
@@ -114,13 +115,21 @@ fun DayPickerDialog(
         )
         Spacer(modifier = Modifier.width(12.dp))
     }
+
     if (isShowing.value) {
-        Surface(color = appTheme.fieldBackgroundColor, modifier = Modifier.fillMaxWidth()) {
-            AlertDialog(
-                onDismissRequest = { isShowing.value = false },
+        AlertDialog(
+            onDismissRequest = { isShowing.value = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize()
+        ) {
+            Surface(
                 modifier = Modifier
-                    .background(appTheme.fieldBackgroundColor)
                     .fillMaxWidth()
+                    .defaultMinSize(minWidth = 360.dp)
+                    .wrapContentHeight(),
+                color = appTheme.fieldBackgroundColor
             ) {
                 DatePickerScreen(dayState)
             }

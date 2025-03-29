@@ -14,8 +14,10 @@ import ru.betel.domain.model.entity.SongEntity
 import ru.betel.domain.model.entity.SongTemplateEntity
 
 @Database(
-    entities = [SongTemplateEntity::class, SongEntity::class, FavoriteSongsEntity::class],
-    version = 2
+    entities = [
+        SongTemplateEntity::class, SongEntity::class, FavoriteSongsEntity::class],
+    version = 2,
+    exportSchema = false
 )
 @TypeConverters(SongListConverter::class)
 abstract class AppDatabase : RoomDatabase() {

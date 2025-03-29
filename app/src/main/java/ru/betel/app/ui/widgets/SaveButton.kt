@@ -63,7 +63,7 @@ fun SaveButton(
         Button(
             onClick = { onClick() },
             shape = RoundedCornerShape(size = 8.dp),
-            modifier = modifier
+            modifier = modifier.fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = btnColor)
         ) {

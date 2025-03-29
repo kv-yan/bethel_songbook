@@ -119,7 +119,7 @@ private fun MainContent(
     LaunchedEffect(key1 = allSongState) {
         when (allSongState.value.isEmpty()) {
             true -> {
-                viewModel.loadSong()
+//                viewModel.loadSong()
                 viewModel.startTimer(7)
             }
 

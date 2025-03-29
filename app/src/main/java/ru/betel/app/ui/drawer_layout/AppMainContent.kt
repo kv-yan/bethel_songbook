@@ -1,7 +1,6 @@
 package ru.betel.app.ui.drawer_layout
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.EnterTransition
@@ -224,7 +223,6 @@ fun AppMainContent(
                     )
                 }
                 BackHandler {
-                    Log.e("TAG", "check is working: back pres")
                     navController.popBackStack()
                 }
 

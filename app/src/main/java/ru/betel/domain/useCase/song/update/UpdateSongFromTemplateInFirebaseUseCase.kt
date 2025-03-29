@@ -41,12 +41,6 @@ class UpdateSongFromTemplateInFirebaseUseCase {
         val templateRef = databaseRef.child("${template.id}/$songListName/$index")
 
 
-        // Construct the path to the specific song in Firebase
-        val songPath = "$songListName/$index"
-
-        Log.d(TAG, "Updating song at path: $songPath")
-
-        // Prepare the map of updated values
         val updatedValues = mapOf(
             "title" to updatedSong.title,
             "tonality" to updatedSong.tonality,
@@ -60,11 +54,10 @@ class UpdateSongFromTemplateInFirebaseUseCase {
         )
 
 
-        templateRef
         // Perform the update in Firebase
         templateRef.updateChildren(updatedValues) { databaseError, _ ->
             if (databaseError != null) {
-                Log.e(TAG, "Error updating song: ${databaseError.message}")
+                Log.e(TAG, "Error updating song in Firebase: ${databaseError.message}")
             } else {
                 Log.i(TAG, "Song updated successfully")
             }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -35,8 +37,6 @@ import ru.betel.app.view_model.edit.EditViewModel
 import ru.betel.app.view_model.settings.SettingViewModel
 import ru.betel.app.view_model.song.SongViewModel
 import ru.betel.domain.model.ui.ActionBarState
-
-private const val TAG = "HomeScreen"
 
 
 /*@Composable
@@ -127,66 +127,70 @@ fun SingleSongScreen(
         editViewModel.isEditingSongFromTemplate.value = false
     }
 
-    Column(
-        Modifier
-            .fillMaxWidth()
+    HorizontalPager(
+        modifier = Modifier
             .fillMaxSize()
-            .background(appTheme.screenBackgroundColor)
-    ) {
-        HorizontalPager(
-            count = songs.size, state = pagerState, modifier = Modifier.weight(1f)
-        ) { page ->
-            val song = songs[page]
+            .background(appTheme.screenBackgroundColor),
+        count = songs.size,
+        state = pagerState
+    ) { page ->
+        val song = songs[page]
 
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize()
-                    .background(appTheme.screenBackgroundColor)
-                    .verticalScroll(scrollState)
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxSize()
+                .background(appTheme.screenBackgroundColor)
+                .verticalScroll(scrollState)
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = song.title,
-                        style = TextStyle(
-                            fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(700),
-                            color = appTheme.primaryTextColor,
-                        ),
-                        textAlign = TextAlign.Start,
-                    )
-
-                    Text(
-                        text = "${song.temp} / ${song.tonality}",
-                        style = TextStyle(
-                            fontSize = settingViewModel.songbookTextSize.smallItemDefaultTextSize,
-                            fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                            fontWeight = FontWeight(700),
-                            color = appTheme.secondaryTextColor,
-                        ),
-                        textAlign = TextAlign.End,
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
                 Text(
-                    text = song.words, style = TextStyle(
+                    text = song.title,
+                    style = TextStyle(
                         fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
                         fontFamily = FontFamily(Font(R.font.mardoto_regular)),
-                        fontWeight = FontWeight(400),
-                        color = appTheme.primaryTextColor
-                    ), modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 50.dp)
+                        fontWeight = FontWeight(700),
+                        color = appTheme.primaryTextColor,
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = "${song.temp} / ${song.tonality}",
+                    style = TextStyle(
+                        fontSize = settingViewModel.songbookTextSize.smallItemDefaultTextSize,
+                        fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                        fontWeight = FontWeight(700),
+                        color = appTheme.secondaryTextColor,
+                    ),
+                    maxLines = 1,
+                    textAlign = TextAlign.End,
                 )
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = song.words, style = TextStyle(
+                    fontSize = settingViewModel.songbookTextSize.normalItemDefaultTextSize,
+                    fontFamily = FontFamily(Font(R.font.mardoto_regular)),
+                    fontWeight = FontWeight(400),
+                    color = appTheme.primaryTextColor
+                ), modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 50.dp)
+            )
         }
     }
+
 
     BackHandler {
         navController.popBackStack()
